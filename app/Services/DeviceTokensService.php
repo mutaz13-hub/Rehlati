@@ -4,9 +4,8 @@ namespace App\Services;
 
 use App\Models\Device;
 use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class DeviceTokensService
 {
@@ -51,4 +50,36 @@ class DeviceTokensService
         return $token->plainTextToken;
     }
 
+    /**
+     * Refresh access token for a device using a refresh token.
+     *
+     * @param Device $device
+     * @param string $refreshToken
+     * @param string $tokenName
+     * @return string|null
+     */
+    public function refreshAccessToken(Device $device, array $data): ?string
+    {
+        if (Carbon::parse($device->token_expires_at)->isPast()) {
+           
+            return null;
+        }
+
+        $hashedRefreshToken = hash('sha256', $data['refresh_token'] . $device->salt);
+
+        if (! hash_equals($device->refresh_token, $hashedRefreshToken)) {
+            
+            return null;
+        }
+
+        $user = $device->accessTokens()->latest('id')->first()?->tokenable;
+
+        if (! $user instanceof User) {
+            return null;
+        }
+
+        $device->accessTokens()->delete();
+
+        return $this->createAccessTokenForDevice($user, $device, 'after_refresh');
+    }
 }

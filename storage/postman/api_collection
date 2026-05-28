@@ -6,20 +6,15 @@
     },
     "item": [
         {
-            "name": "logout",
+            "name": "google-login",
             "item": [
                 {
-                    "name": "[POST] api/logout",
+                    "name": "[POST] api/google-login",
                     "request": {
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Content-Type",
                                 "value": "application/json",
                                 "type": "text"
                             },
@@ -30,105 +25,24 @@
                             },
                             {
                                 "key": "lang",
-                                "value": "ar",
+                                "value": "{{lang}}",
                                 "type": "text"
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/logout",
+                            "raw": "{{base_url}}/api/google-login",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
-                                "logout"
+                                "google-login"
                             ]
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "name": "logout-other-devices",
-            "item": [
-                {
-                    "name": "[POST] api/logout-other-devices",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "ar",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/logout-other-devices",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "logout-other-devices"
-                            ]
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "name": "logout-all-devices",
-            "item": [
-                {
-                    "name": "[POST] api/logout-all-devices",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "ar",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/logout-all-devices",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "logout-all-devices"
-                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id_token\": \"sample_text\",\n    \"fcm_token\": \"sample_text\"\n}",
+                            "options": []
                         }
                     }
                 }

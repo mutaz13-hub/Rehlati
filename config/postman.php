@@ -28,7 +28,7 @@ return [
         // Routes to explicitly include
         'include' => [
             // URI patterns to include (supports wildcards)
-            'patterns' => ['api/logout*'],
+            'patterns' => ['api/google-login'],
 
             // Only routes with these middleware
             'middleware' => [],
@@ -137,9 +137,8 @@ return [
     */
     'headers' => [
         'Accept' => 'application/json',
-        'Content-Type' => 'application/json',
         'Our-Great-Password' => '{{api_password}}', // For middleware authentication
-        'lang' => 'ar'
+        'lang' => '{{lang}}'
     ],
 
     /*

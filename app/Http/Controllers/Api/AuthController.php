@@ -4,16 +4,21 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\EmailVerificationRequest;
+use App\Http\Requests\Auth\GoogleLoginRequest;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\PhoneVerificationRequest;
+use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\AuthService;
+use App\Services\GoogleAuthenticationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function __construct(protected AuthService $authService) {}
+    public function __construct(
+        protected AuthService $authService,
+        protected GoogleAuthenticationService $googleAuthenticationService,
+    ) {}
 
 
     /**
@@ -51,6 +56,43 @@ class AuthController extends Controller
             'access_token' => $data['access_token'],
             'refresh_token' => $data['refresh_token'],
             'device' => $data['device'],
+        ], 201);
+    }
+
+    /**
+     * Handle Google social login.
+     */
+    public function google_login(GoogleLoginRequest $request): JsonResponse
+    {
+        $result = $this->googleAuthenticationService->google_login($request->validated());
+
+        if (! $result['status']) {
+            return $this->failed($result['message'], 401);
+        }
+
+        return $this->succeed($result['message'], [
+            'access_token' => $result['access_token'],
+            'refresh_token' => $result['refresh_token'],
+            'device' => $result['device'],
+        ], 201);
+    }
+
+    /**
+     * Refresh access token.
+     *
+     * @param RefreshTokenRequest $request
+     * @return JsonResponse
+     */
+    public function refresh(RefreshTokenRequest $request): JsonResponse
+    {
+        $result = $this->authService->refresh($request->validated());
+
+        if (! $result['status']) {
+            return $this->failed($result['data'], 401);
+        }
+
+        return $this->succeed(__('Access token refreshed successfully.'), [
+            'access_token' => $result['data'],
         ], 201);
     }
 

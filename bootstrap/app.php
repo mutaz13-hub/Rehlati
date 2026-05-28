@@ -6,6 +6,7 @@ use App\Http\Middleware\CheckEmailNotVerifiedMiddleware;
 use App\Http\Middleware\CheckEmailVerifiedMiddleware;
 use App\Http\Middleware\CheckGuestMiddleware;
 use App\Http\Middleware\CheckLanguageMiddleware;
+use App\Http\Middleware\EnsureCanRefreshMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'check_guest' => CheckGuestMiddleware::class,
             'check_email_not_verified' => CheckEmailNotVerifiedMiddleware::class,
             'check_email_verified' => CheckEmailVerifiedMiddleware::class,
+            'ensure_can_refresh' => EnsureCanRefreshMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

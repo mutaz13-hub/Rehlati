@@ -27,23 +27,22 @@ class Device extends Model
      *
      * @var list<string>
      */
-    protected $hidden = [
-        'refresh_token',
-        'salt',
-    ];
+    // protected $hidden = [
+    //     //'refresh_token',
+    //    // 'salt',
+    // ];
 
     /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'expires_at' => 'datetime',
-            'refresh_token' => 'hashed',
-        ];
-    }
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'token_expires_at' => 'datetime',
+    //     ];
+    // }
 
     /**
      * Get the user that owns the device.

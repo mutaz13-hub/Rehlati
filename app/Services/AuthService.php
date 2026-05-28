@@ -8,6 +8,7 @@ use App\Models\Device;
 use App\Models\User;
 use App\Services\LoggingServices\EmailVerificationLoggingService;
 use App\Services\LoggingServices\NormalAuthenticationLoggingService;
+use App\Services\LoggingServices\RefreshLoggingService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,8 @@ class AuthService
         protected DeviceTokensService $tokens_manager,
         protected SendEmailVerificationCodeAction $sendEmailVerificationCodeAction,
         protected NormalAuthenticationLoggingService $authenticationLoggingService,
-        protected EmailVerificationLoggingService $emailVerificationLoggingService
+        protected EmailVerificationLoggingService $emailVerificationLoggingService,
+        protected RefreshLoggingService $refreshLoggingService
     ){}
 
     /**
@@ -230,5 +232,47 @@ class AuthService
             'user_agent' => request()->userAgent(),
             'ip' => maskIp(request()->ip()),
         ]);
+    }
+
+    /**
+     * Refresh access token for current device.
+     *
+     * @param array{refresh_token: string} $data
+     * @return array{status: bool, data: string}
+     */
+    public function refresh(array $data): array
+    {
+        $device = Device::where('identifier', request()->header('device'))->first();
+
+        if (! $device) {
+            $this->refreshLoggingService->un_valid_device([
+                'user_agent' => request()->userAgent(),
+                'ip' => maskIp(request()->ip()),
+            ]);
+
+            return [
+                'status' => false,
+                'data' => __('Invalid device. Please login again.'),
+            ];
+        }
+
+        $accessToken = $this->tokens_manager->refreshAccessToken($device, $data);
+
+        if (! $accessToken) {
+            $this->refreshLoggingService->un_valid_or_expired_refresh_token([
+                'user_agent' => request()->userAgent(),
+                'ip' => maskIp(request()->ip()),
+            ]);
+
+            return [
+                'status' => false,
+                'data' => __('Invalid or expired refresh token.'),
+            ];
+        }
+
+        return [
+            'status' => true,
+            'data' => $accessToken,
+        ];
     }
 }

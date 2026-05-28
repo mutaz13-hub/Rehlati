@@ -5,10 +5,13 @@ use App\Http\Controllers\Api\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['check_api_password', 'check_language'])->group(function () {
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware(['ensure_can_refresh', 'throttle:refresh']);
+    
     Route::middleware('check_guest')->group(function () {
         Route::controller(AuthController::class)->group(function () {
             Route::post('/register', 'register')->middleware('throttle:register');
             Route::post('/login', 'login')->middleware('throttle:login');
+            Route::post('/google-login', 'google_login')->middleware('throttle:google-login');
         });
 
         Route::controller(ForgotPasswordController::class)->group(function () {
@@ -17,6 +20,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::post('/reset-password', 'reset_password')->middleware('throttle:reset-password');
         });
     });
+
 
     Route::middleware(['auth:sanctum', 'check_access_token_device'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
