@@ -21,6 +21,8 @@ implements HasLocalePreference
 
      protected $guard_name = ['api'];
 
+    public const MORPH_KEY = 'user';
+
     /**
      * The attributes that are mass assignable.
      *

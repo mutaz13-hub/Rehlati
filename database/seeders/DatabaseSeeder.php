@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             SocialProviderSeeder::class,
+            SyrianCitiesSeeder::class,
         ]);
     }
 }

@@ -196,6 +196,30 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'name' => 'Name',
+        'email' => 'Email',
+        'phone_number' => 'Phone number',
+        'password' => 'Password',
+        'password_confirmation' => 'Password confirmation',
+        'new_password' => 'New password',
+        'new_password_confirmation' => 'New password confirmation',
+        'fcm_token' => 'Notification token',
+        'remember_me' => 'Remember me',
+        'code' => 'Verification code',
+        'rateable_type' => 'Rateable type',
+        'rateable_id' => 'Rateable ID',
+        'rate' => 'Rating',
+        'type' => 'Type',
+        'body' => 'Body',
+        'audio' => 'Audio',
+        'photo' => 'Photo',
+        'vote' => 'Vote',
+        'name_en' => 'Name (English)',
+        'name_ar' => 'Name (Arabic)',
+        'description_en' => 'Description (English)',
+        'description_ar' => 'Description (Arabic)',
+        'pics' => 'Pictures',
+    ],
 
 ];

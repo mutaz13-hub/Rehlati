@@ -28,7 +28,7 @@ return [
         // Routes to explicitly include
         'include' => [
             // URI patterns to include (supports wildcards)
-            'patterns' => ['api/google-login'],
+            'patterns' => ['api/ratings', 'api/ratings/*'],
 
             // Only routes with these middleware
             'middleware' => [],

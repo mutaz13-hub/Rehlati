@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "propaganistas/laravel-phone": "^6.0",
+        "spatie/laravel-medialibrary": "^11.23",
         "spatie/laravel-permission": "^7.4"
     },
     "require-dev": {
@@ -88,6 +89,7 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
+        
     },
     "minimum-stability": "stable",
     "prefer-stable": true
