@@ -18,8 +18,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('rate'); // 1-5 stars
             $table->text('body')->nullable();
             $table->string('type')->default('text'); // text, audio
-            $table->unsignedInteger('up_votes')->default(0);
-            $table->unsignedInteger('down_votes')->default(0);
             $table->timestamps();
 
             $table->unique(['user_id', 'rateable_type', 'rateable_id'], 'user_rateable_unique');

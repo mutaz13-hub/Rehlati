@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -50,14 +51,19 @@ class City extends Model implements HasMedia
     public function topReviews(): MorphMany
     {
         return $this->morphMany(Rating::class, 'rateable')
+            ->withCount('upVotes')
             ->orderByDesc('rate')
-            ->orderByDesc('up_votes')
-            ->limit(3);
+            ->orderByDesc('up_votes_count');
+    }
+
+    public function topRegions(): HasMany
+    {
+        return $this->regions()->with('tags')->withCount('tags')->orderByDesc('tags_count');
     }
 
     public function getAverageRatingAttribute(): float
     {
-        return round($this->reviews()->avg('rate') ?? 0, 1);
+        return round($this->reviews()->avg('rate') ?? 0, 2);
     }
 
     public function getTotalReviewsAttribute(): int
@@ -67,7 +73,19 @@ class City extends Model implements HasMedia
 
     public function getCanReviewAttribute(): bool
     {
+        if($this->myReview()->exists())
+            return false;
         return true;
+    }
+
+    public function myReview()
+    {
+        return $this->morphOne(Rating::class, 'rateable')->where('user_id', auth('sanctum')->id());
+    }
+
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     public function registerMediaCollections(): void

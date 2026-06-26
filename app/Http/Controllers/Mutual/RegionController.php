@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Mutual;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\City\CityRegionsRequest;
 use App\Models\Region;
 use App\Http\Resources\RegionResource;
 use App\Http\Requests\Region\StoreRegionRequest;
 use App\Http\Requests\Region\UpdateRegionRequest;
 use App\Http\Requests\Region\UpdateRegionPicturesRequest;
 use App\Http\Requests\Region\UpdateRegionThumbnailsRequest;
+use App\Models\City;
 use App\Services\RegionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -33,7 +35,8 @@ class RegionController extends Controller
 
     public function show(Region $region): JsonResponse
     {
-        $region->load(['description', 'media', 'city']);
+        $region->load(['description', 'media', 'city', 'tags']);
+       
         return $this->succeed(__('Region fetched successfully'), new RegionResource($region));
     }
 

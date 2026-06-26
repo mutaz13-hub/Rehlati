@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\VoteType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RatingResource;
 use App\Http\Requests\RatingIndexRequest;
@@ -28,42 +29,69 @@ class RatingController extends Controller
     }
     public function indexForHotel(RatingIndexRequest $request, Hotel $hotel)
     {
-        $paginator = $this->service->indexByMorph(Hotel::MORPH_KEY, $hotel->id, $request->only('sort'));
+        $result = $this->service->indexByMorph(Hotel::MORPH_KEY, $hotel->id, $request->only(['sort']));
 
-        return $this->succeed(__('Ratings fetched'), RatingResource::collection($paginator));
+        return $this->succeed(__('Ratings fetched'),[ 
+           'ratings' => RatingResource::collection($result['ratings']),
+           'meta' => [
+            'next_cursor' => $result['ratings']->nextCursor(),
+            'prev_cursor' => $result['ratings']->previousCursor(),
+            'total' => $result['total']
+           ]
+        ]);
     }
 
     public function indexForRoom(RatingIndexRequest $request, Room $room)
     {
-        $paginator = $this->service->indexByMorph(Room::MORPH_KEY, $room->id, $request->only('sort'));
+        $result = $this->service->indexByMorph(Room::MORPH_KEY, $room->id, $request->only(['sort', 'per_page']));
 
-        return $this->succeed(__('Ratings fetched'), RatingResource::collection($paginator));
+        return $this->succeed(__('Ratings fetched'),[ 
+           'ratings' => RatingResource::collection($result['ratings']),
+           'meta' => [
+            'next_cursor' => $result['ratings']->nextCursor(),
+            'prev_cursor' => $result['ratings']->previousCursor(),
+            'total' => $result['total']
+           ]
+        ]);
     }
 
     public function indexForCity(RatingIndexRequest $request, City $city)
     {
-        $paginator = $this->service->indexByMorph(City::MORPH_KEY, $city->id, $request->only('sort'));
+        $result = $this->service->indexByMorph(City::MORPH_KEY, $city->id, $request->only(['sort']));
 
-        return $this->succeed(__('Ratings fetched'), RatingResource::collection($paginator));
+       $ratings = RatingResource::collection($result['ratings'])->response()->getData(true);
+
+        $ratings['links']['total'] = $result['total'];
+
+        return $this->succeed(__('Ratings fetched'),[ 
+           'ratings' => $ratings['data'],
+           'meta' => $ratings['links']
+        ]);
     }
 
     public function indexForRegion(RatingIndexRequest $request, Region $region)
     {
-        $paginator = $this->service->indexByMorph(Region::MORPH_KEY, $region->id, $request->only('sort'));
+        $result = $this->service->indexByMorph(Region::MORPH_KEY, $region->id, $request->only(['sort', 'per_page']));
 
-        return $this->succeed(__('Ratings fetched'), RatingResource::collection($paginator));
+        return $this->succeed(__('Ratings fetched'),[ 
+           'ratings' => RatingResource::collection($result['ratings']),
+           'meta' => [
+            'next_cursor' => $result['ratings']->nextCursor(),
+            'prev_cursor' => $result['ratings']->previousCursor(),
+            'total' => $result['total']
+           ]
+        ]);
     }
 
     public function store(RatingStoreRequest $request)
     {
-        // $this->authorize('create', Rating::class);
-
-        $data = $request->validated();
-
-        $audio = $request->file('audio');
-        $photo = $request->file('photo');
-
-        $this->service->store($data, $audio, $photo);
+        $this->service->store(
+            $request->validated(),
+            $request->route()->getName(),
+            (int) $request->id,
+            $request->file('audio'),
+            $request->file('photo')
+        );
 
         return $this->succeed(__('Rating created'), [], 201);
     }
@@ -75,20 +103,20 @@ class RatingController extends Controller
 
     public function update(RatingUpdateRequest $request, Rating $rating)
     {
-        $this->authorize('update', $rating);
+        Gate::authorize('update', $rating);
 
         $data = $request->validated();
         $audio = $request->file('audio');
         $photo = $request->file('photo');
 
-        $rating = $this->service->update($rating, $data, $audio, $photo);
+       $this->service->update($rating, $data, $audio, $photo);
 
-        return $this->succeed(__('Rating updated'), new RatingResource($rating));
+        return $this->succeed(__('Rating updated'));
     }
 
     public function destroy(Rating $rating)
     {
-        $this->authorize('delete', $rating);
+        Gate::authorize('delete', $rating);
 
         $this->service->destroy($rating);
 
@@ -97,11 +125,11 @@ class RatingController extends Controller
 
     public function vote(RatingVoteRequest $request, Rating $rating)
     {
-        Gate::authorize('update', $rating);
+        Gate::authorize('vote', $rating);
 
         $data = $request->validated();
 
-         $this->service->vote($rating, $data['vote']);
+         $this->service->vote($rating, VoteType::from($data['vote']));
 
         return $this->succeed(__('Vote recorded'));
     }

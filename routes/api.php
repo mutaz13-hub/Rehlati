@@ -9,7 +9,14 @@ use \App\Http\Controllers\Mutual\{
     RoomTypeController,
     AmenityController,
     CityController,
-    RegionController
+    RegionController,
+    TagController
+};
+use App\Models\{
+    City,
+    Hotel,
+    Room,
+    Region
 };
 use App\Http\Controllers\Api\RatingController;
 
@@ -43,7 +50,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
         Route::middleware('check_email_verified')->controller(AuthController::class)->group(function () {
             Route::post('/logout-other-devices', 'logout_other_devices');
             Route::post('/logout-all-devices', 'logout_all_devices');
-        });
+       
   
 
     // Public (user + admin) hotel listings and details
@@ -57,20 +64,34 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
 
     // Public city listings and details
     Route::apiResource('/cities', CityController::class);
+    Route::get('/cities/{city}/regions', [CityController::class, 'regions']);
     // Route::get('/cities', [CityController::class, 'index']);
     // Route::get('/cities/{city}', [CityController::class, 'show']);
     Route::get('/cities/{city}/ratings', [RatingController::class, 'indexForCity']);
-    Route::get('/regions', [RegionController::class, 'index']);
-    Route::get('/regions/{region}', [RegionController::class, 'show']);
+    Route::get('/regions', [RegionController::class, 'index'])->name('regions.index');
+    Route::get('/regions/{region}', [RegionController::class, 'show'])->name('regions.show');
     Route::get('/regions/{region}/ratings', [RatingController::class, 'indexForRegion']);
 
     // Ratings
-    Route::apiResource('/ratings', RatingController::class)->except('index');
-    Route::post('/ratings/{rating}/vote', [RatingController::class, 'vote']);
-    // Public room-types and amenities
+        Route::post('/ratings/cities/{id}', [RatingController::class, 'store'])->name('ratings.cities');
+        Route::post('/ratings/hotels/{id}', [RatingController::class, 'store'])->name('ratings.hotels');
+        Route::post('/ratings/rooms/{id}', [RatingController::class, 'store'])->name('ratings.rooms');
+        Route::post('/ratings/regions/{id}', [RatingController::class, 'store'])->name('ratings.regions');
+        Route::post('/ratings/car_agencies/{id}', [RatingController::class, 'store'])->name('ratings.car_agencies');
+        
+        Route::patch('/ratings/{rating}', [RatingController::class, 'update']);
+        Route::delete('/ratings/{rating}', [RatingController::class, 'destroy']);
+        Route::post('/ratings/{rating}/vote', [RatingController::class, 'vote']);
+  
+    Route::get('/ratings/{rating}', [RatingController::class, 'show']);
+    // Public room-types and amenities and tags
     Route::get('/room-types', [RoomTypeController::class, 'index']);
     Route::get('/room-types/{roomType}', [RoomTypeController::class, 'show']);
     Route::get('/amenities', [AmenityController::class, 'index']);
     Route::get('/amenities/{amenity}', [AmenityController::class, 'show']);
+    // Route::get('/tags', [TagController::class, 'index']);
+    // Route::get('/tags/{tag}', [TagController::class, 'show']);
       });
+});
+
 });

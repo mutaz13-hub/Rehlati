@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Hotel;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class HotelPolicy
 {
@@ -29,7 +30,7 @@ class HotelPolicy
      */
     public function create(User $user): bool
     {
-        true;
+        return true;
     }
 
     /**
@@ -37,7 +38,7 @@ class HotelPolicy
      */
     public function update(User $user, Hotel $hotel): bool
     {
-        true;
+        return true;
     }
 
     /**
@@ -45,6 +46,14 @@ class HotelPolicy
      */
     public function delete(User $user, Hotel $hotel): bool
     {
-        true;
+        return true;
+    }
+
+    public function rate(User $user, Hotel $hotel): Response
+    {
+        return ($user->ratings()->where('rateable_type', Hotel::MORPH_KEY)
+                         ->where('rateable_id', $hotel->id)
+                         ->exists() ? Response::deny(__('You have already rated this item.'))
+                                    : Response::allow());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Votable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -10,7 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Rating extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use InteractsWithMedia, Votable;
 
     public const MORPH_KEY = 'rating';
 
@@ -21,8 +22,11 @@ class Rating extends Model implements HasMedia
         'rate',
         'body',
         'type',
-        'up_votes',
-        'down_votes',
+        'edited_at',
+    ];
+
+    protected $casts = [
+        'edited_at' => 'datetime',
     ];
 
     public function rateable(): MorphTo
@@ -34,5 +38,4 @@ class Rating extends Model implements HasMedia
     {
         return $this->belongsTo(User::class);
     }
-
 }

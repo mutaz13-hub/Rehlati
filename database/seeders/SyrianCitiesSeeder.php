@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\City;
+use App\Models\Tag;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -144,6 +145,9 @@ class SyrianCitiesSeeder extends Seeder
             ],
         ];
 
+        // Get all tags first
+        $tags = Tag::all();
+
         foreach ($cities as $name => $data) {
             $city = City::updateOrCreate(
                 ['name_en' => $name],
@@ -159,12 +163,20 @@ class SyrianCitiesSeeder extends Seeder
                 ]
             );
 
+            // Attach 3 random tags to city
+            $randomTags = $tags->random(3);
+            $city->tags()->syncWithoutDetaching($randomTags);
+
             // Add regions for the city
             foreach ($data['regions'] as $region) {
-                $city->regions()->updateOrCreate(
+                $regionModel = $city->regions()->updateOrCreate(
                     ['name_en' => $region['name_en']],
                     ['name_ar' => $region['name_ar']]
                 );
+
+                // Attach 3 random tags to region
+                $regionRandomTags = $tags->random(3);
+                $regionModel->tags()->syncWithoutDetaching($regionRandomTags);
             }
         }
     }

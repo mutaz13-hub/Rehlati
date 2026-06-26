@@ -8,6 +8,8 @@ use App\Models\Rating;
 use App\Models\Region;
 use App\Models\Room;
 use App\Models\User;
+use App\Models\Vote;
+use App\Observers\VoteObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -40,5 +42,7 @@ class AppServiceProvider extends ServiceProvider
             Region::MORPH_KEY => Region::class,
             Rating::MORPH_KEY => Rating::class,
         ]);
+
+        Vote::observe(VoteObserver::class);
     }
 }

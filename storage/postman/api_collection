@@ -6,163 +6,15 @@
     },
     "item": [
         {
-            "name": "ratings",
+            "name": "cities",
             "item": [
                 {
-                    "name": "[POST] api/ratings",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/ratings",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "ratings"
-                            ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"rateable_type\": \"sample_text\",\n    \"rateable_id\": 7,\n    \"rate\": 5,\n    \"type\": \"sample_text\",\n    \"body\": \"sample_text\",\n    \"audio\": \"sample_text\",\n    \"photo\": \"sample_text\"\n}",
-                            "options": []
-                        }
-                    }
-                },
-                {
-                    "name": "[GET] api/ratings/{rating}",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/ratings/:rating",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "ratings",
-                                ":rating"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[PUT] api/ratings/{rating}",
-                    "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/ratings/:rating",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "ratings",
-                                ":rating"
-                            ],
-                            "variable": []
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"rate\": 5,\n    \"body\": \"sample_text\",\n    \"audio\": \"sample_text\",\n    \"photo\": \"sample_text\"\n}",
-                            "options": []
-                        }
-                    }
-                },
-                {
-                    "name": "[DELETE] api/ratings/{rating}",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/ratings/:rating",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "ratings",
-                                ":rating"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "vote",
+                    "name": "regions",
                     "item": [
                         {
-                            "name": "[POST] api/ratings/{rating}/vote",
+                            "name": "[GET] api/cities/{city}/regions",
                             "request": {
-                                "method": "POST",
+                                "method": "GET",
                                 "header": [
                                     {
                                         "key": "Accept",
@@ -181,21 +33,21 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/ratings/:rating/vote",
+                                    "raw": "{{base_url}}/api/cities/:city/regions",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "ratings",
-                                        ":rating",
-                                        "vote"
+                                        "cities",
+                                        ":city",
+                                        "regions"
                                     ],
                                     "variable": []
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"vote\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"cursor\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }

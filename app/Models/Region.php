@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -38,5 +39,15 @@ class Region extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('region_pictures');
+    }
+
+    public function myReview()
+    {
+        return $this->morphOne(Rating::class, 'rateable')->where('user_id', auth('sanctum')->id());
+    }
+
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable');
     }
 }

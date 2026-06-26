@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\VoteType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class RatingVoteRequest extends FormRequest
 {
@@ -14,7 +16,7 @@ class RatingVoteRequest extends FormRequest
     public function rules()
     {
         return [
-            'vote' => 'required|in:up,down',
+            'vote' => ['required', new Enum(VoteType::class)],
         ];
     }
 }

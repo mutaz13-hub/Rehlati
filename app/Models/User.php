@@ -86,4 +86,9 @@ implements HasLocalePreference
     {
         return cache()->get('lang_for_user: '.$this->id, app()->getLocale());
     }
+
+    public function ratings(): HasMany
+    {
+        return $this->hasMany(Rating::class);
+    }
 }

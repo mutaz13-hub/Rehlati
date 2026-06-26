@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('regions', function (Blueprint $table) {
+        Schema::create('votes', function (Blueprint $table) {
             $table->id();
-            $table->string('name_en');
-            $table->string('name_ar');
-            $table->foreignId('city_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->morphs('voteable');
+            $table->string('vote'); // Will be cast to VoteType enum in model
             $table->timestamps();
 
-            $table->unique(['name_en', 'city_id']);
-            $table->unique(['name_ar', 'city_id']);
+            $table->unique(['user_id', 'voteable_id', 'voteable_type'], 'user_voteable_vote_unique');
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('regions');
+        Schema::dropIfExists('votes');
     }
 };

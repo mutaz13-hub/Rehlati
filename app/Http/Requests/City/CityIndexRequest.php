@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Http\Requests\City;
+
+use App\Http\Requests\Api\ApiFormRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Foundation\Http\FormRequest;
+
+class CityIndexRequest extends ApiFormRequest
+{
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'page' => ['nullable', 'numeric', 'integer']
+        ];
+    }
+}

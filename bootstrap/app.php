@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckGuestMiddleware;
 use App\Http\Middleware\CheckLanguageMiddleware;
 use App\Http\Middleware\EnsureCanRefreshMiddleware;
 use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,6 +16,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -57,29 +59,30 @@ return Application::configure(basePath: dirname(__DIR__))
             ], $status);
         };
 
-    //     $exceptions->render(function (AuthenticationException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
-    //         if (! $shouldReturnJson($request)) {
-    //             return null;
-    //         }
+        // $exceptions->render(function (AuthenticationException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
+        //     if (! $shouldReturnJson($request)) {
+        //         return null;
+        //     }
 
-    //         $setRequestLocale($request);
+        //     $setRequestLocale($request);
 
-    //         return $apiError(
-    //             __('You are not authenticated, please login and try again'),
-    //         );
-    //     });
+        //     return $apiError(
+        //         __('You are not authenticated, please login and try again'),
+        //     );
+        // });
 
-    //     $exceptions->render(function (AuthorizationException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
-    //         if (! $shouldReturnJson($request)) {
-    //             return null;
-    //         }
+        // $exceptions->render(function (AuthorizationException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
+        //     if (! $shouldReturnJson($request)) {
+        //         return null;
+        //     }
 
-    //         $setRequestLocale($request);
+        //     $setRequestLocale($request);
 
-    //         return $apiError(
-    //             __('This action is unauthorized.'),
-    //         );
-    //     });
+        //     return $apiError(
+        //         403,
+        //         __('This action is unauthorized.'),
+        //     );
+        // });
 
         $exceptions->render(function (ThrottleRequestsException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
             if (! $shouldReturnJson($request)) {
@@ -127,41 +130,41 @@ return Application::configure(basePath: dirname(__DIR__))
     //         return $apiError(__('Not Found'));
     //     });
 
-    //      $exceptions->render(function(AccessDeniedHttpException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale){ 
-    //         if (! $shouldReturnJson($request)) {
-    //             return null;
-    //         }
+         $exceptions->render(function(AccessDeniedHttpException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale){ 
+            if (! $shouldReturnJson($request)) {
+                return null;
+            }
 
-    //         $setRequestLocale($request);
+            $setRequestLocale($request);
 
-    // //         return response()->json([
-    // //     'status' => false,
-    // //     'message' => __('This action is unauthorized.'),
-    // // ], 403);
-    //         return $apiError(__($e->getMessage()));
+    //         return response()->json([
+    //     'status' => false,
+    //     'message' => __('This action is unauthorized.'),
+    // ], 403);
+            return $apiError(403, __($e->getMessage()));
 
-    //     });
+        });
 
-        // $exceptions->render(function (\Throwable $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
-        //     if (! $shouldReturnJson($request)) {
-        //         return null;
-        //     }
+        $exceptions->render(function (\Throwable $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
+            if (! $shouldReturnJson($request)) {
+                return null;
+            }
 
-        //     $setRequestLocale($request);
+            $setRequestLocale($request);
 
-        //     // Log::error('Unhandled API exception', [
-        //     //     'message' => $e->getMessage(),
-        //     //     'exception' => $e::class,
-        //     //     'file' => $e->getFile(),
-        //     //     'line' => $e->getLine(),
-        //     //     'url' => $request->fullUrl(),
-        //     //     'method' => $request->method(),
-        //     //     'ip' => $request->ip(),
-        //     // ]);
+            // Log::error('Unhandled API exception', [
+            //     'message' => $e->getMessage(),
+            //     'exception' => $e::class,
+            //     'file' => $e->getFile(),
+            //     'line' => $e->getLine(),
+            //     'url' => $request->fullUrl(),
+            //     'method' => $request->method(),
+            //     'ip' => $request->ip(),
+            // ]);
 
-        //     return $apiError(
-        //         222,
-        //         __('Something went wrong, please try again later')
-        //     );
-        // });
+            return $apiError(
+                222,
+                __('Something went wrong, please try again later')
+            );
+        });
     })->create();

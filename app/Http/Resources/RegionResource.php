@@ -9,13 +9,16 @@ class RegionResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $request_type = $request->routeIs('regions.index') ? 'index' : 'show';
+        $request_type = $request->routeIs('regions.index') ? 'index' : ($request->routeIs('regions.show') ? 'show' : 'else');
+
+        logger($request_type);
         return [
             'id' => $this->id,
             'name' => $this->localized_name,
-            'city_id' => $this->city_id,
+            //'city_id' => $this->city_id,
             'city' => new CityResource($this->whenLoaded('city')),
             'description' => new DescriptionResource($this->whenLoaded('description')),
+            'my_review' => $this->when(auth('sanctum')->check() && $this->relationLoaded('myReview'), fn() => new RatingResource($this->myReview)),
             'pics' => $this->when($request_type === 'show', $this->getMedia('region_pictures')->map(fn($media) => [
                 'id' => $media->id,
                 'url' => $media->getUrl(),
@@ -27,6 +30,7 @@ class RegionResource extends JsonResource
                 'url' => $media->getUrl(),
                 'name' => $media->name,
             ])->values(),
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
         ];
     }
 }

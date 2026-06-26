@@ -28,7 +28,7 @@ return [
         // Routes to explicitly include
         'include' => [
             // URI patterns to include (supports wildcards)
-            'patterns' => ['api/ratings', 'api/ratings/*'],
+            'patterns' => ['api/cities/{city}/regions'],
 
             // Only routes with these middleware
             'middleware' => [],

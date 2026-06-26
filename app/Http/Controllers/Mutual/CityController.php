@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Mutual;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\City\CityRegionsRequest;
 use App\Models\City;
 use App\Http\Resources\CityResource;
 use App\Http\Requests\City\StoreCityRequest;
 use App\Http\Requests\City\UpdateCityRequest;
 use App\Http\Requests\City\UpdateCityPicturesRequest;
 use App\Http\Requests\City\UpdateCityThumbnailsRequest;
+use App\Http\Requests\City\ShowCityRequest;
+use App\Http\Resources\RegionResource;
 use App\Services\CityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -32,11 +35,29 @@ class CityController extends Controller
         return $this->succeed(__('City created successfully'));
     }
 
-    public function show(City $city): JsonResponse
+    public function show(ShowCityRequest $request, City $city): JsonResponse
     {
-        $city->load(['description', 'media', 'reviews', 'topReviews.user']);
-        return $this->succeed(__('City fetched successfully'), new CityResource($city));
+        $city->load('description', 'media', 'topReviews.user', 'topRegions.description', 'tags');
+        if (auth('sanctum')->user()->role('user')) {
+            $city->load('myReview');
+        }
+        
+        return $this->succeed(__('City fetched successfully'), [
+            'city' => new CityResource($city)
+        ]);
     }
+
+    public function regions(CityRegionsRequest $request, City $city): JsonResponse
+    {
+        $data = $city->regions()->with(['tags', 'description'])->simplePaginate(2);
+
+         $regions = RegionResource::collection($data)->response()->getData(true);
+        return $this->succeed(__('City regions fetched successfully'), [
+            'regions' => $regions['data'],
+            'links' => $regions['links']
+        ]);
+    }
+
 
     public function update(UpdateCityRequest $request, City $city): JsonResponse
     {

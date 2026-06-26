@@ -2,39 +2,47 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Api\ApiFormRequest;
+use App\Models\CarAgency;
+use App\Models\City;
+use App\Models\Hotel;
+use App\Models\Region;
+use App\Models\Room;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
-class RatingStoreRequest extends FormRequest
+class RatingStoreRequest extends ApiFormRequest
 {
-    public function authorize()
+    public function authorize(): bool | Response   
     {
-        return true;
+        $route_name = $this->route()->getName();
+        $alias = null;
+        if($route_name === 'ratings.cities') $alias = City::MORPH_KEY;
+        else if($route_name === 'ratings.hotels') $alias = Hotel::MORPH_KEY;
+        else if($route_name === 'ratings.rooms') $alias = Room::MORPH_KEY;
+        else if($route_name === 'ratings.regions') $alias = Region::MORPH_KEY;
+        else if($route_name === 'ratings.car_agencies') $alias = CarAgency::MORPH_KEY;
+
+        if($alias === null)  return false;
+
+        $model = Relation::getMorphedModel($alias);
+
+         Gate::authorize('rate',[$model , $model::findOrFail((int)$this->id)]);
+
+         return true;
     }
 
     public function rules()
     {
         return [
-            'rateable_type' => 'required|string',
-            'rateable_id' => 'required|integer',
-            'rate' => 'required|integer|min:1|max:5',
-            'type' => 'required|in:text,audio',
-            'body' => 'required_if:type,text|nullable|string',
-            'audio' => 'required_if:type,audio|nullable|file|mimes:mp3,wav,aac,m4a,ogg|max:10240',
-            'photo' => 'nullable|image|max:5120',
+            'rate' => ['required', 'numeric', 'integer', 'min:1', 'max:5'],
+            'type' => ['required', 'string', 'in:text,audio'],
+            'body' => [Rule::requiredIf($this->type === 'text'), Rule::prohibitedIf($this->type === 'audio'), 'nullable', 'string', 'max:255'],
+            'audio' => [Rule::prohibitedIf($this->type === 'text'), Rule::requiredIf($this->type === 'audio'), 'nullable', 'file', 'mimes:mp3,wav,aac,m4a,ogg', 'max:10240'],
+            'photo' => ['nullable', 'image', 'max:5120'],
         ];
-    }
-
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            $exists = \App\Models\Rating::where('user_id', auth()->id())
-                ->where('rateable_type', $this->rateable_type)
-                ->where('rateable_id', $this->rateable_id)
-                ->exists();
-
-            if ($exists) {
-                $validator->errors()->add('user_id', __('You have already rated this item.'));
-            }
-        });
     }
 }

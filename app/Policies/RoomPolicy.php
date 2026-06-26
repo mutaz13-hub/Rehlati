@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Room;
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class RoomPolicy
 {
@@ -19,16 +20,24 @@ class RoomPolicy
 
     public function create(User $user): bool
     {
-        true;
+        return true;
     }
 
     public function update(User $user, Room $room): bool
     {
-        true;
+        return true;
     }
 
     public function delete(User $user, Room $room): bool
     {
-        true;
+        return true;
+    }
+
+    public function rate(User $user, Room $room): Response
+    {
+        return ($user->ratings()->where('rateable_type', Room::MORPH_KEY)
+                         ->where('rateable_id', $room->id)
+                         ->exists() ? Response::deny(__('You have already rated this item.'))
+                                    : Response::allow());
     }
 }

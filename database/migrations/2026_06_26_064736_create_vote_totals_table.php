@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('regions', function (Blueprint $table) {
+        Schema::create('vote_totals', function (Blueprint $table) {
             $table->id();
-            $table->string('name_en');
-            $table->string('name_ar');
-            $table->foreignId('city_id')->constrained()->cascadeOnDelete();
+            $table->morphs('voteable');
+            $table->string('vote_type');
+            $table->unsignedBigInteger('count')->default(0);
             $table->timestamps();
 
-            $table->unique(['name_en', 'city_id']);
-            $table->unique(['name_ar', 'city_id']);
+            $table->unique(['voteable_type', 'voteable_id', 'vote_type'], 'voteable_vote_type_unique');
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('regions');
+        Schema::dropIfExists('vote_totals');
     }
 };

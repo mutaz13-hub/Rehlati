@@ -6,6 +6,7 @@ use App\Http\Controllers\Mutual\RoomTypeController;
 use App\Http\Controllers\Mutual\AmenityController;
 use App\Http\Controllers\Mutual\CityController;
 use App\Http\Controllers\Mutual\RegionController;
+use App\Http\Controllers\Mutual\TagController;
 use Illuminate\Support\Facades\Route;
 
 // , 'admin' middleware is missing
@@ -37,4 +38,7 @@ Route::prefix('admin')->middleware(['check_api_password', 'check_language', 'aut
     Route::post('amenities', [AmenityController::class, 'store']);
     Route::put('amenities/{amenity}', [AmenityController::class, 'update']);
     Route::delete('amenities/{amenity}', [AmenityController::class, 'destroy']);
+
+    // Tags (admin)
+    Route::apiResource('tags', TagController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
 });

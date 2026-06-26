@@ -63,4 +63,12 @@ class CityPolicy
     {
         return false;
     }
+
+    public function rate(User $user, City $city): Response
+    {
+        return ($user->ratings()->where('rateable_type', City::MORPH_KEY)
+                         ->where('rateable_id', $city->id)
+                         ->exists() ? Response::deny(__('You have already rated this item.'))
+                                    : Response::allow());
+    }
 }

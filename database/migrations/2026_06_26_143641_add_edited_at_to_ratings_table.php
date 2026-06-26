@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cities', function (Blueprint $table) {
-            $table->id();
-            $table->string('name_en')->unique();
-            $table->string('name_ar')->unique();
-            $table->timestamps();
+        Schema::table('ratings', function (Blueprint $table) {
+            $table->timestamp('edited_at')->nullable();
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cities');
+        Schema::table('ratings', function (Blueprint $table) {
+            $table->dropColumn('edited_at');
+        });
     }
 };

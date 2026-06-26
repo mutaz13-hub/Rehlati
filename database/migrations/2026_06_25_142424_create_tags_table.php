@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('regions', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
-            $table->string('name_en');
-            $table->string('name_ar');
-            $table->foreignId('city_id')->constrained()->cascadeOnDelete();
+            $table->string('name_en')->unique();
+            $table->string('name_ar')->unique();
             $table->timestamps();
-
-            $table->unique(['name_en', 'city_id']);
-            $table->unique(['name_ar', 'city_id']);
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('regions');
+        Schema::dropIfExists('tags');
     }
 };
