@@ -49,12 +49,15 @@ class CityController extends Controller
 
     public function regions(CityRegionsRequest $request, City $city): JsonResponse
     {
-        $data = $city->regions()->with(['tags', 'description'])->simplePaginate(2);
+        $data = $city->regions()->with(['tags', 'description'])->paginate(2);
 
-         $regions = RegionResource::collection($data)->response()->getData(true);
         return $this->succeed(__('City regions fetched successfully'), [
-            'regions' => $regions['data'],
-            'links' => $regions['links']
+            'regions' => RegionResource::collection($data),
+            'meta' => [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total()
+            ] 
         ]);
     }
 

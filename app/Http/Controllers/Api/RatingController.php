@@ -59,13 +59,13 @@ class RatingController extends Controller
     {
         $result = $this->service->indexByMorph(City::MORPH_KEY, $city->id, $request->only(['sort']));
 
-       $ratings = RatingResource::collection($result['ratings'])->response()->getData(true);
-
-        $ratings['links']['total'] = $result['total'];
-
         return $this->succeed(__('Ratings fetched'),[ 
-           'ratings' => $ratings['data'],
-           'meta' => $ratings['links']
+           'ratings' => RatingResource::collection($result),
+           'meta' => [
+            'current_page' => $result->currentPage(),
+            'last_page' => $result->lastPage(),
+            'total' => $result->total()
+           ]
         ]);
     }
 

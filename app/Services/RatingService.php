@@ -40,12 +40,9 @@ class RatingService
              SUM(CASE WHEN vote_totals.vote_type = 'down' THEN vote_totals.count ELSE 0 END) DESC
             ");
         }
-       $paginator = $query->simplePaginate(5);
+       $paginator = $query->paginate(5);
 
-        return [
-            'ratings' => $paginator,
-            'total' => $count
-        ];
+        return $paginator;
     }
 
     public function store(array $validatedData, string $routeName, int $rateableId, ?UploadedFile $audio = null, ?UploadedFile $photo = null): void
