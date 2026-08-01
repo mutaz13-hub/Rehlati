@@ -28,7 +28,7 @@ class RatingResource extends JsonResource
             'up_votes' => $this->up_votes_count ?? $this->upVotes()->count(),
             'down_votes' => $this->down_votes_count ?? $this->downVotes()->count(),
             'my_vote' => $this->when(auth('sanctum')->check(), function() {
-                return $this->votes()->where('user_id', auth('sanctum')->id())->first()?->vote;
+                return $this->votes()->where('user_id', auth('sanctum')->id())?->first()?->vote;
             }),
             
             'created_at' => $this->created_at?->toDateTimeString(),

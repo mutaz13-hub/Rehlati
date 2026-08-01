@@ -30,7 +30,7 @@ class RegionService
 
             if (isset($data['pics'])) {
                 foreach ($data['pics'] as $pic) {
-                    $region->addMedia($pic)->toMediaCollection('region_pictures');
+                    app(ImageUploadService::class)->addUploaded($region, $pic, 'region_pictures');
                 }
             }
         });
@@ -73,7 +73,7 @@ class RegionService
 
             if (isset($data['added']) && is_array($data['added'])) {
                 foreach ($data['added'] as $pic) {
-                    $region->addMedia($pic)->toMediaCollection('region_pictures');
+                    app(ImageUploadService::class)->addUploaded($region, $pic, 'region_pictures');
                 }
             }
         });

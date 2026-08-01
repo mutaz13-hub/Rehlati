@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\City;
+use App\Models\Hotel;
 use App\Models\Rating;
 use App\Models\User;
 use App\Enums\VoteType;
@@ -15,15 +16,7 @@ class RatingSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get the first city from the database
         $city = City::first();
-        
-        if (!$city) {
-            $this->command->info('No city found in the database!');
-            return;
-        }
-
-        // Get all users
         $users = User::all();
 
         if ($users->isEmpty()) {
@@ -31,45 +24,38 @@ class RatingSeeder extends Seeder
             return;
         }
 
-        // Create ~10 ratings for this city
-        for ($i = 0; $i < 10; $i++) {
-            // Get random user
-            $user = $users->random();
-            
-            // Check if user already has a rating for this city to respect unique constraint
-            $existingRating = Rating::where('user_id', $user->id)
-                ->where('rateable_type', City::MORPH_KEY)
-                ->where('rateable_id', $city->id)
-                ->first();
-                
-            if ($existingRating) {
-                continue; // Skip if already rated
-            }
-
-            // Determine rating type (text or audio)
-            $type = fake()->randomElement(['text', 'audio']);
-            
-            $ratingData = [
-                'user_id' => $user->id,
-                'rateable_type' => City::MORPH_KEY,
-                'rateable_id' => $city->id,
-                'rate' => fake()->numberBetween(1, 5),
-                'type' => $type,
-                'body' => $type === 'text' ? fake()->paragraph() : null,
-            ];
-
-            $rating = Rating::create($ratingData);
-            
-            // Optionally add some random fake votes to ratings (optional, but nice!)
-            $randomUsers = $users->random(fake()->numberBetween(0, min(5, $users->count())));
-            foreach ($randomUsers as $voter) {
-                if ($voter->id !== $user->id) {
-                    $rating->votes()->create([
-                        'user_id' => $voter->id,
-                        'vote' => fake()->randomElement(VoteType::cases()),
-                    ]);
-                }
-            }
+        if ($city) {
+            $this->seedRatings($city, City::MORPH_KEY, $users);
         }
+
+        Hotel::query()->eachById(function (Hotel $hotel) use ($users): void {
+            $this->seedRatings($hotel, Hotel::MORPH_KEY, $users);
+        });
+    }
+
+    private function seedRatings(object $rateable, string $rateableType, $users): void
+    {
+        $users->shuffle()->take(min(10, $users->count()))->each(function (User $user) use ($rateable, $rateableType, $users): void {
+            $rating = Rating::firstOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'rateable_type' => $rateableType,
+                    'rateable_id' => $rateable->id,
+                ],
+                [
+                    'rate' => fake()->numberBetween(1, 5),
+                    'type' => 'text',
+                    'body' => fake()->paragraph(),
+                ]
+            );
+
+            $users->where('id', '!=', $user->id)
+                ->shuffle()
+                ->take(fake()->numberBetween(0, min(5, $users->count() - 1)))
+                ->each(fn (User $voter) => $rating->votes()->firstOrCreate(
+                    ['user_id' => $voter->id],
+                    ['vote' => fake()->randomElement(VoteType::cases())]
+                ));
+        });
     }
 }

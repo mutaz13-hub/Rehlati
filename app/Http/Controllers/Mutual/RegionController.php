@@ -23,7 +23,7 @@ class RegionController extends Controller
 
     public function index(): JsonResponse
     {
-        $regions = Region::with(['description', 'media', 'city'])->get();
+        $regions = Region::with(['description', 'media', 'city.location', 'location'])->get();
         return $this->succeed(__('Regions fetched successfully'), RegionResource::collection($regions));
     }
 
@@ -35,7 +35,7 @@ class RegionController extends Controller
 
     public function show(Region $region): JsonResponse
     {
-        $region->load(['description', 'media', 'city', 'tags']);
+        $region->load(['description', 'media', 'city.location', 'tags', 'location']);
        
         return $this->succeed(__('Region fetched successfully'), new RegionResource($region));
     }
@@ -66,4 +66,3 @@ class RegionController extends Controller
         return $this->succeed(__('Region deleted successfully'));
     }
 }
-

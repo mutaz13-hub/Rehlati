@@ -16,7 +16,9 @@ class PictureResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'path' => $this->path
+            'url' => $this->getUrl(),
+            'name' => $this->name,
+            'is_thumbnail' => (bool) $this->getCustomProperty('is_thumbnail'),
         ];
     }
 }

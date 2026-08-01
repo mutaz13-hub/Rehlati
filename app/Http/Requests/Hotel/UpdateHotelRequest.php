@@ -20,6 +20,10 @@ class UpdateHotelRequest extends ApiFormRequest
             'name_ar' => 'required|string|max:255',
             'city_id' => 'required|integer|exists:cities,id',
             'stars' => 'required|integer|min:0|max:5',
+            'description_en' => 'nullable|string|max:255',
+            'description_ar' => 'nullable|string|max:255',
+            'pics' => 'nullable|array',
+            'pics.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ];
     }
 }

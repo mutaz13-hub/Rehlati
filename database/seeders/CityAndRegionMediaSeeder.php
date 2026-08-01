@@ -47,9 +47,8 @@ class CityAndRegionMediaSeeder extends Seeder
                 // Use Picsum for fake images
                 $imageUrl = "https://picsum.photos/800/600?random={$i}" . uniqid();
                 
-                $media = $model
-                    ->addMediaFromUrl($imageUrl)
-                    ->toMediaCollection($collectionName);
+                $media = app(\App\Services\ImageUploadService::class)
+                    ->addFromUrl($model, $imageUrl, $collectionName);
                 
                 // Mark first 3 images as thumbnails
                 if ($i < 3) {

@@ -3,48 +3,47 @@
 namespace App\Http\Controllers\Mutual;
 
 use App\Http\Controllers\Controller;
-use App\Models\Picture;
-use Illuminate\Http\Request;
+use App\Http\Resources\PictureResource;
+use App\Models\City;
+use App\Models\Hotel;
+use App\Models\Region;
+use App\Services\PictureService;
 
 class PictureController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(public PictureService $pic_service){}
+    
+    public function city(City $city)
     {
-        //
+        $pictures = $this->pic_service->city($city);
+
+        $resource = PictureResource::collection($pictures)->response()->getData(true);
+
+        return $this->succeed(__('Pictures retrieved successfully'),[ 
+           'pics' => $resource['data'],
+           'meta' => $resource['meta']
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function region(Region $region)
     {
-        //
+        $pictures = $this->pic_service->region($region);
+        $resource = PictureResource::collection($pictures)->response()->getData(true);
+
+        return $this->succeed(__('Pictures retrieved successfully'),[
+            'pics' => $resource['data'],
+            'meta' => $resource['meta']
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Picture $picture)
+    public function hotel(Hotel $hotel)
     {
-        //
-    }
+        $pictures = $this->pic_service->hotel($hotel);
+        $resource = PictureResource::collection($pictures)->response()->getData(true);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Picture $picture)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Picture $picture)
-    {
-        //
+        return $this->succeed(__('Pictures retrieved successfully'),[
+            'pics' => $resource['data'],
+            'meta' => $resource['meta']
+        ]);
     }
 }

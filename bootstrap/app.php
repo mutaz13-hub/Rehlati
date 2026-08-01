@@ -17,6 +17,7 @@ use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(CheckLanguageMiddleware::class);
+        $middleware->statefulApi();
         $middleware->alias([
             'check_api_password' => CheckApiPasswordMiddleware::class,
             'check_language' => CheckLanguageMiddleware::class,
@@ -120,15 +122,15 @@ return Application::configure(basePath: dirname(__DIR__))
             return $apiError(422, $e->validator->errors()->first());
         });
 
-    //     $exceptions->render(function (NotFoundHttpException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
-    //         if (! $shouldReturnJson($request)) {
-    //             return null;
-    //         }
+        $exceptions->render(function (NotFoundHttpException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale) {
+            if (! $shouldReturnJson($request)) {
+                return null;
+            }
 
-    //         $setRequestLocale($request);
+            $setRequestLocale($request);
 
-    //         return $apiError(__('Not Found'));
-    //     });
+            return $apiError(404, __('Resource Not Found'));
+        });
 
          $exceptions->render(function(AccessDeniedHttpException $e, Request $request) use ($shouldReturnJson, $apiError, $setRequestLocale){ 
             if (! $shouldReturnJson($request)) {
@@ -152,15 +154,15 @@ return Application::configure(basePath: dirname(__DIR__))
 
             $setRequestLocale($request);
 
-            // Log::error('Unhandled API exception', [
-            //     'message' => $e->getMessage(),
-            //     'exception' => $e::class,
-            //     'file' => $e->getFile(),
-            //     'line' => $e->getLine(),
-            //     'url' => $request->fullUrl(),
-            //     'method' => $request->method(),
-            //     'ip' => $request->ip(),
-            // ]);
+            Log::error('Unhandled API exception', [
+                'message' => $e->getMessage(),
+                'exception' => $e::class,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'url' => $request->fullUrl(),
+                'method' => $request->method(),
+                'ip' => $request->ip(),
+            ]);
 
             return $apiError(
                 222,

@@ -27,9 +27,16 @@ class CityPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user): Response
     {
-       return true;
+        if($user->hasRole('admin')){
+            if(City::count('id') >= 14){
+                return Response::deny(__('You have reached the maximum number of cities you can create.'));
+            }
+            return Response::allow();
+        }
+        return Response::deny();
+       
     }
 
     /**
@@ -37,7 +44,7 @@ class CityPolicy
      */
     public function update(User $user, City $city): bool
     {
-       return true;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -45,7 +52,7 @@ class CityPolicy
      */
     public function delete(User $user, City $city): bool
     {
-       return true;
+       return auth()->user()->hasRole('admin');
     }
 
     /**

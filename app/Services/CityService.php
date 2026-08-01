@@ -30,8 +30,15 @@ class CityService
 
             if (isset($data['pics'])) {
                 foreach ($data['pics'] as $pic) {
-                    $city->addMedia($pic)->toMediaCollection('city_pictures');
+                    app(ImageUploadService::class)->addUploaded($city, $pic, 'city_pictures');
                 }
+            }
+
+            if(isset($data['longitude']) && isset($data['latitude'])) {
+                $city->location()->create([
+                    'longitude' => $data['longitude'],
+                    'latitude' => $data['latitude'],
+                ]);
             }
         });
     }
@@ -46,10 +53,19 @@ class CityService
 
             if (isset($data['description_en']) || isset($data['description_ar'])) {
                 $city->description()->updateOrCreate(
-                    ['describable_id' => $city->id, 'describable_type' => City::class],
+                    ['describable_id' => $city->id, 'describable_type' => City::MORPH_KEY],
                     [
-                        'description_en' => $data['description_en'] ?? $city->description->description_en ?? '',
-                        'description_ar' => $data['description_ar'] ?? $city->description->description_ar ?? '',
+                        'description_en' => $data['description_en'] ?? $city->description->description_en ?? null,
+                        'description_ar' => $data['description_ar'] ?? $city->description->description_ar ?? null,
+                    ]
+                );
+            }
+            if (isset($data['longitude']) && isset($data['latitude'])) {
+                $city->location()->updateOrCreate(
+                    ['locatable_id' => $city->id, 'locatable_type' => City::MORPH_KEY],
+                    [
+                        'longitude' => $data['longitude'],
+                        'latitude' => $data['latitude'],
                     ]
                 );
             }
@@ -71,7 +87,7 @@ class CityService
 
             if (isset($data['added']) && is_array($data['added'])) {
                 foreach ($data['added'] as $pic) {
-                    $city->addMedia($pic)->toMediaCollection('city_pictures');
+                    app(ImageUploadService::class)->addUploaded($city, $pic, 'city_pictures');
                 }
             }
         });

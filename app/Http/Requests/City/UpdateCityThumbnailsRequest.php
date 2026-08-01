@@ -3,13 +3,14 @@
 namespace App\Http\Requests\City;
 
 use App\Http\Requests\Api\ApiFormRequest;
+use App\Models\City;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateCityThumbnailsRequest extends ApiFormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth()->user()->can('update', [City::class, $this->route('city')]);
     }
 
     public function rules(): array

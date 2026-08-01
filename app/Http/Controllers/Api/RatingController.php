@@ -32,11 +32,11 @@ class RatingController extends Controller
         $result = $this->service->indexByMorph(Hotel::MORPH_KEY, $hotel->id, $request->only(['sort']));
 
         return $this->succeed(__('Ratings fetched'),[ 
-           'ratings' => RatingResource::collection($result['ratings']),
+           'ratings' => RatingResource::collection($result),
            'meta' => [
-            'next_cursor' => $result['ratings']->nextCursor(),
-            'prev_cursor' => $result['ratings']->previousCursor(),
-            'total' => $result['total']
+            'next_cursor' => $result->currentPage(),
+            'prev_cursor' => $result->lastPage(),
+            'total' => $result->total()
            ]
         ]);
     }
@@ -48,9 +48,9 @@ class RatingController extends Controller
         return $this->succeed(__('Ratings fetched'),[ 
            'ratings' => RatingResource::collection($result['ratings']),
            'meta' => [
-            'next_cursor' => $result['ratings']->nextCursor(),
-            'prev_cursor' => $result['ratings']->previousCursor(),
-            'total' => $result['total']
+            'next_cursor' => $result->nextCursor(),
+            'prev_cursor' => $result->previousCursor(),
+            'total' => $result->total()
            ]
         ]);
     }

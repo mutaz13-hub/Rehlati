@@ -18,7 +18,7 @@ class UpdateRegionPicturesRequest extends ApiFormRequest
             'deleted' => ['nullable', 'array'],
             'deleted.*' => ['integer', 'exists:media,id'],
             'added' => ['nullable', 'array'],
-            'added.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'added.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ];
     }
 }

@@ -38,7 +38,7 @@ class RatingService
             })->select('ratings.*')->groupBy('ratings.id')->orderByRaw("
              SUM(CASE WHEN vote_totals.vote_type = 'up' THEN vote_totals.count ELSE 0 END) -
              SUM(CASE WHEN vote_totals.vote_type = 'down' THEN vote_totals.count ELSE 0 END) DESC
-            ");
+            ")->orderByDesc('ratings.rate');
         }
        $paginator = $query->paginate(5);
 

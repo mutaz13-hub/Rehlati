@@ -38,6 +38,11 @@ class City extends Model implements HasMedia
         return $this->hasMany(Hotel::class);
     }
 
+    public function location(): MorphOne
+    {
+        return $this->morphOne(Location::class, 'locatable');
+    }
+
     public function description(): MorphOne
     {
         return $this->morphOne(Description::class, 'describable');
@@ -52,13 +57,18 @@ class City extends Model implements HasMedia
     {
         return $this->morphMany(Rating::class, 'rateable')
             ->withCount('upVotes')
-            ->orderByDesc('rate')
-            ->orderByDesc('up_votes_count');
+            ->orderByDesc('up_votes_count')
+            ->orderByDesc('rate');
     }
 
     public function topRegions(): HasMany
     {
         return $this->regions()->with('tags')->withCount('tags')->orderByDesc('tags_count');
+    }
+
+    public function top_hotels(): HasMany
+    {
+        return $this->hotels()->with(['description', 'amenities', 'location'])->orderByDesc('stars');
     }
 
     public function getAverageRatingAttribute(): float

@@ -21,7 +21,7 @@ class StoreRegionRequest extends ApiFormRequest
             'description_en' => ['nullable', 'string', 'max:255'],
             'description_ar' => ['nullable', 'string', 'max:255'],
             'pics' => ['nullable', 'array'],
-            'pics.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'pics.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ];
     }
 }

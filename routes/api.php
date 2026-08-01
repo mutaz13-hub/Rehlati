@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Mutual\{
     HotelController,
     RoomController,
-    RoomTypeController,
     AmenityController,
     CityController,
     RegionController,
+    PictureController,
     TagController
 };
 use App\Models\{
@@ -54,22 +54,28 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
   
 
     // Public (user + admin) hotel listings and details
-    Route::get('/hotels', [HotelController::class, 'index']);
-    Route::get('/hotels/{hotel}', [HotelController::class, 'show']);
+    Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
+    Route::get('/hotels/{hotel}', [HotelController::class, 'show'])->name('hotels.show');
+    Route::get('/hotels/{hotel}/pictures', [PictureController::class, 'hotel']);
     Route::get('/hotels/{hotel}/ratings', [RatingController::class, 'indexForHotel']);
+    Route::get('/hotels/{hotel}/amenities', [HotelController::class, 'amenities']);
     // Public room listings and details
     Route::get('/hotels/{hotel}/rooms', [RoomController::class, 'index']);
     Route::get('/rooms/{room}', [RoomController::class, 'show']);
+    Route::get('/rooms/{room}/amenities', [RoomController::class, 'amenities']);
     Route::get('/rooms/{room}/ratings', [RatingController::class, 'indexForRoom']);
 
     // Public city listings and details
     Route::apiResource('/cities', CityController::class);
+    Route::get('/cities/{city}/pictures', [PictureController::class, 'city']);
     Route::get('/cities/{city}/regions', [CityController::class, 'regions']);
+    Route::get('/cities/{city}/hotels', [CityController::class, 'hotels']);
     // Route::get('/cities', [CityController::class, 'index']);
     // Route::get('/cities/{city}', [CityController::class, 'show']);
     Route::get('/cities/{city}/ratings', [RatingController::class, 'indexForCity']);
     Route::get('/regions', [RegionController::class, 'index'])->name('regions.index');
     Route::get('/regions/{region}', [RegionController::class, 'show'])->name('regions.show');
+    Route::get('/regions/{region}/pictures', [PictureController::class, 'region']);
     Route::get('/regions/{region}/ratings', [RatingController::class, 'indexForRegion']);
 
     // Ratings
@@ -84,9 +90,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
         Route::post('/ratings/{rating}/vote', [RatingController::class, 'vote']);
   
     Route::get('/ratings/{rating}', [RatingController::class, 'show']);
-    // Public room-types and amenities and tags
-    Route::get('/room-types', [RoomTypeController::class, 'index']);
-    Route::get('/room-types/{roomType}', [RoomTypeController::class, 'show']);
+    // Public amenities and tags
     Route::get('/amenities', [AmenityController::class, 'index']);
     Route::get('/amenities/{amenity}', [AmenityController::class, 'show']);
     // Route::get('/tags', [TagController::class, 'index']);

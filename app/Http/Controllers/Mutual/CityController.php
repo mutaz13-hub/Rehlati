@@ -11,9 +11,11 @@ use App\Http\Requests\City\UpdateCityRequest;
 use App\Http\Requests\City\UpdateCityPicturesRequest;
 use App\Http\Requests\City\UpdateCityThumbnailsRequest;
 use App\Http\Requests\City\ShowCityRequest;
+use App\Http\Resources\HotelResource;
 use App\Http\Resources\RegionResource;
 use App\Services\CityService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class CityController extends Controller
@@ -24,20 +26,20 @@ class CityController extends Controller
 
     public function index(): JsonResponse
     {
-        $cities = City::with(['description', 'media'])->withCount('reviews')->get();
+        $cities = City::with(['description', 'media', 'location'])->withCount('reviews')->get();
         return $this->succeed(__('Cities fetched successfully'), CityResource::collection($cities));
     }
 
     public function store(StoreCityRequest $request): JsonResponse
     {
-        Gate::authorize('create', City::class);
         $this->cityService->createCity($request->validated());
+
         return $this->succeed(__('City created successfully'));
     }
 
     public function show(ShowCityRequest $request, City $city): JsonResponse
     {
-        $city->load('description', 'media', 'topReviews.user', 'topRegions.description', 'tags');
+        $city->load('description', 'media', 'location', 'topReviews.user', 'topRegions.description', 'tags', 'top_hotels', 'topRegions.location');
         if (auth('sanctum')->user()->role('user')) {
             $city->load('myReview');
         }
@@ -49,7 +51,7 @@ class CityController extends Controller
 
     public function regions(CityRegionsRequest $request, City $city): JsonResponse
     {
-        $data = $city->regions()->with(['tags', 'description'])->paginate(2);
+        $data = $city->regions()->with(['tags', 'description', 'location'])->paginate(2);
 
         return $this->succeed(__('City regions fetched successfully'), [
             'regions' => RegionResource::collection($data),
@@ -61,17 +63,32 @@ class CityController extends Controller
         ]);
     }
 
+    public function hotels(Request $request, City $city)
+    {
+        $data = $city->hotels()->with(['description', 'location', 'amenities'])->paginate(5);
+
+        return $this->succeed(__('City hotels fetched successfully'), [
+            'hotels' => HotelResource::collection($data),
+            'meta' => [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total()
+            ] 
+        ]);
+
+
+    }
+
 
     public function update(UpdateCityRequest $request, City $city): JsonResponse
     {
-        Gate::authorize('update', $city);
         $this->cityService->updateCity($city, $request->validated());
+        
         return $this->succeed(__('City updated successfully'));
     }
 
     public function updatePictures(UpdateCityPicturesRequest $request, City $city): JsonResponse
     {
-        Gate::authorize('update', $city);
         $this->cityService->updateCityPictures($city, $request->validated());
 
         return $this->succeed(__('City pictures updated successfully'));
@@ -79,7 +96,6 @@ class CityController extends Controller
 
     public function updateThumbnails(UpdateCityThumbnailsRequest $request, City $city): JsonResponse
     {
-        Gate::authorize('update', $city);
         $this->cityService->updateCityThumbnails($city, $request->validated());
         return $this->succeed(__('City thumbnails updated successfully'));
     }

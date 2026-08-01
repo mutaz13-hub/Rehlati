@@ -1,44 +1,41 @@
 <?php
 
-use App\Http\Controllers\Mutual\HotelController;
-use App\Http\Controllers\Mutual\RoomController;
-use App\Http\Controllers\Mutual\RoomTypeController;
-use App\Http\Controllers\Mutual\AmenityController;
-use App\Http\Controllers\Mutual\CityController;
-use App\Http\Controllers\Mutual\RegionController;
-use App\Http\Controllers\Mutual\TagController;
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Api\RatingController;
+use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\AdminRoomController;
+use App\Http\Controllers\Admin\AdminAmenityController;
+use App\Http\Controllers\Admin\AdminCityController;
+use App\Http\Controllers\Admin\AdminRegionController;
+use App\Http\Controllers\Admin\AdminTagController;
 use Illuminate\Support\Facades\Route;
 
-// , 'admin' middleware is missing
-Route::prefix('admin')->middleware(['check_api_password', 'check_language', 'auth:sanctum'])->group(function () {
-    // Use the single mutual HotelController for admin actions as well
-    Route::apiResource('hotels', HotelController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+Route::prefix('admin')->middleware(['web', 'check_api_password', 'check_language'])->group(function () {
+    Route::post('login', [AdminAuthController::class, 'login'])->middleware('throttle:login');
+    Route::post('logout', [AdminAuthController::class, 'logout'])->middleware(['web', 'auth:sanctum', 'admin']);
 
-    // City management (admin)
-    Route::apiResource('cities', CityController::class)->only(['store', 'update', 'destroy']);
-    Route::post('cities/{city}/pictures', [CityController::class, 'updatePictures']);
-    Route::post('cities/{city}/thumbnails', [CityController::class, 'updateThumbnails']);
+    Route::middleware(['web', 'auth:sanctum', 'admin'])->group(function () {
+    Route::apiResource('hotels', AdminHotelController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
 
-    // Region management (admin)
-    Route::apiResource('regions', RegionController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
-    Route::post('regions/{region}/pictures', [RegionController::class, 'updatePictures']);
-    Route::post('regions/{region}/thumbnails', [RegionController::class, 'updateThumbnails']);
+    Route::apiResource('cities', AdminCityController::class);
+    Route::post('cities/{city}/pictures', [AdminCityController::class, 'updatePictures']);
+    Route::post('cities/{city}/thumbnails', [AdminCityController::class, 'updateThumbnails']);
+    Route::get('/cities/{city}/regions', [AdminCityController::class, 'regions']);
+    Route::get('/cities/{city}/hotels', [AdminCityController::class, 'hotels']);
+    Route::get('/cities/{city}/ratings', [RatingController::class, 'indexForCity']);
 
-    // Rooms nested management (admin only) — delegated to RoomController
-    Route::post('hotels/{hotel}/rooms', [RoomController::class, 'store']);
-    Route::put('hotels/{hotel}/rooms/{room}', [RoomController::class, 'update']);
-    Route::delete('hotels/{hotel}/rooms/{room}', [RoomController::class, 'destroy']);
+    Route::apiResource('regions', AdminRegionController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+    Route::post('regions/{region}/pictures', [AdminRegionController::class, 'updatePictures']);
+    Route::post('regions/{region}/thumbnails', [AdminRegionController::class, 'updateThumbnails']);
 
-    // Room types (admin)
-    Route::post('room-types', [RoomTypeController::class, 'store']);
-    Route::put('room-types/{roomType}', [RoomTypeController::class, 'update']);
-    Route::delete('room-types/{roomType}', [RoomTypeController::class, 'destroy']);
+    Route::post('hotels/{hotel}/rooms', [AdminRoomController::class, 'store']);
+    Route::put('hotels/{hotel}/rooms/{room}', [AdminRoomController::class, 'update']);
+    Route::delete('hotels/{hotel}/rooms/{room}', [AdminRoomController::class, 'destroy']);
 
-    // Amenities (admin)
-    Route::post('amenities', [AmenityController::class, 'store']);
-    Route::put('amenities/{amenity}', [AmenityController::class, 'update']);
-    Route::delete('amenities/{amenity}', [AmenityController::class, 'destroy']);
+    Route::post('amenities', [AdminAmenityController::class, 'store']);
+    Route::put('amenities/{amenity}', [AdminAmenityController::class, 'update']);
+    Route::delete('amenities/{amenity}', [AdminAmenityController::class, 'destroy']);
 
-    // Tags (admin)
-    Route::apiResource('tags', TagController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+    Route::apiResource('tags', AdminTagController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+    });
 });

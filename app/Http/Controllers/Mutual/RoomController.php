@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mutual;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RoomResource;
+use App\Http\Resources\AmenityResource;
 use App\Http\Requests\Room\StoreRoomRequest;
 use App\Http\Requests\Room\UpdateRoomRequest;
 use App\Models\Hotel;
@@ -16,14 +17,26 @@ class RoomController extends Controller
 {
     public function index(Hotel $hotel)
     {
-        $rooms = $hotel->rooms()->with('roomType')->paginate(15);
+        $rooms = $hotel->rooms()->with(['description', 'amenities'])->paginate(15);
 
         return RoomResource::collection($rooms);
     }
 
     public function show(Room $room)
     {
-        return new RoomResource($room->load('roomType'));
+        return new RoomResource($room->load(['hotel.location', 'description', 'amenities']));
+    }
+
+    /**
+     * Return all amenities for the given room.
+     */
+    public function amenities(Room $room)
+    {
+        $room->load('amenities');
+
+        return $this->succeed(__('Amenities retrieved successfully'), [
+            'amenities' => AmenityResource::collection($room->amenities)
+        ]);
     }
 
     public function store(StoreRoomRequest $request, Hotel $hotel, RoomService $roomService): JsonResponse
@@ -52,5 +65,3 @@ class RoomController extends Controller
         return response()->json([], 204);
     }
 }
-
-

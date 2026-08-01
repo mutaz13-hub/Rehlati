@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -34,6 +35,11 @@ class Region extends Model implements HasMedia
     public function description()
     {
         return $this->morphOne(Description::class, 'describable');
+    }
+
+    public function location(): MorphOne
+    {
+        return $this->morphOne(Location::class, 'locatable');
     }
 
     public function registerMediaCollections(): void

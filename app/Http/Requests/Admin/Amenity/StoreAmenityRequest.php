@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\RoomType;
+namespace App\Http\Requests\Admin\Amenity;
 
 use App\Http\Requests\Api\ApiFormRequest;
 
-class UpdateRoomTypeRequest extends ApiFormRequest
+class StoreAmenityRequest extends ApiFormRequest
 {
     public function authorize(): bool
     {
@@ -16,8 +16,8 @@ class UpdateRoomTypeRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'name_en' => 'sometimes|required|string|max:255',
-            'name_ar' => 'sometimes|required|string|max:255',
+            'name_en' => 'required|string|max:255',
+            'name_ar' => 'required|string|max:255',
         ];
     }
 }

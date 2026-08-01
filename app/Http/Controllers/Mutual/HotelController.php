@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mutual;
 use App\Http\Controllers\Controller;
 use App\Models\Hotel;
 use App\Http\Resources\HotelResource;
+use App\Http\Resources\AmenityResource;
 use App\Http\Requests\Hotel\StoreHotelRequest;
 use App\Http\Requests\Hotel\UpdateHotelRequest;
 use App\Services\HotelService;
@@ -21,9 +22,12 @@ class HotelController extends Controller
      */
     public function index()
     {
-        $hotels = Hotel::with(['rooms', 'location', 'city'])->paginate(15);
+        $hotels = Hotel::with(['rooms.description', 'rooms.amenities', 'location', 'city.location', 'description', 'amenities'])
+            ->withCount(['rooms', 'reviews'])
+            ->withAvg('reviews', 'rate')
+            ->paginate(10);
 
-        return HotelResource::collection($hotels);
+        return $this->succeed(__('Hotels fetched successfully'), HotelResource::collection($hotels));
     }
 
     /**
@@ -43,7 +47,23 @@ class HotelController extends Controller
      */
     public function show(Hotel $hotel): JsonResponse
     {
-        return $this->succeed(__('Hotel retrieved successfully'), new HotelResource($hotel->load(['rooms', 'location'])));
+        return $this->succeed(__('Hotel retrieved successfully'), new HotelResource(
+            $hotel->load(['rooms.description', 'rooms.amenities', 'location', 'city.location', 'description', 'amenities', 'myReview', 'topReviews.user'])
+                ->loadCount(['rooms', 'reviews'])
+                ->loadAvg('reviews', 'rate')
+        ));
+    }
+
+    /**
+     * Return all amenities for the given hotel.
+     */
+    public function amenities(Hotel $hotel): JsonResponse
+    {
+        $hotel->load('amenities');
+
+        return $this->succeed(__('Amenities retrieved successfully'), [
+            'amenities' => AmenityResource::collection($hotel->amenities)
+        ]);
     }
 
     /**

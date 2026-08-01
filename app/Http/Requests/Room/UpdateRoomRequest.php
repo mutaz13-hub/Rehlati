@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Room;
 
+use App\Enums\BedType;
+use App\Enums\RoomType;
 use App\Http\Requests\Api\ApiFormRequest;
-
+use Illuminate\Validation\Rule;
 class UpdateRoomRequest extends ApiFormRequest
 {
     public function authorize(): bool
@@ -16,10 +18,17 @@ class UpdateRoomRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'room_type_id' => 'sometimes|required|integer|exists:room_types,id',
-            'price_per_night' => 'sometimes|required|numeric|min:0',
-            'total_rooms' => 'sometimes|required|integer|min:0',
-            'available_rooms' => 'nullable|integer|min:0',
+            'name_en' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('rooms', 'name_en')->where(function ($query) {
+                return $query->where('hotel_id', $this->route('hotel')->id);
+            })->ignore($this->route('room')->id)],
+            'name_ar' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('rooms', 'name_ar')->where(function ($query) {
+                return $query->where('hotel_id', $this->route('hotel')->id);
+            })->ignore($this->route('room')->id)],
+            'room_type' => ['sometimes', 'required', 'string', Rule::enum(RoomType::class)],
+            'bed_type' => ['sometimes', 'required', 'string', Rule::enum(BedType::class)],
+            'price_per_night' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'total_rooms' => ['sometimes', 'required', 'integer', 'min:0'],
+            'available_rooms' => ['sometimes', 'nullable', 'integer', 'min:0'],
         ];
     }
 }

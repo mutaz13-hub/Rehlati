@@ -28,7 +28,7 @@ return [
         // Routes to explicitly include
         'include' => [
             // URI patterns to include (supports wildcards)
-            'patterns' => ['api/cities/{city}/regions'],
+            'patterns' => ['api/admin/cities', 'api/admin/cities/*'],
 
             // Only routes with these middleware
             'middleware' => [],
@@ -138,7 +138,8 @@ return [
     'headers' => [
         'Accept' => 'application/json',
         'Our-Great-Password' => '{{api_password}}', // For middleware authentication
-        'lang' => '{{lang}}'
+        'lang' => '{{lang}}',
+        'device' => '{{device}}',
     ],
 
     /*

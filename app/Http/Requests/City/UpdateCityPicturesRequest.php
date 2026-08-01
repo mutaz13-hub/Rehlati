@@ -3,13 +3,14 @@
 namespace App\Http\Requests\City;
 
 use App\Http\Requests\Api\ApiFormRequest;
+use App\Models\City;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateCityPicturesRequest extends ApiFormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth()->user()->can('update', [City::class, $this->route('city')]);
     }
 
     public function rules(): array
@@ -18,7 +19,7 @@ class UpdateCityPicturesRequest extends ApiFormRequest
             'deleted' => ['nullable', 'array'],
             'deleted.*' => ['numeric', 'integer', 'exists:media,id'],
             'added' => ['nullable', 'array'],
-            'added.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'added.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ];
     }
 }

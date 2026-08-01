@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Room;
+use App\Models\Amenity;
 use Illuminate\Database\Seeder;
 
 class RoomAmenitySeeder extends Seeder
@@ -12,6 +13,12 @@ class RoomAmenitySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $amenityIds = Amenity::query()->pluck('id');
+
+        Room::query()->eachById(function (Room $room) use ($amenityIds): void {
+            $room->amenities()->sync(
+                $amenityIds->random(min(fake()->numberBetween(3, 6), $amenityIds->count()))->all()
+            );
+        });
     }
 }
