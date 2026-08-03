@@ -29,7 +29,7 @@ class RegionPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -37,7 +37,7 @@ class RegionPolicy
      */
     public function update(User $user, Region $region): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class RegionPolicy
      */
     public function delete(User $user, Region $region): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 
     public function rate(User $user, Region $region): Response

@@ -24,7 +24,7 @@ class AdminCityController extends Controller
 
     public function index(): JsonResponse
     {
-        $cities = City::with(['description', 'media', 'location'])->withCount('reviews')->get();
+        $cities = City::with(['description', 'media', 'location', 'tags'])->withCount('reviews')->get();
         return $this->succeed(__('Cities fetched successfully'), AdminCityResource::collection($cities));
     }
 

@@ -40,6 +40,10 @@ class CityService
                     'latitude' => $data['latitude'],
                 ]);
             }
+
+            if (isset($data['tags']) && is_array($data['tags'])) {
+                $city->tags()->sync($data['tags']);
+            }
         });
     }
 
@@ -68,6 +72,10 @@ class CityService
                         'latitude' => $data['latitude'],
                     ]
                 );
+            }
+
+            if (isset($data['tags']) && is_array($data['tags'])) {
+                $city->tags()->sync($data['tags']);
             }
 
         });

@@ -9,10 +9,10 @@
             "name": "admin",
             "item": [
                 {
-                    "name": "cities",
+                    "name": "regions",
                     "item": [
                         {
-                            "name": "[GET] api/admin/cities",
+                            "name": "[GET] api/admin/regions",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -38,20 +38,20 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/cities",
+                                    "raw": "{{base_url}}/api/admin/regions",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "admin",
-                                        "cities"
+                                        "regions"
                                     ]
                                 }
                             }
                         },
                         {
-                            "name": "[POST] api/admin/cities",
+                            "name": "[POST] api/admin/regions",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -77,25 +77,25 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/cities",
+                                    "raw": "{{base_url}}/api/admin/regions",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "admin",
-                                        "cities"
+                                        "regions"
                                     ]
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"name_en\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"description_en\": \"sample_text\",\n    \"description_ar\": \"sample_text\",\n    \"pics\": [\n        []\n    ]\n}",
+                                    "raw": "{\n    \"name_en\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"city_id\": 7,\n    \"longitude\": 69,\n    \"latitude\": 78,\n    \"description_en\": \"sample_text\",\n    \"description_ar\": \"sample_text\",\n    \"pics\": [\n        []\n    ],\n    \"tag_ids\": [\n        []\n    ]\n}",
                                     "options": []
                                 }
                             }
                         },
                         {
-                            "name": "[GET] api/admin/cities/{city}",
+                            "name": "[GET] api/admin/regions/{region}",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -121,27 +121,22 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/cities/:city",
+                                    "raw": "{{base_url}}/api/admin/regions/:region",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "admin",
-                                        "cities",
-                                        ":city"
+                                        "regions",
+                                        ":region"
                                     ],
                                     "variable": []
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"cursor\": \"sample_text\"\n}",
-                                    "options": []
                                 }
                             }
                         },
                         {
-                            "name": "[PUT] api/admin/cities/{city}",
+                            "name": "[PUT] api/admin/regions/{region}",
                             "request": {
                                 "method": "PUT",
                                 "header": [
@@ -167,15 +162,15 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/cities/:city",
+                                    "raw": "{{base_url}}/api/admin/regions/:region",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "admin",
-                                        "cities",
-                                        ":city"
+                                        "regions",
+                                        ":region"
                                     ],
                                     "variable": []
                                 },
@@ -187,7 +182,7 @@
                             }
                         },
                         {
-                            "name": "[DELETE] api/admin/cities/{city}",
+                            "name": "[DELETE] api/admin/regions/{region}",
                             "request": {
                                 "method": "DELETE",
                                 "header": [
@@ -213,15 +208,15 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/cities/:city",
+                                    "raw": "{{base_url}}/api/admin/regions/:region",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
                                         "admin",
-                                        "cities",
-                                        ":city"
+                                        "regions",
+                                        ":region"
                                     ],
                                     "variable": []
                                 }
@@ -231,7 +226,49 @@
                             "name": "pictures",
                             "item": [
                                 {
-                                    "name": "[POST] api/admin/cities/{city}/pictures",
+                                    "name": "[GET] api/admin/regions/{region}/pictures",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Our-Great-Password",
+                                                "value": "{{api_password}}",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "lang",
+                                                "value": "{{lang}}",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "device",
+                                                "value": "{{device}}",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/admin/regions/:region/pictures",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "admin",
+                                                "regions",
+                                                ":region",
+                                                "pictures"
+                                            ],
+                                            "variable": []
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "[POST] api/admin/regions/{region}/pictures",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -257,15 +294,15 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/admin/cities/:city/pictures",
+                                            "raw": "{{base_url}}/api/admin/regions/:region/pictures",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "admin",
-                                                "cities",
-                                                ":city",
+                                                "regions",
+                                                ":region",
                                                 "pictures"
                                             ],
                                             "variable": []
@@ -283,7 +320,7 @@
                             "name": "thumbnails",
                             "item": [
                                 {
-                                    "name": "[POST] api/admin/cities/{city}/thumbnails",
+                                    "name": "[POST] api/admin/regions/{region}/thumbnails",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -309,15 +346,15 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/admin/cities/:city/thumbnails",
+                                            "raw": "{{base_url}}/api/admin/regions/:region/thumbnails",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "admin",
-                                                "cities",
-                                                ":city",
+                                                "regions",
+                                                ":region",
                                                 "thumbnails"
                                             ],
                                             "variable": []
@@ -332,109 +369,10 @@
                             ]
                         },
                         {
-                            "name": "regions",
-                            "item": [
-                                {
-                                    "name": "[GET] api/admin/cities/{city}/regions",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/cities/:city/regions",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "cities",
-                                                ":city",
-                                                "regions"
-                                            ],
-                                            "variable": []
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"cursor\": \"sample_text\"\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "hotels",
-                            "item": [
-                                {
-                                    "name": "[GET] api/admin/cities/{city}/hotels",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/cities/:city/hotels",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "cities",
-                                                ":city",
-                                                "hotels"
-                                            ],
-                                            "variable": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
                             "name": "ratings",
                             "item": [
                                 {
-                                    "name": "[GET] api/admin/cities/{city}/ratings",
+                                    "name": "[GET] api/admin/regions/{region}/ratings",
                                     "request": {
                                         "method": "GET",
                                         "header": [
@@ -460,22 +398,22 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/admin/cities/:city/ratings",
+                                            "raw": "{{base_url}}/api/admin/regions/:region/ratings",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
                                                 "admin",
-                                                "cities",
-                                                ":city",
+                                                "regions",
+                                                ":region",
                                                 "ratings"
                                             ],
                                             "variable": []
                                         },
                                         "body": {
                                             "mode": "raw",
-                                            "raw": "{\n    \"sort\": \"sample_text\",\n    \"page\": 4,\n    \"cursor\": \"sample_text\"\n}",
+                                            "raw": "{\n    \"sort\": \"sample_text\",\n    \"page\": 7,\n    \"cursor\": \"sample_text\"\n}",
                                             "options": []
                                         }
                                     }

@@ -38,7 +38,7 @@ class HotelPolicy
      */
     public function update(User $user, Hotel $hotel): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -46,7 +46,7 @@ class HotelPolicy
      */
     public function delete(User $user, Hotel $hotel): bool
     {
-        return true;
+       return $user->hasRole('admin');
     }
 
     public function rate(User $user, Hotel $hotel): Response

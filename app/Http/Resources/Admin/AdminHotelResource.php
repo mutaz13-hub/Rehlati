@@ -15,6 +15,8 @@ class AdminHotelResource extends JsonResource
      */
     public function toArray($request): array
     {
+        logger($request->route()->getName());
+        
         $request_type = $request->routeIs('admin.hotels.index') ? 'index' : ($request->routeIs('admin.hotels.show') ? 'show' : 'else');
         return [
             'id' => $this->id,

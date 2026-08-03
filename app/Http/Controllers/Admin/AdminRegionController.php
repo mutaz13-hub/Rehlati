@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Gate;
 
 class AdminRegionController extends Controller
 {
-    public function __construct(protected RegionService $regionService)
+    public function __construct(protected AdminRegionService $regionService)
     {
     }
 
@@ -28,7 +28,7 @@ class AdminRegionController extends Controller
     public function store(StoreRegionRequest $request): JsonResponse
     {
         $this->regionService->createRegion($request->validated());
-        return $this->succeed(__('Region created successfully'));
+        return $this->succeed(__('Region created successfully'), 201);
     }
 
     public function show(Region $region): JsonResponse
@@ -40,8 +40,8 @@ class AdminRegionController extends Controller
 
     public function update(UpdateRegionRequest $request, Region $region): JsonResponse
     {
-        $region = $this->regionService->updateRegion($region, $request->validated());
-        return $this->succeed(__('Region updated successfully'), new AdminRegionResource($region));
+         $this->regionService->updateRegion($region, $request->validated());
+        return $this->succeed(__('Region updated successfully'));
     }
 
     public function updatePictures(UpdateRegionPicturesRequest $request, Region $region): JsonResponse

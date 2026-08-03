@@ -7,14 +7,16 @@ use App\Models\Hotel;
 use App\Http\Resources\Admin\AdminHotelResource;
 use App\Http\Resources\Admin\AdminAmenityResource;
 use App\Http\Requests\Admin\Hotel\StoreHotelRequest;
+use App\Http\Requests\Admin\Hotel\UpdateHotelPicturesRequest;
 use App\Http\Requests\Admin\Hotel\UpdateHotelRequest;
+use App\Http\Requests\Admin\Hotel\UpdateHotelThumbnailsRequest;
 use App\Services\Admin\AdminHotelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 
 class AdminHotelController extends Controller
 {
-    public function __construct(public HotelService $hotel_service)
+    public function __construct(public AdminHotelService $hotel_service)
     {
     }
 
@@ -34,7 +36,7 @@ class AdminHotelController extends Controller
 
         $this->hotel_service->create($request->validated());
 
-        return $this->succeed(__('Hotel is created successfully'));
+        return $this->succeed(__('Hotel is created successfully'), [], 201);
     }
 
     public function show(Hotel $hotel): JsonResponse
@@ -44,6 +46,19 @@ class AdminHotelController extends Controller
                 ->loadCount(['rooms', 'reviews'])
                 ->loadAvg('reviews', 'rate')
         ));
+    }
+
+    public function updatePictures(UpdateHotelPicturesRequest $request, Hotel $hotel): JsonResponse
+    {
+        $this->hotel_service->updateHotelPictures($hotel, $request->validated());
+
+        return $this->succeed(__('Hotel pictures updated successfully'));
+    }
+
+    public function updateThumbnails(UpdateHotelThumbnailsRequest $request, Hotel $hotel): JsonResponse
+    {
+        $this->hotel_service->updateHotelThumbnails($hotel, $request->validated());
+        return $this->succeed(__('Hotel thumbnails updated successfully'));
     }
 
     public function amenities(Hotel $hotel): JsonResponse

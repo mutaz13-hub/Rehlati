@@ -30,6 +30,10 @@ class StoreRoomRequest extends ApiFormRequest
             'price_per_night' => ['required', 'numeric', 'min:0'],
             'total_rooms' => ['required', 'integer', 'min:0'],
             'available_rooms' => ['required', 'integer', 'min:0'],
+            'description_en' => ['nullable', 'string', 'max:10000'],
+            'description_ar' => ['nullable', 'string', 'max:10000'],
+            'amenities' => ['nullable', 'array'],
+            'amenities.*' => ['integer', 'exists:amenities,id'],
         ];
     }
 }

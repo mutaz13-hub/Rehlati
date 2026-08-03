@@ -9,6 +9,10 @@ use App\Models\Region;
 use App\Models\Room;
 use App\Models\User;
 use App\Models\Vote;
+use App\Observers\CityObserver;
+use App\Observers\HotelObserver;
+use App\Observers\RegionObserver;
+use App\Observers\RoomObserver;
 use App\Observers\VoteObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -44,5 +48,9 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         Vote::observe(VoteObserver::class);
+        Hotel::observe(HotelObserver::class);
+        Room::observe(RoomObserver::class);
+        City::observe(CityObserver::class);
+        Region::observe(RegionObserver::class);
     }
 }

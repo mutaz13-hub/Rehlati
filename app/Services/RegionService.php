@@ -28,17 +28,28 @@ class RegionService
                 ]);
             }
 
+            if (isset($data['longitude']) && isset($data['latitude'])) {
+                $region->location()->create([
+                    'longitude' => $data['longitude'],
+                    'latitude' => $data['latitude'],
+                ]);
+            }
+
             if (isset($data['pics'])) {
                 foreach ($data['pics'] as $pic) {
                     app(ImageUploadService::class)->addUploaded($region, $pic, 'region_pictures');
                 }
             }
+
+            if (isset($data['tags']) && is_array($data['tags'])) {
+                $region->tags()->sync($data['tags']);
+            }
         });
     }
 
-    public function updateRegion(Region $region, array $data)
+    public function updateRegion(Region $region, array $data): void
     {
-        return DB::transaction(function () use ($region, $data) {
+        DB::transaction(function () use ($region, $data) {  
             $region->update(array_filter([
                 'name_en' => $data['name_en'] ?? null,
                 'name_ar' => $data['name_ar'] ?? null,
@@ -47,12 +58,26 @@ class RegionService
 
             if (isset($data['description_en']) || isset($data['description_ar'])) {
                 $region->description()->updateOrCreate(
-                    ['describable_id' => $region->id, 'describable_type' => Region::class],
+                    ['describable_id' => $region->id, 'describable_type' => Region::MORPH_KEY],
                     [
                         'description_en' => $data['description_en'] ?? $region->description->description_en ?? '',
                         'description_ar' => $data['description_ar'] ?? $region->description->description_ar ?? '',
                     ]
                 );
+            }
+
+            if (isset($data['longitude']) && isset($data['latitude'])) {
+                $region->location()->updateOrCreate(
+                    ['locatable_id' => $region->id, 'locatable_type' => Region::MORPH_KEY],
+                    [
+                        'longitude' => $data['longitude'],
+                        'latitude' => $data['latitude'],
+                    ]
+                );
+            }
+
+            if (isset($data['tags']) && is_array($data['tags'])) {
+                $region->tags()->sync($data['tags']);
             }
 
             return $region;

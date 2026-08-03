@@ -13,7 +13,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Hotel extends Model implements HasMedia
 {
     use InteractsWithMedia;
-    
+
     protected $fillable = [
         'name_en',
         'name_ar',
@@ -91,5 +91,10 @@ class Hotel extends Model implements HasMedia
     public function myReview()
     {
         return $this->morphOne(Rating::class, 'rateable')->where('user_id', auth('sanctum')->id());
+    }
+
+    public function contactDetails(): MorphOne
+    {
+        return $this->morphOne(ContactDetails::class, 'contactable');
     }
 }

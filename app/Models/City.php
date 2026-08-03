@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class City extends Model implements HasMedia
 {
     use InteractsWithMedia;
-    
+
     public const MORPH_KEY = 'city';
     protected $fillable = [
         'name_en',

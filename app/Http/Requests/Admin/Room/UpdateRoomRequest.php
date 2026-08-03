@@ -30,6 +30,10 @@ class UpdateRoomRequest extends ApiFormRequest
             'price_per_night' => ['sometimes', 'required', 'numeric', 'min:0'],
             'total_rooms' => ['sometimes', 'required', 'integer', 'min:0'],
             'available_rooms' => ['sometimes', 'required', 'integer', 'min:0'],
+            'description_en' => ['nullable', 'string', 'max:10000'],
+            'description_ar' => ['nullable', 'string', 'max:10000'],
+            'amenity_ids' => ['nullable', 'array'],
+            'amenity_ids.*' => ['integer', 'exists:amenities,id'],
         ];
     }
 }
