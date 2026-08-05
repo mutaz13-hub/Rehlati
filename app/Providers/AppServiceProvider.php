@@ -14,9 +14,11 @@ use App\Observers\HotelObserver;
 use App\Observers\RegionObserver;
 use App\Observers\RoomObserver;
 use App\Observers\VoteObserver;
+use Dedoc\Scramble\Scramble;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +36,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        Scramble::configure()
+        ->routes(function (Route $route) {
+            // Adjust the string to match your exact admin URL prefix
+            return \Illuminate\Support\Str::startsWith($route->uri, 'api/admin');
+        });
         JsonResource::withoutWrapping();
 
         Model::preventLazyLoading(! app()->isProduction());

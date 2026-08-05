@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Hotel;
 use App\Http\Resources\Admin\AdminHotelResource;
 use App\Http\Resources\Admin\AdminAmenityResource;
-use App\Http\Requests\Admin\Hotel\StoreHotelRequest;
-use App\Http\Requests\Admin\Hotel\UpdateHotelPicturesRequest;
-use App\Http\Requests\Admin\Hotel\UpdateHotelRequest;
-use App\Http\Requests\Admin\Hotel\UpdateHotelThumbnailsRequest;
+use App\Http\Requests\Admin\Hotel\AdminStoreHotelRequest;
+use App\Http\Requests\Admin\Hotel\AdminUpdateHotelPicturesRequest;
+use App\Http\Requests\Admin\Hotel\AdminUpdateHotelRequest;
+use App\Http\Requests\Admin\Hotel\AdminUpdateHotelThumbnailsRequest;
 use App\Services\Admin\AdminHotelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -30,7 +30,7 @@ class AdminHotelController extends Controller
         return $this->succeed(__('Hotels fetched successfully'), AdminHotelResource::collection($hotels));
     }
 
-    public function store(StoreHotelRequest $request): JsonResponse
+    public function store(AdminStoreHotelRequest $request): JsonResponse
     {
         Gate::authorize('create', Hotel::class);
 
@@ -48,14 +48,14 @@ class AdminHotelController extends Controller
         ));
     }
 
-    public function updatePictures(UpdateHotelPicturesRequest $request, Hotel $hotel): JsonResponse
+    public function updatePictures(AdminUpdateHotelPicturesRequest $request, Hotel $hotel): JsonResponse
     {
         $this->hotel_service->updateHotelPictures($hotel, $request->validated());
 
         return $this->succeed(__('Hotel pictures updated successfully'));
     }
 
-    public function updateThumbnails(UpdateHotelThumbnailsRequest $request, Hotel $hotel): JsonResponse
+    public function updateThumbnails(AdminUpdateHotelThumbnailsRequest $request, Hotel $hotel): JsonResponse
     {
         $this->hotel_service->updateHotelThumbnails($hotel, $request->validated());
         return $this->succeed(__('Hotel thumbnails updated successfully'));
@@ -70,7 +70,7 @@ class AdminHotelController extends Controller
         ]);
     }
 
-    public function update(UpdateHotelRequest $request, Hotel $hotel): JsonResponse
+    public function update(AdminUpdateHotelRequest $request, Hotel $hotel): JsonResponse
     {
         Gate::authorize('update', $hotel);
 

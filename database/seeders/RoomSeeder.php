@@ -24,7 +24,7 @@ class RoomSeeder extends Seeder
                     'bed_type' => BedType::KING,
                     'description_en' => 'A bright and spacious room with a king-size bed, a comfortable seating area, and views over the city.',
                     'description_ar' => 'غرفة مشرقة وواسعة تضم سريراً بحجم كينغ ومنطقة جلوس مريحة وإطلالة على المدينة.',
-                    'price_per_night' => 40 + ($hotel->stars * 20),
+                    'base_price_usd' => 40 + ($hotel->stars * 20),
                     'total_rooms' => 12,
                     'available_rooms' => 8,
                 ],
@@ -35,7 +35,7 @@ class RoomSeeder extends Seeder
                     'bed_type' => BedType::TWIN,
                     'description_en' => 'A welcoming family suite with two twin beds, extra living space, and everything needed for a relaxed stay.',
                     'description_ar' => 'جناح عائلي مريح يضم سريرين منفصلين ومساحة معيشة إضافية وكل ما يلزم لإقامة هادئة.',
-                    'price_per_night' => 65 + ($hotel->stars * 20),
+                    'base_price_usd' => 65 + ($hotel->stars * 20),
                     'total_rooms' => 8,
                     'available_rooms' => 5,
                 ],
@@ -53,7 +53,6 @@ class RoomSeeder extends Seeder
                         'name_ar' => $data['name_ar'],
                         'room_type' => $data['room_type'],
                         'bed_type' => $data['bed_type'],
-                        'price_per_night' => $data['price_per_night'],
                         'total_rooms' => $data['total_rooms'],
                         'available_rooms' => $data['available_rooms'],
                     ]
@@ -63,6 +62,35 @@ class RoomSeeder extends Seeder
                     'description_en' => $data['description_en'],
                     'description_ar' => $data['description_ar'],
                 ]);
+
+                $syrianMultiplier = 1.0;
+                $expatMultiplier = 1.1;
+                $foreignerMultiplier = 1.25;
+
+                $basePriceTiers = [
+                    ['nationality_category' => 'syrian',    'amount' => round($data['base_price_usd'] * $syrianMultiplier, 2)],
+                    ['nationality_category' => 'expat',     'amount' => round($data['base_price_usd'] * $expatMultiplier, 2)],
+                    ['nationality_category' => 'foreigner', 'amount' => round($data['base_price_usd'] * $foreignerMultiplier, 2)],
+                ];
+
+                $existingKeys = [];
+                foreach ($room->prices()->where('price_type', 'base_price')->get() as $p) {
+                    $existingKey = "{$p->nationality_category}|" . ($p->season_id ?? 'NULL');
+                    $existingKeys[$existingKey] = true;
+                }
+
+                foreach ($basePriceTiers as $tier) {
+                    $key = "{$tier['nationality_category']}|NULL";
+                    if (!isset($existingKeys[$key])) {
+                        $room->prices()->create([
+                            'price_type' => 'base_price',
+                            'nationality_category' => $tier['nationality_category'],
+                            'currency' => 'USD',
+                            'amount' => $tier['amount'],
+                            'season_id' => null,
+                        ]);
+                    }
+                }
 
                 $this->seedFakeMedia($room, $index);
             }
@@ -91,3 +119,4 @@ class RoomSeeder extends Seeder
         }
     }
 }
+

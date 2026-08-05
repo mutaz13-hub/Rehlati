@@ -7,7 +7,7 @@ use App\Models\Hotel;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateHotelThumbnailsRequest extends ApiFormRequest
+class AdminUpdateHotelThumbnailsRequest extends ApiFormRequest
 {
     public function authorize(): bool
     {

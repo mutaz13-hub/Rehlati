@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AdminRoomResource;
 use App\Http\Resources\Admin\AdminAmenityResource;
-use App\Http\Requests\Admin\Room\StoreRoomRequest;
-use App\Http\Requests\Admin\Room\UpdateRoomRequest;
+use App\Http\Requests\Admin\Room\AdminStoreRoomRequest;
+use App\Http\Requests\Admin\Room\AdminUpdateRoomRequest;
 use App\Models\Hotel;
 use App\Models\Room;
 use App\Services\Admin\AdminRoomService;
@@ -21,14 +21,14 @@ class AdminRoomController extends Controller
 
     public function index(Hotel $hotel)
     {
-        $rooms = $hotel->rooms()->with(['description', 'amenities'])->paginate(15);
+        $rooms = $hotel->rooms()->with(['description', 'amenities', 'bedTypes'])->paginate(15);
 
         return AdminRoomResource::collection($rooms);
     }
 
     public function show(Room $room)
     {
-        return new AdminRoomResource($room->load(['hotel.location', 'description', 'amenities']));
+        return new AdminRoomResource($room->load(['hotel.location', 'description', 'amenities', 'bedTypes']));
     }
 
     public function amenities(Room $room)
@@ -40,18 +40,18 @@ class AdminRoomController extends Controller
         ]);
     }
 
-    public function store(StoreRoomRequest $request, Hotel $hotel): JsonResponse
+    public function store(AdminStoreRoomRequest $request, Hotel $hotel): JsonResponse
     {
-        $room = $this->room_service->create($hotel, $request->validated());
+        $this->room_service->create($hotel, $request->validated());
 
-        return $this->succeed(__('Room created'), new AdminRoomResource($room));
+        return $this->succeed(__('Room created'), [], 201);
     }
 
-    public function update(UpdateRoomRequest $request, Hotel $hotel, Room $room): JsonResponse
+    public function update(AdminUpdateRoomRequest $request, Hotel $hotel, Room $room): JsonResponse
     {
-        $room = $this->room_service->update($room, $request->validated());
+        $this->room_service->update($room, $request->validated());
 
-        return $this->succeed(__('Room updated'), new AdminRoomResource($room));
+        return $this->succeed(__('Room updated'));
     }
 
     public function destroy(Hotel $hotel, Room $room): JsonResponse
@@ -60,6 +60,6 @@ class AdminRoomController extends Controller
 
         $this->room_service->delete($room);
 
-        return response()->json([], 204);
+        return response()->json(__('Rome deleted successfully'));
     }
 }

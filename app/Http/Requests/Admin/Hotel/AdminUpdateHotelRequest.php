@@ -10,7 +10,7 @@ use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Throwable;
 
-class UpdateHotelRequest extends ApiFormRequest
+class AdminUpdateHotelRequest extends ApiFormRequest
 {
 
     protected function prepareForValidation(): void

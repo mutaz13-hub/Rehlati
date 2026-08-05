@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Hotel;
 use App\Http\Resources\Admin\AdminHotelResource;
 use App\Http\Resources\Admin\AdminAmenityResource;
-use App\Http\Requests\Admin\Hotel\StoreHotelRequest;
-use App\Http\Requests\Admin\Hotel\UpdateHotelRequest;
+use App\Http\Requests\Admin\Hotel\AdminStoreHotelRequest;
+use App\Http\Requests\Admin\Hotel\AdminUpdateHotelRequest;
 use App\Services\Admin\AdminHotelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -28,7 +28,7 @@ class HotelController extends Controller
         return $this->succeed(__('Hotels fetched successfully'), AdminHotelResource::collection($hotels));
     }
 
-    public function store(StoreHotelRequest $request): JsonResponse
+    public function store(AdminStoreHotelRequest $request): JsonResponse
     {
         Gate::authorize('create', Hotel::class);
 
@@ -55,7 +55,7 @@ class HotelController extends Controller
         ]);
     }
 
-    public function update(UpdateHotelRequest $request, Hotel $hotel): JsonResponse
+    public function update(AdminUpdateHotelRequest $request, Hotel $hotel): JsonResponse
     {
         Gate::authorize('update', $hotel);
 

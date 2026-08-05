@@ -26,9 +26,15 @@ class UpdateRoomRequest extends ApiFormRequest
             })->ignore($this->route('room')->id)],
             'room_type' => ['sometimes', 'required', 'string', Rule::enum(RoomType::class)],
             'bed_type' => ['sometimes', 'required', 'string', Rule::enum(BedType::class)],
-            'price_per_night' => ['sometimes', 'required', 'numeric', 'min:0'],
             'total_rooms' => ['sometimes', 'required', 'integer', 'min:0'],
             'available_rooms' => ['sometimes', 'nullable', 'integer', 'min:0'],
+
+            'prices' => ['sometimes', 'required', 'array', 'min:1'],
+            'prices.*.price_type' => ['required_with:prices', 'string', Rule::in(['base_price', 'extra_bed_price', 'package_price'])],
+            'prices.*.nationality_category' => ['required_with:prices', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
+            'prices.*.currency' => ['required_with:prices', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
+            'prices.*.amount' => ['required_with:prices', 'numeric', 'min:0'],
+            'prices.*.season_id' => ['nullable', 'integer', 'exists:seasons,id'],
         ];
     }
 }

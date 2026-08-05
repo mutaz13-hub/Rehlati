@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\AdminRoomResource;
 use App\Http\Resources\Admin\AdminAmenityResource;
-use App\Http\Requests\Admin\Room\StoreRoomRequest;
-use App\Http\Requests\Admin\Room\UpdateRoomRequest;
+use App\Http\Requests\Admin\Room\AdminStoreRoomRequest;
+use App\Http\Requests\Admin\Room\AdminUpdateRoomRequest;
 use App\Models\Hotel;
 use App\Models\Room;
 use App\Services\Admin\AdminRoomService;
@@ -40,14 +40,14 @@ class RoomController extends Controller
         ]);
     }
 
-    public function store(StoreRoomRequest $request, Hotel $hotel): JsonResponse
+    public function store(AdminStoreRoomRequest $request, Hotel $hotel): JsonResponse
     {
         $room = $this->room_service->create($hotel, $request->validated());
 
         return $this->succeed(__('Room created'), new AdminRoomResource($room));
     }
 
-    public function update(UpdateRoomRequest $request, Hotel $hotel, Room $room): JsonResponse
+    public function update(AdminUpdateRoomRequest $request, Hotel $hotel, Room $room): JsonResponse
     {
         $room = $this->room_service->update($room, $request->validated());
 

@@ -97,4 +97,9 @@ class Hotel extends Model implements HasMedia
     {
         return $this->morphOne(ContactDetails::class, 'contactable');
     }
+
+    public function prices(): MorphMany
+    {
+        return $this->morphMany(Price::class, 'priceable');
+    }
 }

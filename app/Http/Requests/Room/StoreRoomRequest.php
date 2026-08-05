@@ -26,9 +26,15 @@ class StoreRoomRequest extends ApiFormRequest
             })],
             'room_type' => ['required', 'string', Rule::enum(RoomType::class)],
             'bed_type' => ['required', 'string', Rule::enum(BedType::class)],
-            'price_per_night' => ['required', 'numeric', 'min:0'],
             'total_rooms' => ['required', 'integer', 'min:0'],
             'available_rooms' => ['required', 'integer', 'min:0'],
+
+            'prices' => ['required', 'array', 'min:1'],
+            'prices.*.price_type' => ['required', 'string', Rule::in(['base_price', 'extra_bed_price', 'package_price'])],
+            'prices.*.nationality_category' => ['required', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
+            'prices.*.currency' => ['required', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
+            'prices.*.amount' => ['required', 'numeric', 'min:0'],
+            'prices.*.season_id' => ['nullable', 'integer', 'exists:seasons,id'],
         ];
     }
 }

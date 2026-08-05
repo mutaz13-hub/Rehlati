@@ -34,7 +34,9 @@ implements HasLocalePreference
         'phone_number',
         'password',
         'email_verified_at',
-        'phone_verified_at'
+        'phone_verified_at',
+        'nationality',
+        'nationality_category',
     ];
 
     /**
@@ -58,7 +60,32 @@ implements HasLocalePreference
             'email_verified_at' => 'datetime',
             'phone_number_verified_at' => 'datetime',
             'password' => 'hashed',
+            'nationality_category' => 'string',
         ];
+    }
+
+    private const EXPAT_NATIONALITIES = [
+        'LB', 'JO', 'EG', 'IQ', 'SA', 'AE', 'KW', 'BH', 'QA', 'OM', 'YE',
+        'PS', 'SD', 'TN', 'DZ', 'MA', 'LY', 'MR', 'SO', 'DJ', 'KM',
+    ];
+
+    public function getResolvedNationalityCategoryAttribute(): string
+    {
+        if ($this->nationality_category && in_array($this->nationality_category, ['syrian', 'expat', 'foreigner'], true)) {
+            return $this->nationality_category;
+        }
+
+        $nationality = strtoupper($this->nationality ?? '');
+
+        if ($nationality === 'SY') {
+            return 'syrian';
+        }
+
+        if (in_array($nationality, self::EXPAT_NATIONALITIES, true)) {
+            return 'expat';
+        }
+
+        return 'foreigner';
     }
 
     /**

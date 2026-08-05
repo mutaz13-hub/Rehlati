@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminCityController;
 use App\Http\Controllers\Admin\AdminRegionController;
 use App\Http\Controllers\Admin\AdminTagController;
+use App\Http\Controllers\Admin\AdminPriceController;
+use App\Http\Controllers\Admin\AdminExchangeRateController;
+use App\Http\Controllers\Admin\AdminSeasonController;
 use App\Http\Controllers\Mutual\PictureController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,5 +55,17 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
     Route::delete('amenities/{amenity}', [AdminAmenityController::class, 'destroy']);
 
     Route::apiResource('tags', AdminTagController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+
+    Route::get('seasons/current', [AdminSeasonController::class, 'current'])->name('seasons.current');
+    Route::post('seasons/clear-caches', [AdminSeasonController::class, 'clearCaches'])->name('seasons.clear-caches');
+    Route::apiResource('seasons', AdminSeasonController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+
+    Route::get('exchange-rates/clear-caches', [AdminExchangeRateController::class, 'clearCaches'])->name('exchange-rates.clear-caches');
+    Route::post('exchange-rates/bulk', [AdminExchangeRateController::class, 'bulkUpsert'])->name('exchange-rates.bulk');
+    Route::apiResource('exchange-rates', AdminExchangeRateController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+
+    Route::get('prices/clear-caches', [AdminPriceController::class, 'clearCaches'])->name('prices.clear-caches');
+    Route::post('prices/bulk', [AdminPriceController::class, 'bulkUpsert'])->name('prices.bulk');
+    Route::apiResource('prices', AdminPriceController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
     });
 });

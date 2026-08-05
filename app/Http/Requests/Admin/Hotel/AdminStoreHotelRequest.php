@@ -10,7 +10,7 @@ use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
 use Throwable;
 
-class StoreHotelRequest extends ApiFormRequest
+class AdminStoreHotelRequest extends ApiFormRequest
 {
     public function authorize(): bool
     {
