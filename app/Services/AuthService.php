@@ -34,6 +34,8 @@ class AuthService
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'nationality' => $data['nationality'],
+            'nationality_category' => $data['nationality'] === 'SY' ? $data['nationality_category'] : 'foreigner',
             'phone_number' => $data['phone_number'],
             'password' => bcrypt($data['password']),
         ]);

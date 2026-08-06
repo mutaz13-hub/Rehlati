@@ -17,6 +17,7 @@ return new class extends Migration
             $table->morphs('rateable');
             $table->unsignedTinyInteger('rate'); // 1-5 stars
             $table->text('body')->nullable();
+            $table->timestamp('edited_at')->nullable();
             $table->string('type')->default('text'); // text, audio
             $table->timestamps();
 

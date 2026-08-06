@@ -31,13 +31,18 @@ class AdminStoreRoomRequest extends ApiFormRequest
 
             'max_adults' => ['required', 'integer', 'min:1'],
             'max_children' => ['required', 'integer', 'min:0'],
-            'max_guests' => ['required', 'integer', 'min:1'],
+            'max_guests' => ['required', 'integer', 'gte:max_adults', 'gte:max_children', function ($attribute, $value, $fail) {
+            $maxAdults = (int) $this->input('max_adults', 0);
+            $maxChildren = (int) $this->input('max_children', 0);
+            $combinedSum = $maxAdults + $maxChildren;
 
-            'room_type' => ['nullable', 'string'],
-            'bed_type' => ['nullable', 'string'],
+            if ($value > $combinedSum) {
+                $fail(__("The max guests cannot be greater than the combined sum of adults and children ($combinedSum)."));
+            }
+        }],
 
             'total_rooms' => ['required', 'integer', 'min:0'],
-            'available_rooms' => ['required', 'integer', 'min:0'],
+            'available_rooms' => ['required', 'integer', 'min:0', 'lte:total_rooms'],
             'description_en' => ['nullable', 'string', 'max:10000'],
             'description_ar' => ['nullable', 'string', 'max:10000'],
 
@@ -45,56 +50,25 @@ class AdminStoreRoomRequest extends ApiFormRequest
             'amenities.*' => ['integer', 'exists:amenities,id'],
 
             'beds' => ['required', 'array', 'min:1'],
-            'beds.*.bed_type_id' => ['required', 'integer', 'exists:bed_types,id'],
+            'beds.*.bed_type_id' => ['required', 'integer', 'exists:bed_types,id', 'distinct'],
             'beds.*.quantity' => ['required', 'integer', 'min:1'],
             'beds.*.assigned_capacity' => ['required', 'integer', 'min:1'],
 
             'prices' => ['required', 'array', 'min:1'],
-            'prices.*.price_type' => ['required', 'string', Rule::in(['base_price', 'extra_bed_price', 'package_price'])],
+            'prices.*.price_type' => ['required', 'string', Rule::in(['base_price', 'extra_bed_price'])],
             'prices.*.nationality_category' => ['required', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
             'prices.*.currency' => ['required', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
             'prices.*.amount' => ['required', 'numeric', 'min:0'],
-            'prices.*.season_id' => ['nullable', 'integer', 'exists:seasons,id'],
+            'prices.*.season_id' => ['nullable', 'integer', Rule::exists('seasons', 'id')->where(function ($query) {
+                return $query->where('seasonable_type', 'hotel')
+                    ->where('seasonable_id', $this->route('hotel')->id);
+            })],
         ];
     }
 
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            $maxAdults = (int) $this->input('max_adults', 0);
-            $maxChildren = (int) $this->input('max_children', 0);
-            $maxGuests = (int) $this->input('max_guests', 0);
-
-            if ($maxGuests < ($maxAdults + $maxChildren)) {
-                $validator->errors()->add(
-                    'max_guests',
-                    __('max_guests must be greater than or equal to max_adults + max_children')
-                );
-            }
-
-            $available = (int) $this->input('available_rooms', 0);
-            $total = (int) $this->input('total_rooms', 0);
-            if ($available > $total) {
-                $validator->errors()->add(
-                    'available_rooms',
-                    __('available_rooms cannot exceed total_rooms')
-                );
-            }
-
-            $beds = $this->input('beds', []);
-            $seen = [];
-            foreach ($beds as $index => $bed) {
-                $id = $bed['bed_type_id'] ?? null;
-                if ($id !== null) {
-                    if (in_array($id, $seen, true)) {
-                        $validator->errors()->add(
-                            "beds.{$index}.bed_type_id",
-                            __('Duplicate bed_type_id — combine quantities into one entry')
-                        );
-                    }
-                    $seen[] = $id;
-                }
-            }
 
             $prices = $this->input('prices', []);
             $priceKeys = [];

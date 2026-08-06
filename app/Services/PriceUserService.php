@@ -26,7 +26,7 @@ class PriceUserService
 
         $nationalityCategory = $user->resolved_nationality_category;
 
-        $season = $this->resolveActiveSeason($forDate);
+        $season = $this->resolveActiveSeason($priceable, $forDate);
 
         $price = $this->lookupMatchingPrice(
             $priceable,
@@ -47,7 +47,7 @@ class PriceUserService
             'base_amount' => (float) $price->amount,
             'base_currency' => $price->currency,
             'season_id' => $season?->id,
-            'season_name' => $season?->name,
+            'season_name' => $season?->name_en ?? $season?->name_ar,
             'nationality_category' => $nationalityCategory,
             'price_type' => $priceType,
         ];
@@ -64,18 +64,33 @@ class PriceUserService
         return $result ? $result['amount'] : null;
     }
 
-    public function resolveActiveSeason(?\DateTimeInterface $forDate = null): ?Season
+    public function resolveActiveSeason($priceableOrDate = null, ?\DateTimeInterface $forDate = null): ?Season
     {
+        $priceable = null;
+
+        if ($priceableOrDate instanceof Model) {
+            $priceable = $priceableOrDate;
+        } elseif ($priceableOrDate instanceof \DateTimeInterface) {
+            $forDate = $priceableOrDate;
+        }
+
         $forDate = Date::parse($forDate ?? now());
         $dateStr = $forDate->format('Y-m-d');
 
-        $cacheKey = "active_season:{$dateStr}";
+        $cacheKey = $priceable
+            ? "active_season:{$priceable->getMorphClass()}:{$priceable->getKey()}:{$dateStr}"
+            : "active_season:{$dateStr}";
 
-        return Cache::remember($cacheKey, self::CACHE_SEASONS_TTL, function () use ($dateStr) {
-            return Season::where('start_date', '<=', $dateStr)
-                ->where('end_date', '>=', $dateStr)
-                ->orderBy('start_date', 'desc')
-                ->first();
+        return Cache::remember($cacheKey, self::CACHE_SEASONS_TTL, function () use ($priceable, $dateStr) {
+            $query = Season::query()->where('start_date', '<=', $dateStr)
+                ->where('end_date', '>=', $dateStr);
+
+            if ($priceable) {
+                $query->where('seasonable_type', $priceable->getMorphClass())
+                    ->where('seasonable_id', $priceable->getKey());
+            }
+
+            return $query->orderBy('start_date', 'desc')->first();
         });
     }
 
@@ -94,6 +109,14 @@ class PriceUserService
             $nationalityCategory,
             $seasonId
         ) {
+            if ($seasonId !== null) {
+                $season = Season::query()->find($seasonId);
+
+                if (!$season || !$season->isFor($priceable)) {
+                    return null;
+                }
+            }
+
             $query = $priceable->prices()
                 ->where('price_type', $priceType)
                 ->where('nationality_category', $nationalityCategory);
@@ -119,7 +142,7 @@ class PriceUserService
     ): Collection {
         $forDate = Date::parse($forDate ?? now());
         $nationalityCategory = $user->resolved_nationality_category;
-        $season = $this->resolveActiveSeason($forDate);
+        $season = $this->resolveActiveSeason($priceable, $forDate);
 
         $priceableKey = $this->priceableCacheKey($priceable);
         $cacheKey = "all_prices:{$priceableKey}:{$nationalityCategory}:{$season?->id}";
@@ -172,7 +195,7 @@ class PriceUserService
         $cacheKey = "exchange_rate:{$currency}";
 
         return Cache::remember($cacheKey, self::CACHE_RATES_TTL, function () use ($currency) {
-            $rate = ExchangeRate::where('currency', $currency)->first();
+            $rate = ExchangeRate::query()->where('currency', $currency)->first();
 
             return $rate ? (float) $rate->rate_to_syp : 1.0;
         });
@@ -231,21 +254,6 @@ class PriceUserService
 
     private function forgetCacheByPrefix(string $prefix): void
     {
-        if (method_exists(Cache::store()->getStore(), 'getPrefix')) {
-            $store = Cache::store();
-            $fullPrefix = $store->getPrefix() . $prefix;
-
-            try {
-                $redis = $store->connection();
-                $keys = $redis->keys($fullPrefix . '*');
-                if (!empty($keys)) {
-                    $redis->del(...$keys);
-                }
-                return;
-            } catch (\Throwable) {
-            }
-        }
-
         Cache::flush();
     }
 }

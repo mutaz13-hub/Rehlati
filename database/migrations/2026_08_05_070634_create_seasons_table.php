@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('seasons', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // e.g., 'Summer', 'Eid', 'New Year'
+            $table->morphs('seasonable');
+            $table->string('name_en')->unique();
+            $table->string('name_ar')->unique();
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();

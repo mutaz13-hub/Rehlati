@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -25,8 +26,6 @@ class Room extends Model implements HasMedia
         'max_adults',
         'max_children',
         'max_guests',
-        'room_type',
-        'bed_type',
         'total_rooms',
         'available_rooms',
     ];
@@ -45,6 +44,13 @@ class Room extends Model implements HasMedia
     }
 
     public const MORPH_KEY = 'room';
+
+     public function getLocalizedNameAttribute(): string
+    {
+        $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
+
+        return $this->{"name_{$locale}"} ?? $this->name_en;
+    }
 
     public function hotel(): BelongsTo
     {

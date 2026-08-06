@@ -3,8 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Api\ApiFormRequest;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
+use Spatie\ValidationRules\Rules\CountryCode;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Propaganistas\LaravelPhone\PhoneNumber;
@@ -38,6 +37,8 @@ class RegisterRequest extends ApiFormRequest
         return [
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email:rfc', 'max:255', 'unique:users'],
+            'nationality' => ['required', new CountryCode()],
+            'nationality_category' => [Rule::requiredIf(fn () => $this->input('nationality') === 'SY'), 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
             'phone_number' => ['required',
                 'string',
                 'max:25',

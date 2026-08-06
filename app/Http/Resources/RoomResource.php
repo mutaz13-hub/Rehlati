@@ -26,22 +26,11 @@ class RoomResource extends JsonResource
             'total_beds_count' => $this->whenLoaded('bedTypes', fn () => $this->total_beds_count),
             'total_bed_capacity' => $this->whenLoaded('bedTypes', fn () => $this->total_bed_capacity),
 
-            'room_type' => $this->room_type?->value,
-            'bed_type' => $this->bed_type?->value,
+            
 
             'prices' => $this->whenLoaded('prices', function () {
-                return $this->prices->map(fn ($price) => [
-                    'id' => $price->id,
-                    'price_type' => $price->price_type,
-                    'nationality_category' => $price->nationality_category,
-                    'currency' => $price->currency,
-                    'amount' => (float) $price->amount,
-                    'season_id' => $price->season_id,
-                    'season_name' => $price->season?->name,
-                ])->values();
+                return PriceResource::collection($this->prices)->resolve();
             }),
-            'total_rooms' => $this->total_rooms,
-            'available_rooms' => $this->available_rooms,
 
             'hotel' => new HotelResource($this->whenLoaded('hotel')),
             'description' => new DescriptionResource($this->whenLoaded('description')),
@@ -49,14 +38,12 @@ class RoomResource extends JsonResource
             'amenities' => $this->relationLoaded('amenities') ? AmenityResource::collection($this->amenities->take(4)) : null,
 
             'beds' => $this->whenLoaded('bedTypes', function () {
-                return $this->bedTypes->map(fn ($bedType) => [
-                    'id' => $bedType->id,
-                    'name' => $bedType->localized_name,
-                    'slug' => $bedType->slug,
-                    'default_capacity' => $bedType->default_capacity,
-                    'quantity' => $bedType->pivot->quantity,
-                    'assigned_capacity' => $bedType->pivot->assigned_capacity,
-                ])->values();
+                return $this->bedTypes->map(fn ($bedType) => array_merge(
+                    (new BedTypeResource($bedType))->resolve(),
+                    [
+                        'capacity' => $bedType->pivot->assigned_capacity,
+                    ]
+                ))->values();
             }),
 
             'pics' => $this->when($request_type === 'show', fn () => PictureResource::collection(

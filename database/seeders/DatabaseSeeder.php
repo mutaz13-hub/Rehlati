@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
            UserSeeder::class,
            RatingSeeder::class,
            AdminSeeder::class,
+           BedTypeSeeder::class,
         ]);
     }
 }

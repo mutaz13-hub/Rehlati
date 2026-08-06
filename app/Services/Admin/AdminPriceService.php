@@ -3,10 +3,12 @@
 namespace App\Services\Admin;
 
 use App\Models\Price;
+use App\Models\Season;
 use App\Services\PriceUserService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AdminPriceService
 {
@@ -18,6 +20,8 @@ class AdminPriceService
     public function storePrice(Model $priceable, array $data): Price
     {
         return DB::transaction(function () use ($priceable, $data) {
+            $this->ensureSeasonMatchesPriceable($priceable, $data['season_id'] ?? null);
+
             $price = $priceable->prices()->create([
                 'price_type' => $data['price_type'],
                 'nationality_category' => $data['nationality_category'],
@@ -36,10 +40,10 @@ class AdminPriceService
     {
         return DB::transaction(function () use ($price, $data) {
             $originalSeasonId = $price->season_id;
+            $priceable = $price->priceable;
+            $this->ensureSeasonMatchesPriceable($priceable, $data['season_id'] ?? null);
             $originalNationality = $price->nationality_category;
             $originalPriceType = $price->price_type;
-            $priceable = $price->priceable;
-
             $updates = array_filter([
                 'price_type' => $data['price_type'] ?? null,
                 'nationality_category' => $data['nationality_category'] ?? null,
@@ -88,7 +92,7 @@ class AdminPriceService
     {
         DB::transaction(function () use ($price) {
             $priceable = $price->priceable;
-            $price->delete();
+            Price::destroy($price->getKey());
 
             $this->flushRelatedCaches($priceable, $price);
         });
@@ -103,6 +107,21 @@ class AdminPriceService
             }
             return $results;
         });
+    }
+
+    private function ensureSeasonMatchesPriceable(Model $priceable, ?int $seasonId): void
+    {
+        if ($seasonId === null) {
+            return;
+        }
+
+        $season = Season::query()->find($seasonId);
+
+        if (!$season || !$season->isFor($priceable)) {
+            throw ValidationException::withMessages([
+                'season_id' => [__('The selected season is not related to this priceable target.')],
+            ]);
+        }
     }
 
     private function flushRelatedCaches(Model $priceable, Price $price, bool $deep = false): void

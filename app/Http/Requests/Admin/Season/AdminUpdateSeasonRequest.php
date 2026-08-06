@@ -15,11 +15,12 @@ class AdminUpdateSeasonRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'name' => ['sometimes', 'string', 'max:255'],
+            'name_en' => ['sometimes', 'string', 'max:255'],
             'name_ar' => ['nullable', 'string', 'max:255'],
             'start_date' => ['sometimes', 'date', 'before_or_equal:end_date'],
             'end_date' => ['sometimes', 'date', 'after_or_equal:start_date'],
-            'description' => ['nullable', 'string'],
+            'seasonable_type' => ['nullable', 'string'],
+            'seasonable_id' => ['nullable', 'integer'],
         ];
     }
 }

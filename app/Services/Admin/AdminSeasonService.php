@@ -13,19 +13,20 @@ class AdminSeasonService
     ) {
     }
 
-    public function store(array $data): Season
+    public function store(array $data): void
     {
-        return DB::transaction(function () use ($data) {
+         DB::transaction(function () use ($data) {
             $season = Season::create([
-                'name' => $data['name'],
+                'name_en' => $data['name_en'],
+                'name_ar' => $data['name_ar'] ?? null,
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
+                'seasonable_type' => $data['seasonable_type'] ?? null,
+                'seasonable_id' => $data['seasonable_id'] ?? null,
             ]);
 
             $this->priceUserService->clearSeasonsCaches();
             $this->priceUserService->clearPricesCaches();
-
-            return $season;
         });
     }
 
@@ -33,9 +34,12 @@ class AdminSeasonService
     {
         return DB::transaction(function () use ($season, $data) {
             $season->update(array_filter([
-                'name' => $data['name'] ?? null,
+                'name_en' => $data['name_en'] ?? null,
+                'name_ar' => $data['name_ar'] ?? null,
                 'start_date' => $data['start_date'] ?? null,
                 'end_date' => $data['end_date'] ?? null,
+                'seasonable_type' => $data['seasonable_type'] ?? null,
+                'seasonable_id' => $data['seasonable_id'] ?? null,
             ], fn ($value) => $value !== null));
 
             $this->priceUserService->clearSeasonsCaches();
@@ -49,7 +53,7 @@ class AdminSeasonService
     {
         DB::transaction(function () use ($season) {
             $season->prices()->update(['season_id' => null]);
-            $season->delete();
+            $season->forceDelete();
 
             $this->priceUserService->clearSeasonsCaches();
             $this->priceUserService->clearPricesCaches();

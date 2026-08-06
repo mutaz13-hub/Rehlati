@@ -21,14 +21,21 @@ class AdminRoomController extends Controller
 
     public function index(Hotel $hotel)
     {
-        $rooms = $hotel->rooms()->with(['description', 'amenities', 'bedTypes'])->paginate(15);
+        $rooms = $hotel->rooms()->with(['description', 'amenities', 'bedTypes', 'prices.season'])->paginate(5);
 
-        return AdminRoomResource::collection($rooms);
+        return $this->succeed(__('Rooms retrieved successfully'), [
+            'rooms' => AdminRoomResource::collection($rooms),
+            'meta' => [
+                'current_page' => $rooms->currentPage(),
+                'last_page' => $rooms->lastPage(),
+                'total' => $rooms->total()
+            ] 
+        ]);
     }
 
     public function show(Room $room)
     {
-        return new AdminRoomResource($room->load(['hotel.location', 'description', 'amenities', 'bedTypes']));
+        return new AdminRoomResource($room->load(['hotel.location', 'description', 'amenities', 'bedTypes', 'prices.season']));
     }
 
     public function amenities(Room $room)
@@ -60,6 +67,6 @@ class AdminRoomController extends Controller
 
         $this->room_service->delete($room);
 
-        return response()->json(__('Rome deleted successfully'));
+        return $this->succeed(__('Rome deleted successfully'));
     }
 }

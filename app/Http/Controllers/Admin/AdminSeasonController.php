@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Season\AdminStoreSeasonRequest;
 use App\Http\Requests\Admin\Season\AdminUpdateSeasonRequest;
+use App\Http\Resources\Admin\AdminSeasonResource;
 use App\Models\Season;
 use App\Services\Admin\AdminSeasonService;
 use App\Services\PriceUserService;
@@ -36,24 +37,22 @@ class AdminSeasonController extends Controller
         $seasons = $query->orderBy('start_date')->paginate(30);
 
         return $this->succeed(__('Seasons retrieved'), [
-            'seasons' => $seasons,
+            'seasons' => AdminSeasonResource::collection($seasons),
         ]);
     }
 
     public function show(Season $season): JsonResponse
     {
         return $this->succeed(__('Season details'), [
-            'season' => $season->loadCount('prices'),
+            'season' => new AdminSeasonResource($season->loadCount('prices')),
         ]);
     }
 
     public function store(AdminStoreSeasonRequest $request): JsonResponse
     {
-        $season = $this->seasonService->store($request->validated());
+         $this->seasonService->store($request->validated());
 
-        return $this->succeed(__('Season created'), [
-            'season' => $season,
-        ], 201);
+        return $this->succeed(__('Season created'), [], 201);
     }
 
     public function update(AdminUpdateSeasonRequest $request, Season $season): JsonResponse
@@ -61,7 +60,7 @@ class AdminSeasonController extends Controller
         $updated = $this->seasonService->update($season, $request->validated());
 
         return $this->succeed(__('Season updated'), [
-            'season' => $updated,
+            'season' => new AdminSeasonResource($updated),
         ]);
     }
 
@@ -77,7 +76,7 @@ class AdminSeasonController extends Controller
         $season = $this->priceUserService->resolveActiveSeason();
 
         return $this->succeed(__('Current season'), [
-            'season' => $season,
+            'season' => $season ? new AdminSeasonResource($season) : null,
         ]);
     }
 

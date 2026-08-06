@@ -30,8 +30,6 @@ class AdminRoomService
                 'max_adults' => $data['max_adults'],
                 'max_children' => $data['max_children'],
                 'max_guests' => $data['max_guests'],
-                'room_type' => $data['room_type'] ?? null,
-                'bed_type' => $data['bed_type'] ?? null,
                 'total_rooms' => $data['total_rooms'],
                 'available_rooms' => $data['available_rooms'],
             ]);
@@ -75,8 +73,6 @@ class AdminRoomService
                 'max_adults' => $data['max_adults'] ?? null,
                 'max_children' => $data['max_children'] ?? null,
                 'max_guests' => $data['max_guests'] ?? null,
-                'room_type' => $data['room_type'] ?? null,
-                'bed_type' => $data['bed_type'] ?? null,
                 'total_rooms' => $data['total_rooms'] ?? null,
                 'available_rooms' => $data['available_rooms'] ?? null,
             ], fn ($value) => $value !== null));

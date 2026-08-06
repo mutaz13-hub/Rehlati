@@ -21,7 +21,7 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
     Route::middleware(['web', 'auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('hotels', AdminHotelController::class);
     Route::get('hotels/{hotel}/amenities', [AdminHotelController::class, 'amenities']);
-    Route::get('hotels/{hotel}/rooms', [AdminRoomController::class, 'index']);
+    Route::get('/hotels/{hotel}/rooms', [AdminRoomController::class, 'index']);
     Route::get('/hotels/{hotel}/ratings', [RatingController::class, 'indexForHotel']);
     Route::get('/hotels/{hotel}/pictures', [PictureController::class, 'hotel']);
      Route::post('hotels/{hotel}/pictures', [AdminHotelController::class, 'updatePictures']);
@@ -47,8 +47,8 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
     Route::get('rooms/{room}/amenities', [AdminRoomController::class, 'amenities']);
     Route::get('/rooms/{room}/ratings', [RatingController::class, 'indexForRoom']);
     Route::post('hotels/{hotel}/rooms', [AdminRoomController::class, 'store']);
-    Route::put('hotels/{hotel}/rooms/{room}', [AdminRoomController::class, 'update']);
-    Route::delete('hotels/{hotel}/rooms/{room}', [AdminRoomController::class, 'destroy']);
+    Route::put('/rooms/{room}', [AdminRoomController::class, 'update']);
+    Route::delete('/rooms/{room}', [AdminRoomController::class, 'destroy']);
 
     Route::post('amenities', [AdminAmenityController::class, 'store']);
     Route::put('amenities/{amenity}', [AdminAmenityController::class, 'update']);
@@ -58,7 +58,7 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
 
     Route::get('seasons/current', [AdminSeasonController::class, 'current'])->name('seasons.current');
     Route::post('seasons/clear-caches', [AdminSeasonController::class, 'clearCaches'])->name('seasons.clear-caches');
-    Route::apiResource('seasons', AdminSeasonController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+    Route::apiResource('seasons', AdminSeasonController::class);
 
     Route::get('exchange-rates/clear-caches', [AdminExchangeRateController::class, 'clearCaches'])->name('exchange-rates.clear-caches');
     Route::post('exchange-rates/bulk', [AdminExchangeRateController::class, 'bulkUpsert'])->name('exchange-rates.bulk');

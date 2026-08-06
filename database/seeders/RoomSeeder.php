@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\BedType;
-use App\Enums\RoomType;
 use App\Models\Hotel;
 use App\Models\Room;
 use Illuminate\Database\Seeder;
@@ -20,8 +18,7 @@ class RoomSeeder extends Seeder
                 [
                     'name_en' => 'Deluxe King Room',
                     'name_ar' => 'غرفة ديلوكس بسرير كينغ',
-                    'room_type' => RoomType::DELUXE,
-                    'bed_type' => BedType::KING,
+                    
                     'description_en' => 'A bright and spacious room with a king-size bed, a comfortable seating area, and views over the city.',
                     'description_ar' => 'غرفة مشرقة وواسعة تضم سريراً بحجم كينغ ومنطقة جلوس مريحة وإطلالة على المدينة.',
                     'base_price_usd' => 40 + ($hotel->stars * 20),
@@ -31,8 +28,7 @@ class RoomSeeder extends Seeder
                 [
                     'name_en' => 'Family Twin Suite',
                     'name_ar' => 'جناح عائلي بسريرين منفصلين',
-                    'room_type' => RoomType::SUITE,
-                    'bed_type' => BedType::TWIN,
+                    
                     'description_en' => 'A welcoming family suite with two twin beds, extra living space, and everything needed for a relaxed stay.',
                     'description_ar' => 'جناح عائلي مريح يضم سريرين منفصلين ومساحة معيشة إضافية وكل ما يلزم لإقامة هادئة.',
                     'base_price_usd' => 65 + ($hotel->stars * 20),
@@ -51,8 +47,6 @@ class RoomSeeder extends Seeder
                     ['hotel_id' => $hotel->id, 'name_en' => $data['name_en']],
                     [
                         'name_ar' => $data['name_ar'],
-                        'room_type' => $data['room_type'],
-                        'bed_type' => $data['bed_type'],
                         'total_rooms' => $data['total_rooms'],
                         'available_rooms' => $data['available_rooms'],
                     ]

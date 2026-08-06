@@ -34,7 +34,7 @@ class HotelController extends Controller
     public function show(Hotel $hotel): JsonResponse
     {
         return $this->succeed(__('Hotel retrieved successfully'), new HotelResource(
-            $hotel->load(['rooms.description', 'rooms.amenities', 'location', 'city.location', 'description', 'amenities', 'myReview', 'topReviews.user'])
+            $hotel->load(['rooms.description', 'rooms.bedTypes', 'rooms.amenities', 'location', 'city.location', 'description', 'amenities', 'myReview', 'topReviews.user'])
                 ->loadCount(['rooms', 'reviews'])
                 ->loadAvg('reviews', 'rate')
         ));

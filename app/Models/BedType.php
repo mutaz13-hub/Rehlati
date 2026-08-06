@@ -12,8 +12,6 @@ class BedType extends Model
         'name_en',
         'name_ar',
         'default_capacity',
-        'description_en',
-        'description_ar',
     ];
 
     protected function casts(): array
@@ -28,13 +26,6 @@ class BedType extends Model
         $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
 
         return $this->{"name_{$locale}"} ?? $this->name_en;
-    }
-
-    public function getLocalizedDescriptionAttribute(): ?string
-    {
-        $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
-
-        return $this->{"description_{$locale}"} ?? $this->description_en;
     }
 
     public function rooms(): BelongsToMany

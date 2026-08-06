@@ -134,6 +134,7 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             $setRequestLocale($request);
+           
 
             return $apiError(404, __('Resource Not Found'));
         });

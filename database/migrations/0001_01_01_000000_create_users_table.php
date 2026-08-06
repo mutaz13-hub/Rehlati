@@ -19,6 +19,9 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->string('nationality')->nullable();
+            $table->enum('nationality_category', ['syrian', 'expat', 'foreigner'])
+                ->default('syrian');
             $table->rememberToken();
             $table->timestamps();
         });

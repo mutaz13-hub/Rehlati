@@ -13,8 +13,6 @@ return new class extends Migration
             $table->string('name_en');
             $table->string('name_ar');
             $table->unsignedInteger('default_capacity')->default(1);
-            $table->text('description_en')->nullable();
-            $table->text('description_ar')->nullable();
             $table->timestamps();
         });
     }

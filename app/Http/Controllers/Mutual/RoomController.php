@@ -14,14 +14,14 @@ class RoomController extends Controller
 {
     public function index(Hotel $hotel)
     {
-        $rooms = $hotel->rooms()->with(['description', 'amenities'])->paginate(15);
+        $rooms = $hotel->rooms()->with(['description', 'amenities', 'bedTypes', 'prices.season'])->paginate(15);
 
         return RoomResource::collection($rooms);
     }
 
     public function show(Room $room)
     {
-        return new RoomResource($room->load(['hotel.location', 'description', 'amenities']));
+        return new RoomResource($room->load(['hotel.location', 'description', 'amenities', 'bedTypes', 'prices.season']));
     }
 
     /**
