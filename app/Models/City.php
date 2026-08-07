@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -13,18 +15,27 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class City extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use HasFactory, InteractsWithMedia;
 
     public const MORPH_KEY = 'city';
+
     protected $fillable = [
         'name_en',
         'name_ar',
+        'status',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'status' => Status::class,
+        ];
+    }
 
     public function getLocalizedNameAttribute(): string
     {
-        $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
-        
+        $locale = Cache::get('lang_for_user: '.auth()->id(), app()->getLocale());
+
         return $this->{"name_{$locale}"} ?? $this->name_en;
     }
 
@@ -83,8 +94,10 @@ class City extends Model implements HasMedia
 
     public function getCanReviewAttribute(): bool
     {
-        if($this->myReview()->exists())
+        if ($this->myReview()->exists()) {
             return false;
+        }
+
         return true;
     }
 
@@ -96,6 +109,11 @@ class City extends Model implements HasMedia
     public function tags(): MorphToMany
     {
         return $this->morphToMany(Tag::class, 'taggable');
+    }
+
+    public function packages(): MorphToMany
+    {
+        return $this->morphToMany(Package::class, 'packageable');
     }
 
     public function registerMediaCollections(): void

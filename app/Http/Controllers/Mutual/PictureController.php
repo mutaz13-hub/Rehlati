@@ -6,22 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PictureResource;
 use App\Models\City;
 use App\Models\Hotel;
+use App\Models\Package;
 use App\Models\Region;
 use App\Services\PictureService;
 
 class PictureController extends Controller
 {
-    public function __construct(public PictureService $pic_service){}
-    
+    public function __construct(public PictureService $pic_service) {}
+
     public function city(City $city)
     {
         $pictures = $this->pic_service->city($city);
 
         $resource = PictureResource::collection($pictures)->response()->getData(true);
 
-        return $this->succeed(__('Pictures retrieved successfully'),[ 
-           'pics' => $resource['data'],
-           'meta' => $resource['meta']
+        return $this->succeed(__('Pictures retrieved successfully'), [
+            'pics' => $resource['data'],
+            'meta' => $resource['meta'],
         ]);
     }
 
@@ -30,9 +31,9 @@ class PictureController extends Controller
         $pictures = $this->pic_service->region($region);
         $resource = PictureResource::collection($pictures)->response()->getData(true);
 
-        return $this->succeed(__('Pictures retrieved successfully'),[
+        return $this->succeed(__('Pictures retrieved successfully'), [
             'pics' => $resource['data'],
-            'meta' => $resource['meta']
+            'meta' => $resource['meta'],
         ]);
     }
 
@@ -41,9 +42,20 @@ class PictureController extends Controller
         $pictures = $this->pic_service->hotel($hotel);
         $resource = PictureResource::collection($pictures)->response()->getData(true);
 
-        return $this->succeed(__('Pictures retrieved successfully'),[
+        return $this->succeed(__('Pictures retrieved successfully'), [
             'pics' => $resource['data'],
-            'meta' => $resource['meta']
+            'meta' => $resource['meta'],
+        ]);
+    }
+
+    public function package(Package $package)
+    {
+        $pictures = $this->pic_service->package($package);
+        $resource = PictureResource::collection($pictures)->response()->getData(true);
+
+        return $this->succeed(__('Pictures retrieved successfully'), [
+            'pics' => $resource['data'],
+            'meta' => $resource['meta'],
         ]);
     }
 }

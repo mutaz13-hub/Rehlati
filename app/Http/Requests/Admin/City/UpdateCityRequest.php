@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Admin\City;
 
+use App\Enums\Status;
 use App\Http\Requests\Api\ApiFormRequest;
 use App\Models\City;
 use App\Models\Location;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class UpdateCityRequest extends ApiFormRequest
@@ -26,6 +26,7 @@ class UpdateCityRequest extends ApiFormRequest
             'name_ar' => ['required', 'string', 'max:255', Rule::unique('cities', 'name_ar')->ignore($cityId)],
             'description_en' => ['nullable', 'string', 'max:10000'],
             'description_ar' => ['nullable', 'string', 'max:10000'],
+            'status' => ['sometimes', 'string', Rule::in(Status::values())],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['integer', 'exists:tags,id'],
             'longitude' => [

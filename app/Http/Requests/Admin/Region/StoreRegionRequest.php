@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin\Region;
 
+use App\Enums\Status;
 use App\Http\Requests\Api\ApiFormRequest;
 use App\Models\Location;
 use Illuminate\Validation\Rule;
@@ -37,6 +38,7 @@ class StoreRegionRequest extends ApiFormRequest
             ],
             'description_en' => ['nullable', 'string', 'max:10000'],
             'description_ar' => ['nullable', 'string', 'max:10000'],
+            'status' => ['sometimes', 'string', Rule::in(Status::values())],
             'pics' => ['nullable', 'array'],
             'pics.*' => ['image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'tags' => ['nullable', 'array'],

@@ -17,8 +17,9 @@ class AdminRegionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->localized_name,
+            'status' => $this->status?->value,
             'location' => new LocationResource($this->whenLoaded('location')),
-            //'city_id' => $this->city_id,
+            // 'city_id' => $this->city_id,
             'city' => new CityResource($this->whenLoaded('city')),
             'description' => new DescriptionResource($this->whenLoaded('description')),
             'pics' => $this->when($request_type === 'show', fn () => PictureResource::collection(

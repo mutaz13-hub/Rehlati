@@ -1793,6 +1793,504 @@
                 }
             }
         },
+        "/admin/packages": {
+            "get": {
+                "operationId": "admin.packages.index",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Packages fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "packages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/AdminPackageResource"
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "per_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "total": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "per_page",
+                                                        "total"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "packages",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "admin.packages.store",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePackageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Package created successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "minItems": 0,
+                                            "maxItems": 0,
+                                            "additionalItems": false
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/admin/packages/{package}": {
+            "get": {
+                "operationId": "admin.packages.show",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Package fetched successfully"
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AdminPackageResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "description"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "admin.packages.update",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePackageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Package updated successfully"
+                                        },
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/AdminPackageResource"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "required": [
+                                                        "description"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "admin.packages.destroy",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Package deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/packages/{package}/pictures": {
+            "post": {
+                "operationId": "adminPackage.updatePictures",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePackagePicturesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Package pictures updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "get": {
+                "operationId": "picture.package",
+                "tags": [
+                    "Picture"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Pictures retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "pics": {
+                                                    "type": "string"
+                                                },
+                                                "meta": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "pics",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/packages/{package}/thumbnails": {
+            "post": {
+                "operationId": "adminPackage.updateThumbnails",
+                "tags": [
+                    "AdminPackage"
+                ],
+                "parameters": [
+                    {
+                        "name": "package",
+                        "in": "path",
+                        "required": true,
+                        "description": "The package ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdatePackageThumbnailsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Package thumbnails updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
         "/admin/prices/clear-caches": {
             "get": {
                 "operationId": "admin.prices.clear-caches",
@@ -2791,152 +3289,66 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated set of `RoomResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Rooms retrieved successfully"
+                                        },
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "allOf": [
-                                                    {
-                                                        "$ref": "#/components/schemas/RoomResource"
-                                                    },
-                                                    {
-                                                        "type": "object",
-                                                        "required": [
-                                                            "total_beds_count",
-                                                            "total_bed_capacity",
-                                                            "description",
-                                                            "beds"
-                                                        ]
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "links": {
                                             "type": "object",
                                             "properties": {
-                                                "first": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "last": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "prev": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "next": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "first",
-                                                "last",
-                                                "prev",
-                                                "next"
-                                            ]
-                                        },
-                                        "meta": {
-                                            "type": "object",
-                                            "properties": {
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "from": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "minimum": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "links": {
+                                                "rooms": {
                                                     "type": "array",
-                                                    "description": "Generated paginator links.",
                                                     "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/AdminRoomResource"
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "required": [
+                                                                    "prices",
+                                                                    "description",
+                                                                    "beds"
                                                                 ]
-                                                            },
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "active": {
-                                                                "type": "boolean"
                                                             }
-                                                        },
-                                                        "required": [
-                                                            "url",
-                                                            "label",
-                                                            "active"
                                                         ]
                                                     }
                                                 },
-                                                "path": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ],
-                                                    "description": "Base path for paginator generated URLs."
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "description": "Number of items shown per page.",
-                                                    "minimum": 0
-                                                },
-                                                "to": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "description": "Number of the last item in the slice.",
-                                                    "minimum": 1
-                                                },
-                                                "total": {
-                                                    "type": "integer",
-                                                    "description": "Total number of items being paginated.",
-                                                    "minimum": 0
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "total"
+                                                    ]
                                                 }
                                             },
                                             "required": [
-                                                "current_page",
-                                                "from",
-                                                "last_page",
-                                                "links",
-                                                "path",
-                                                "per_page",
-                                                "to",
-                                                "total"
+                                                "rooms",
+                                                "meta"
                                             ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "links",
-                                        "meta"
+                                        "message",
+                                        "data"
                                     ]
                                 }
                             }
@@ -3051,8 +3463,7 @@
                                         {
                                             "type": "object",
                                             "required": [
-                                                "total_beds_count",
-                                                "total_bed_capacity",
+                                                "prices",
                                                 "hotel",
                                                 "description",
                                                 "beds"
@@ -3062,6 +3473,121 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "adminRoom.update",
+                "tags": [
+                    "AdminRoom"
+                ],
+                "parameters": [
+                    {
+                        "name": "room",
+                        "in": "path",
+                        "required": true,
+                        "description": "The room ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AdminUpdateRoomRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Room updated"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "adminRoom.destroy",
+                "tags": [
+                    "AdminRoom"
+                ],
+                "parameters": [
+                    {
+                        "name": "room",
+                        "in": "path",
+                        "required": true,
+                        "description": "The room ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Rome deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -3133,128 +3659,6 @@
                 }
             }
         },
-        "/admin/hotels/{hotel}/rooms/{room}": {
-            "put": {
-                "operationId": "adminRoom.update",
-                "tags": [
-                    "AdminRoom"
-                ],
-                "parameters": [
-                    {
-                        "name": "hotel",
-                        "in": "path",
-                        "required": true,
-                        "description": "The hotel ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "room",
-                        "in": "path",
-                        "required": true,
-                        "description": "The room ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AdminUpdateRoomRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "const": "Room updated"
-                                        },
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "adminRoom.destroy",
-                "tags": [
-                    "AdminRoom"
-                ],
-                "parameters": [
-                    {
-                        "name": "hotel",
-                        "in": "path",
-                        "required": true,
-                        "description": "The hotel ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "room",
-                        "in": "path",
-                        "required": true,
-                        "description": "The room ID",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string",
-                                    "const": "Rome deleted successfully"
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
-                    },
-                    "404": {
-                        "$ref": "#/components/responses/ModelNotFoundException"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
         "/admin/seasons/current": {
             "get": {
                 "operationId": "admin.seasons.current",
@@ -3279,7 +3683,7 @@
                                                 "season": {
                                                     "anyOf": [
                                                         {
-                                                            "$ref": "#/components/schemas/Season"
+                                                            "$ref": "#/components/schemas/AdminSeasonResource"
                                                         },
                                                         {
                                                             "type": "null"
@@ -3364,120 +3768,10 @@
                                             "type": "object",
                                             "properties": {
                                                 "seasons": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "current_page": {
-                                                            "type": "integer",
-                                                            "minimum": 1
-                                                        },
-                                                        "data": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "$ref": "#/components/schemas/Season"
-                                                            }
-                                                        },
-                                                        "first_page_url": {
-                                                            "type": [
-                                                                "string",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "from": {
-                                                            "type": [
-                                                                "integer",
-                                                                "null"
-                                                            ],
-                                                            "minimum": 1
-                                                        },
-                                                        "last_page_url": {
-                                                            "type": [
-                                                                "string",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "last_page": {
-                                                            "type": "integer",
-                                                            "minimum": 1
-                                                        },
-                                                        "links": {
-                                                            "type": "array",
-                                                            "description": "Generated paginator links.",
-                                                            "items": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "url": {
-                                                                        "type": [
-                                                                            "string",
-                                                                            "null"
-                                                                        ]
-                                                                    },
-                                                                    "label": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "active": {
-                                                                        "type": "boolean"
-                                                                    }
-                                                                },
-                                                                "required": [
-                                                                    "url",
-                                                                    "label",
-                                                                    "active"
-                                                                ]
-                                                            }
-                                                        },
-                                                        "next_page_url": {
-                                                            "type": [
-                                                                "string",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "path": {
-                                                            "type": [
-                                                                "string",
-                                                                "null"
-                                                            ],
-                                                            "description": "Base path for paginator generated URLs."
-                                                        },
-                                                        "per_page": {
-                                                            "type": "integer",
-                                                            "description": "Number of items shown per page.",
-                                                            "minimum": 0
-                                                        },
-                                                        "prev_page_url": {
-                                                            "type": [
-                                                                "string",
-                                                                "null"
-                                                            ]
-                                                        },
-                                                        "to": {
-                                                            "type": [
-                                                                "integer",
-                                                                "null"
-                                                            ],
-                                                            "description": "Number of the last item in the slice.",
-                                                            "minimum": 1
-                                                        },
-                                                        "total": {
-                                                            "type": "integer",
-                                                            "description": "Total number of items being paginated.",
-                                                            "minimum": 0
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "current_page",
-                                                        "data",
-                                                        "first_page_url",
-                                                        "from",
-                                                        "last_page_url",
-                                                        "last_page",
-                                                        "links",
-                                                        "next_page_url",
-                                                        "path",
-                                                        "per_page",
-                                                        "prev_page_url",
-                                                        "to",
-                                                        "total"
-                                                    ]
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/AdminSeasonResource"
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -3526,15 +3820,13 @@
                                             "const": "Season created"
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "season": {
-                                                    "$ref": "#/components/schemas/Season"
-                                                }
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
                                             },
-                                            "required": [
-                                                "season"
-                                            ]
+                                            "minItems": 0,
+                                            "maxItems": 0,
+                                            "additionalItems": false
                                         }
                                     },
                                     "required": [
@@ -3587,7 +3879,7 @@
                                             "type": "object",
                                             "properties": {
                                                 "season": {
-                                                    "$ref": "#/components/schemas/Season"
+                                                    "$ref": "#/components/schemas/AdminSeasonResource"
                                                 }
                                             },
                                             "required": [
@@ -3652,7 +3944,7 @@
                                             "type": "object",
                                             "properties": {
                                                 "season": {
-                                                    "$ref": "#/components/schemas/Season"
+                                                    "$ref": "#/components/schemas/AdminSeasonResource"
                                                 }
                                             },
                                             "required": [
@@ -4568,6 +4860,12 @@
                     "name": {
                         "type": "string"
                     },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "location": {
                         "$ref": "#/components/schemas/LocationResource"
                     },
@@ -4639,7 +4937,8 @@
                 },
                 "required": [
                     "id",
-                    "name"
+                    "name",
+                    "status"
                 ],
                 "title": "AdminCityResource"
             },
@@ -4736,6 +5035,154 @@
                 ],
                 "title": "AdminHotelResource"
             },
+            "AdminPackageResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "name_en": {
+                        "type": "string"
+                    },
+                    "name_ar": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/DescriptionResource"
+                    },
+                    "start_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "end_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "duration_days": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "pics": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PictureResource"
+                        }
+                    },
+                    "thumbnails": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PictureResource"
+                        }
+                    },
+                    "regions": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "cities": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "hotels": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "car_agencies": {
+                        "type": "array",
+                        "items": {}
+                    },
+                    "regions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RegionResource"
+                        }
+                    },
+                    "cities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/App.Http.Resources.CityResource"
+                        }
+                    },
+                    "hotels": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/HotelResource"
+                        }
+                    },
+                    "car_agencies": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CarAgencyResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "start_date",
+                    "end_date",
+                    "duration_days",
+                    "price",
+                    "currency",
+                    "status",
+                    "regions",
+                    "cities",
+                    "hotels",
+                    "car_agencies"
+                ],
+                "title": "AdminPackageResource"
+            },
+            "AdminPriceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "price_type": {
+                        "type": "string"
+                    },
+                    "nationality_category": {
+                        "type": "string"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "season": {
+                        "$ref": "#/components/schemas/AdminSeasonResource"
+                    }
+                },
+                "required": [
+                    "id",
+                    "price_type",
+                    "nationality_category",
+                    "currency",
+                    "amount"
+                ],
+                "title": "AdminPriceResource"
+            },
             "AdminRegionResource": {
                 "type": "object",
                 "properties": {
@@ -4744,6 +5191,12 @@
                     },
                     "name": {
                         "type": "string"
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "location": {
                         "$ref": "#/components/schemas/LocationResource"
@@ -4777,6 +5230,7 @@
                 "required": [
                     "id",
                     "name",
+                    "status",
                     "thumbnails"
                 ],
                 "title": "AdminRegionResource"
@@ -4820,14 +5274,11 @@
                     "max_guests": {
                         "type": "string"
                     },
-                    "total_beds_count": {
-                        "type": "string"
-                    },
-                    "total_bed_capacity": {
-                        "type": "string"
-                    },
                     "prices": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminPriceResource"
+                        }
                     },
                     "total_rooms": {
                         "type": "string"
@@ -4836,7 +5287,7 @@
                         "type": "string"
                     },
                     "hotel": {
-                        "$ref": "#/components/schemas/HotelResource"
+                        "$ref": "#/components/schemas/App.Http.Resources.Admin.HotelResource"
                     },
                     "description": {
                         "$ref": "#/components/schemas/DescriptionResource"
@@ -4847,7 +5298,7 @@
                             "null"
                         ],
                         "items": {
-                            "$ref": "#/components/schemas/AmenityResource"
+                            "$ref": "#/components/schemas/App.Http.Resources.Admin.AmenityResource"
                         }
                     },
                     "beds": {
@@ -4869,7 +5320,6 @@
                 "required": [
                     "id",
                     "hotel_id",
-                    "name",
                     "room_class",
                     "room_layout",
                     "max_adults",
@@ -4880,6 +5330,49 @@
                     "amenities"
                 ],
                 "title": "AdminRoomResource"
+            },
+            "AdminSeasonResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "name_en": {
+                        "type": "string"
+                    },
+                    "name_ar": {
+                        "type": "string"
+                    },
+                    "start_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "end_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "seasonable_type": {
+                        "type": "string"
+                    },
+                    "seasonable_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "start_date",
+                    "end_date",
+                    "seasonable_type",
+                    "seasonable_id"
+                ],
+                "title": "AdminSeasonResource"
             },
             "AdminStoreHotelRequest": {
                 "type": "object",
@@ -5054,20 +5547,7 @@
                         "minimum": 0
                     },
                     "max_guests": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "room_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "bed_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "integer"
                     },
                     "total_rooms": {
                         "type": "integer",
@@ -5123,7 +5603,8 @@
                                 "assigned_capacity"
                             ]
                         },
-                        "minItems": 1
+                        "minItems": 1,
+                        "uniqueItems": true
                     },
                     "prices": {
                         "type": "array",
@@ -5134,8 +5615,7 @@
                                     "type": "string",
                                     "enum": [
                                         "base_price",
-                                        "extra_bed_price",
-                                        "package_price"
+                                        "extra_bed_price"
                                     ]
                                 },
                                 "nationality_category": {
@@ -5193,7 +5673,7 @@
             "AdminStoreSeasonRequest": {
                 "type": "object",
                 "properties": {
-                    "name": {
+                    "name_en": {
                         "type": "string",
                         "maxLength": 255
                     },
@@ -5212,15 +5692,27 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "description": {
+                    "seasonable_type": {
                         "type": [
                             "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "hotel",
+                            "package",
+                            "car_agency",
+                            null
+                        ]
+                    },
+                    "seasonable_id": {
+                        "type": [
+                            "integer",
                             "null"
                         ]
                     }
                 },
                 "required": [
-                    "name",
+                    "name_en",
                     "start_date",
                     "end_date"
                 ],
@@ -5460,20 +5952,7 @@
                         "minimum": 0
                     },
                     "max_guests": {
-                        "type": "integer",
-                        "minimum": 1
-                    },
-                    "room_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "bed_type": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "integer"
                     },
                     "total_rooms": {
                         "type": "integer",
@@ -5522,9 +6001,15 @@
                                     "type": "integer",
                                     "minimum": 1
                                 }
-                            }
+                            },
+                            "required": [
+                                "bed_type_id",
+                                "quantity",
+                                "assigned_capacity"
+                            ]
                         },
-                        "minItems": 1
+                        "minItems": 1,
+                        "uniqueItems": true
                     },
                     "prices": {
                         "type": "array",
@@ -5535,8 +6020,7 @@
                                     "type": "string",
                                     "enum": [
                                         "base_price",
-                                        "extra_bed_price",
-                                        "package_price"
+                                        "extra_bed_price"
                                     ]
                                 },
                                 "nationality_category": {
@@ -5565,17 +6049,36 @@
                                         "null"
                                     ]
                                 }
-                            }
+                            },
+                            "required": [
+                                "price_type",
+                                "nationality_category",
+                                "currency",
+                                "amount"
+                            ]
                         },
                         "minItems": 1
                     }
                 },
+                "required": [
+                    "name_en",
+                    "name_ar",
+                    "room_class",
+                    "room_layout",
+                    "max_adults",
+                    "max_children",
+                    "max_guests",
+                    "total_rooms",
+                    "available_rooms",
+                    "beds",
+                    "prices"
+                ],
                 "title": "AdminUpdateRoomRequest"
             },
             "AdminUpdateSeasonRequest": {
                 "type": "object",
                 "properties": {
-                    "name": {
+                    "name_en": {
                         "type": "string",
                         "maxLength": 255
                     },
@@ -5594,9 +6097,15 @@
                         "type": "string",
                         "format": "date-time"
                     },
-                    "description": {
+                    "seasonable_type": {
                         "type": [
                             "string",
+                            "null"
+                        ]
+                    },
+                    "seasonable_id": {
+                        "type": [
+                            "integer",
                             "null"
                         ]
                     }
@@ -5649,6 +6158,102 @@
                 ],
                 "title": "App.Http.Resources.Admin.AmenityResource"
             },
+            "App.Http.Resources.Admin.HotelResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "stars": {
+                        "type": "string"
+                    },
+                    "city": {
+                        "$ref": "#/components/schemas/App.Http.Resources.CityResource"
+                    },
+                    "description": {
+                        "$ref": "#/components/schemas/DescriptionResource"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/LocationResource"
+                    },
+                    "total_reviews": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "average_rating": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "my_review": {
+                        "$ref": "#/components/schemas/RatingResource"
+                    },
+                    "top_reviews": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/RatingResource"
+                        }
+                    },
+                    "rooms": {
+                        "type": "array",
+                        "description": "'rooms_count' => $this->when(isset($this->rooms_count), $this->rooms_count),",
+                        "items": {
+                            "$ref": "#/components/schemas/RoomResource"
+                        }
+                    },
+                    "amenities": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "$ref": "#/components/schemas/AmenityResource"
+                        }
+                    },
+                    "pics": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PictureResource"
+                        }
+                    },
+                    "thumbnails": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PictureResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "stars",
+                    "total_reviews",
+                    "average_rating",
+                    "amenities",
+                    "thumbnails"
+                ],
+                "title": "App.Http.Resources.Admin.HotelResource"
+            },
             "App.Http.Resources.Admin.RoomResource": {
                 "type": "object",
                 "properties": {
@@ -5690,53 +6295,7 @@
                     },
                     "prices": {
                         "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "price_type": {
-                                    "type": "string"
-                                },
-                                "nationality_category": {
-                                    "type": "string"
-                                },
-                                "currency": {
-                                    "type": "string"
-                                },
-                                "amount": {
-                                    "type": "number"
-                                },
-                                "season_id": {
-                                    "type": [
-                                        "integer",
-                                        "null"
-                                    ]
-                                },
-                                "season_name": {
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ]
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "price_type",
-                                "nationality_category",
-                                "currency",
-                                "amount",
-                                "season_id",
-                                "season_name"
-                            ]
-                        }
-                    },
-                    "total_rooms": {
-                        "type": "integer"
-                    },
-                    "available_rooms": {
-                        "type": "integer"
+                        "items": {}
                     },
                     "hotel": {
                         "$ref": "#/components/schemas/HotelResource"
@@ -5756,35 +6315,8 @@
                     "beds": {
                         "type": "array",
                         "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "slug": {
-                                    "type": "string"
-                                },
-                                "default_capacity": {
-                                    "type": "integer"
-                                },
-                                "quantity": {
-                                    "type": "string"
-                                },
-                                "assigned_capacity": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "name",
-                                "slug",
-                                "default_capacity",
-                                "quantity",
-                                "assigned_capacity"
-                            ]
+                            "type": "array",
+                            "items": {}
                         }
                     },
                     "pics": {
@@ -5809,8 +6341,6 @@
                     "max_adults",
                     "max_children",
                     "max_guests",
-                    "total_rooms",
-                    "available_rooms",
                     "amenities"
                 ],
                 "title": "App.Http.Resources.Admin.RoomResource"
@@ -5824,6 +6354,12 @@
                     "name": {
                         "type": "string"
                     },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "location": {
                         "$ref": "#/components/schemas/LocationResource"
                     },
@@ -5901,9 +6437,29 @@
                 },
                 "required": [
                     "id",
-                    "name"
+                    "name",
+                    "status"
                 ],
                 "title": "App.Http.Resources.CityResource"
+            },
+            "CarAgencyResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status"
+                ],
+                "title": "CarAgencyResource"
             },
             "CityResource": {
                 "type": "object",
@@ -5914,6 +6470,12 @@
                     "name": {
                         "type": "string"
                     },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "location": {
                         "$ref": "#/components/schemas/LocationResource"
                     },
@@ -5991,7 +6553,8 @@
                 },
                 "required": [
                     "id",
-                    "name"
+                    "name",
+                    "status"
                 ],
                 "title": "CityResource"
             },
@@ -6384,6 +6947,12 @@
                     "name": {
                         "type": "string"
                     },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "location": {
                         "$ref": "#/components/schemas/LocationResource"
                     },
@@ -6419,6 +6988,7 @@
                 "required": [
                     "id",
                     "name",
+                    "status",
                     "thumbnails"
                 ],
                 "title": "RegionResource"
@@ -6485,53 +7055,7 @@
                     },
                     "prices": {
                         "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "price_type": {
-                                    "type": "string"
-                                },
-                                "nationality_category": {
-                                    "type": "string"
-                                },
-                                "currency": {
-                                    "type": "string"
-                                },
-                                "amount": {
-                                    "type": "number"
-                                },
-                                "season_id": {
-                                    "type": [
-                                        "integer",
-                                        "null"
-                                    ]
-                                },
-                                "season_name": {
-                                    "type": [
-                                        "string",
-                                        "null"
-                                    ]
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "price_type",
-                                "nationality_category",
-                                "currency",
-                                "amount",
-                                "season_id",
-                                "season_name"
-                            ]
-                        }
-                    },
-                    "total_rooms": {
-                        "type": "integer"
-                    },
-                    "available_rooms": {
-                        "type": "integer"
+                        "items": {}
                     },
                     "hotel": {
                         "$ref": "#/components/schemas/HotelResource"
@@ -6551,35 +7075,8 @@
                     "beds": {
                         "type": "array",
                         "items": {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "slug": {
-                                    "type": "string"
-                                },
-                                "default_capacity": {
-                                    "type": "integer"
-                                },
-                                "quantity": {
-                                    "type": "string"
-                                },
-                                "assigned_capacity": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "id",
-                                "name",
-                                "slug",
-                                "default_capacity",
-                                "quantity",
-                                "assigned_capacity"
-                            ]
+                            "type": "array",
+                            "items": {}
                         }
                     },
                     "pics": {
@@ -6604,67 +7101,9 @@
                     "max_adults",
                     "max_children",
                     "max_guests",
-                    "total_rooms",
-                    "available_rooms",
                     "amenities"
                 ],
                 "title": "RoomResource"
-            },
-            "Season": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "name_ar": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "start_date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "end_date": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "description": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "created_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "name",
-                    "name_ar",
-                    "start_date",
-                    "end_date",
-                    "description",
-                    "created_at",
-                    "updated_at"
-                ],
-                "title": "Season"
             },
             "StoreAmenityRequest": {
                 "type": "object",
@@ -6725,6 +7164,14 @@
                         ],
                         "maxLength": 10000
                     },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "active",
+                            "archived"
+                        ]
+                    },
                     "pics": {
                         "type": [
                             "array",
@@ -6752,6 +7199,118 @@
                     "name_ar"
                 ],
                 "title": "StoreCityRequest"
+            },
+            "StorePackageRequest": {
+                "type": "object",
+                "properties": {
+                    "name_en": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "name_ar": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description_en": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 10000
+                    },
+                    "description_ar": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 10000
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "duration_days": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1
+                    },
+                    "price": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "SYP",
+                            "USD",
+                            "EUR",
+                            null
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "active",
+                            "archived"
+                        ]
+                    },
+                    "regions": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "cities": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "hotels": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "car_agencies": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "required": [
+                    "name_en",
+                    "name_ar",
+                    "start_date",
+                    "end_date"
+                ],
+                "title": "StorePackageRequest"
             },
             "StoreRegionRequest": {
                 "type": "object",
@@ -6796,6 +7355,14 @@
                             "null"
                         ],
                         "maxLength": 10000
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "active",
+                            "archived"
+                        ]
                     },
                     "pics": {
                         "type": [
@@ -6930,6 +7497,14 @@
                         ],
                         "maxLength": 10000
                     },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "active",
+                            "archived"
+                        ]
+                    },
                     "tags": {
                         "type": [
                             "array",
@@ -6987,6 +7562,165 @@
                     }
                 },
                 "title": "UpdateCityThumbnailsRequest"
+            },
+            "UpdatePackagePicturesRequest": {
+                "type": "object",
+                "properties": {
+                    "deleted": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "added": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                            "contentMediaType": "application/octet-stream",
+                            "description": "Maximum file size: 2048 kilobytes."
+                        }
+                    }
+                },
+                "title": "UpdatePackagePicturesRequest"
+            },
+            "UpdatePackageRequest": {
+                "type": "object",
+                "properties": {
+                    "name_en": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "name_ar": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "description_en": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 10000
+                    },
+                    "description_ar": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 10000
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "duration_days": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1
+                    },
+                    "price": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "currency": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "SYP",
+                            "USD",
+                            "EUR",
+                            null
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "active",
+                            "archived"
+                        ]
+                    },
+                    "regions": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "cities": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "hotels": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "car_agencies": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "title": "UpdatePackageRequest"
+            },
+            "UpdatePackageThumbnailsRequest": {
+                "type": "object",
+                "properties": {
+                    "deleted": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        },
+                        "maxItems": 3
+                    },
+                    "added": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        },
+                        "maxItems": 3
+                    }
+                },
+                "title": "UpdatePackageThumbnailsRequest"
             },
             "UpdateRegionPicturesRequest": {
                 "type": "object",
@@ -7058,6 +7792,14 @@
                             "null"
                         ],
                         "maxLength": 10000
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "draft",
+                            "active",
+                            "archived"
+                        ]
                     },
                     "tags": {
                         "type": [

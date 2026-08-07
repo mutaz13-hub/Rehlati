@@ -5,7 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Price\AdminStorePriceRequest;
 use App\Http\Requests\Admin\Price\AdminUpdatePriceRequest;
+use App\Models\Car;
+use App\Models\CarAgency;
+use App\Models\Hotel;
+use App\Models\Package;
 use App\Models\Price;
+use App\Models\Room;
 use App\Services\Admin\AdminPriceService;
 use App\Services\PriceUserService;
 use Illuminate\Database\Eloquent\Model;
@@ -17,8 +22,7 @@ class AdminPriceController extends Controller
     public function __construct(
         public AdminPriceService $priceService,
         public PriceUserService $priceUserService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -61,7 +65,7 @@ class AdminPriceController extends Controller
             $validated['priceable_id']
         );
 
-        if (!$priceable) {
+        if (! $priceable) {
             return $this->failed(__('Invalid priceable target'), 422);
         }
 
@@ -102,7 +106,7 @@ class AdminPriceController extends Controller
             $request->input('priceable_id')
         );
 
-        if (!$priceable) {
+        if (! $priceable) {
             return $this->failed(__('Invalid priceable target'), 422);
         }
 
@@ -121,15 +125,16 @@ class AdminPriceController extends Controller
     private function resolvePriceable(string $type, int $id): ?Model
     {
         $morphMap = [
-            'room' => \App\Models\Room::class,
-            'hotel' => \App\Models\Hotel::class,
-            'car' => \App\Models\Car::class,
-            'car_agency' => \App\Models\CarAgency::class,
+            'room' => Room::class,
+            'hotel' => Hotel::class,
+            'car' => Car::class,
+            'car_agency' => CarAgency::class,
+            'package' => Package::class,
         ];
 
         $class = $morphMap[$type] ?? $type;
 
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             return null;
         }
 

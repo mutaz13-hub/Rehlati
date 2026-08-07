@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\Cache;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
 class Hotel extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'name_en',
@@ -25,8 +27,8 @@ class Hotel extends Model implements HasMedia
 
     public function getLocalizedNameAttribute(): string
     {
-        $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
-        
+        $locale = Cache::get('lang_for_user: '.auth()->id(), app()->getLocale());
+
         return $this->{"name_{$locale}"} ?? $this->name_en;
     }
 
@@ -101,5 +103,10 @@ class Hotel extends Model implements HasMedia
     public function prices(): MorphMany
     {
         return $this->morphMany(Price::class, 'priceable');
+    }
+
+    public function packages(): MorphToMany
+    {
+        return $this->morphToMany(Package::class, 'packageable');
     }
 }

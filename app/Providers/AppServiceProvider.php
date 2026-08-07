@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\CarAgency;
 use App\Models\City;
 use App\Models\Hotel;
+use App\Models\Package;
 use App\Models\Rating;
 use App\Models\Region;
 use App\Models\Room;
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Routing\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,10 +41,10 @@ class AppServiceProvider extends ServiceProvider
     {
 
         Scramble::configure()
-        ->routes(function (Route $route) {
-            // Adjust the string to match your exact admin URL prefix
-            return \Illuminate\Support\Str::startsWith($route->uri, 'api/admin');
-        });
+            ->routes(function (Route $route) {
+                // Adjust the string to match your exact admin URL prefix
+                return Str::startsWith($route->uri, 'api/admin');
+            });
         JsonResource::withoutWrapping();
 
         Model::preventLazyLoading(! app()->isProduction());
@@ -53,6 +56,8 @@ class AppServiceProvider extends ServiceProvider
             City::MORPH_KEY => City::class,
             Region::MORPH_KEY => Region::class,
             Rating::MORPH_KEY => Rating::class,
+            Package::MORPH_KEY => Package::class,
+            CarAgency::MORPH_KEY => CarAgency::class,
         ]);
 
         Vote::observe(VoteObserver::class);
