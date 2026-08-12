@@ -34,7 +34,7 @@ class AdminPackageResource extends JsonResource
             'regions' => $this->when($request_type === 'show', fn () => AdminRegionResource::collection($this->whenLoaded('regions'))),
             'cities' => $this->when($request_type === 'show', fn () => AdminCityResource::collection($this->whenLoaded('cities'))),
             'hotels' => $this->when($request_type === 'show', fn () => AdminHotelResource::collection($this->whenLoaded('hotels'))),
-            'car_agencies' => $this->when($request_type === 'show', fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
+            'car_agencies' => $this->when($request_type === 'show', [])//fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
         ];
     }
 

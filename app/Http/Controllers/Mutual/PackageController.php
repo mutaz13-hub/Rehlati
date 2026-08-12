@@ -15,7 +15,7 @@ class PackageController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $packages = $this->packageService->index($this->filters($request), 10);
+        $packages = $this->packageService->index($this->filters($request), 10, onlyActive: true);
 
         return $this->succeed(__('Packages fetched successfully'), [
             'packages' => PackageResource::collection($packages),
@@ -27,14 +27,15 @@ class PackageController extends Controller
     {
         $package->load(['description', 'regions', 'cities', 'hotels', 'carAgencies']);
 
-        return $this->succeed(__('Package fetched successfully'), new PackageResource($package));
+        return $this->succeed(__('Package fetched successfully'), [
+           'package' =>  new PackageResource($package)
+            ]);
     }
 
     private function filters(Request $request): array
     {
         return $request->only([
             'q',
-            'status',
             'start_date_from',
             'start_date_to',
             'end_date_from',

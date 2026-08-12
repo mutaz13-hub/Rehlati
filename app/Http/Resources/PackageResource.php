@@ -20,8 +20,6 @@ class PackageResource extends JsonResource
             'start_date' => $this->start_date?->toDateString(),
             'end_date' => $this->end_date?->toDateString(),
             'duration_days' => $this->duration_days,
-            'price' => $this->price !== null ? (float) $this->price : null,
-            'currency' => $this->currency,
             'status' => $this->status?->value,
             'pics' => $this->when($request_type === 'show', fn () => PictureResource::collection(
                 $this->getMedia('package_pictures')->take(10)->values()
@@ -29,15 +27,10 @@ class PackageResource extends JsonResource
             'thumbnails' => $this->when($request_type !== 'else', fn () => PictureResource::collection(
                 $this->getMedia('package_pictures')->filter(fn ($media) => (bool) $media->getCustomProperty('is_thumbnail'))->values()
             )),
-            'regions' => $this->associatedIds('regions'),
-            'cities' => $this->associatedIds('cities'),
-            'hotels' => $this->associatedIds('hotels'),
-            'car_agencies' => $this->associatedIds('carAgencies'),
+            'regions' => $this->when($request_type === 'show', fn () => RegionResource::collection($this->whenLoaded('regions'))),
+            'cities' => $this->when($request_type === 'show', fn () => CityResource::collection($this->whenLoaded('cities'))),
+            'hotels' => $this->when($request_type === 'show', fn () => HotelResource::collection($this->whenLoaded('hotels'))),
+            'car_agencies' => $this->when($request_type === 'show', [])//fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
         ];
-    }
-
-    private function associatedIds(string $relation): array
-    {
-        return $this->relationLoaded($relation) ? $this->{$relation}->pluck('id')->all() : [];
     }
 }

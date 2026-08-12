@@ -12,18 +12,22 @@ class PackageService
 {
     private const LIST_RELATIONS = ['description', 'regions', 'cities', 'hotels', 'carAgencies'];
 
-    public function index(array $filters, int $perPage = 10): LengthAwarePaginator
+    public function index(array $filters, int $perPage = 10, bool $onlyActive = false): LengthAwarePaginator
     {
         $query = Package::with(self::LIST_RELATIONS)->where('end_date', '>=', now()->toDateString());
 
-        //$this->applyFilters($query, $filters);
+        if ($onlyActive) {
+            $query->where('status', Status::ACTIVE->value);
+        }
+
+        $this->applyFilters($query, $filters);
 
         return $query->orderBy('start_date', 'desc')->paginate($perPage);
     }
 
     public function createPackage(array $data): void
     {
-         DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data) {
             $package = Package::create([
                 'name_en' => $data['name_en'],
                 'name_ar' => $data['name_ar'],
@@ -51,7 +55,7 @@ class PackageService
 
     public function updatePackage(Package $package, array $data): void
     {
-         DB::transaction(function () use ($package, $data) {
+        DB::transaction(function () use ($package, $data) {
             $updates = [];
             foreach (['name_en', 'name_ar', 'start_date', 'end_date', 'duration_days', 'price', 'currency', 'status'] as $field) {
                 if (array_key_exists($field, $data)) {
@@ -79,7 +83,6 @@ class PackageService
                 }
             }
 
-            
         });
     }
 

@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\Status;
+use App\Models\CarAgency;
 use Illuminate\Database\Seeder;
 
 class CarAgencySeeder extends Seeder
@@ -12,6 +13,13 @@ class CarAgencySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $existingCount = CarAgency::query()->count();
+        $desiredCount = 3;
+
+        for ($i = $existingCount; $i < $desiredCount; $i++) {
+            CarAgency::create([
+                'status' => Status::ACTIVE->value,
+            ]);
+        }
     }
 }

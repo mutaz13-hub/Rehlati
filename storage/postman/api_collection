@@ -6,421 +6,85 @@
     },
     "item": [
         {
-            "name": "admin",
+            "name": "packages",
             "item": [
                 {
-                    "name": "regions",
-                    "item": [
-                        {
-                            "name": "[GET] api/admin/regions",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/regions",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "regions"
-                                    ]
-                                }
+                    "name": "[GET] api/packages",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Our-Great-Password",
+                                "value": "{{api_password}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "lang",
+                                "value": "{{lang}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "device",
+                                "value": "{{device}}",
+                                "type": "text"
                             }
-                        },
-                        {
-                            "name": "[POST] api/admin/regions",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/regions",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "regions"
-                                    ]
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"name_en\": \"sample_text\",\n    \"name_ar\": \"sample_text\",\n    \"city_id\": 7,\n    \"longitude\": 69,\n    \"latitude\": 78,\n    \"description_en\": \"sample_text\",\n    \"description_ar\": \"sample_text\",\n    \"pics\": [\n        []\n    ],\n    \"tag_ids\": [\n        []\n    ]\n}",
-                                    "options": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[GET] api/admin/regions/{region}",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/regions/:region",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "regions",
-                                        ":region"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[PUT] api/admin/regions/{region}",
-                            "request": {
-                                "method": "PUT",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/regions/:region",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "regions",
-                                        ":region"
-                                    ],
-                                    "variable": []
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "[]",
-                                    "options": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[DELETE] api/admin/regions/{region}",
-                            "request": {
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/regions/:region",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "regions",
-                                        ":region"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "pictures",
-                            "item": [
-                                {
-                                    "name": "[GET] api/admin/regions/{region}/pictures",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/regions/:region/pictures",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "regions",
-                                                ":region",
-                                                "pictures"
-                                            ],
-                                            "variable": []
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "[POST] api/admin/regions/{region}/pictures",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/regions/:region/pictures",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "regions",
-                                                ":region",
-                                                "pictures"
-                                            ],
-                                            "variable": []
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"deleted\": [\n        []\n    ],\n    \"added\": [\n        []\n    ]\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "thumbnails",
-                            "item": [
-                                {
-                                    "name": "[POST] api/admin/regions/{region}/thumbnails",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/regions/:region/thumbnails",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "regions",
-                                                ":region",
-                                                "thumbnails"
-                                            ],
-                                            "variable": []
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"deleted\": [\n        []\n    ],\n    \"added\": [\n        []\n    ]\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "ratings",
-                            "item": [
-                                {
-                                    "name": "[GET] api/admin/regions/{region}/ratings",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/regions/:region/ratings",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "regions",
-                                                ":region",
-                                                "ratings"
-                                            ],
-                                            "variable": []
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"sort\": \"sample_text\",\n    \"page\": 7,\n    \"cursor\": \"sample_text\"\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/packages",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "packages"
                             ]
                         }
-                    ]
+                    }
+                },
+                {
+                    "name": "[GET] api/packages/{package}",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Our-Great-Password",
+                                "value": "{{api_password}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "lang",
+                                "value": "{{lang}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "device",
+                                "value": "{{device}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/packages/:package",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "packages",
+                                ":package"
+                            ],
+                            "variable": []
+                        }
+                    }
                 }
             ]
         }
