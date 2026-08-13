@@ -99,7 +99,7 @@ class RoomSeeder extends Seeder
             try {
               $media =  app(\App\Services\ImageUploadService::class)->addFromUrl(
                     $room,
-                    "https://picsum.photos/800/600?random=room-{$room->id}-{$roomIndex}-{$imageIndex}-" . uniqid(),
+                    "http://picsum.photos/800/600?random=room-{$room->id}-{$roomIndex}-{$imageIndex}-" . uniqid(),
                     'room_pictures',
                 );
 

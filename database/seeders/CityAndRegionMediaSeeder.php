@@ -45,7 +45,7 @@ class CityAndRegionMediaSeeder extends Seeder
         for ($i = 0; $i < $count; $i++) {
             try {
                 // Use Picsum for fake images
-                $imageUrl = "https://picsum.photos/800/600?random={$i}" . uniqid();
+                $imageUrl = "http://picsum.photos/800/600?random={$i}" . uniqid();
                 
                 $media = app(\App\Services\ImageUploadService::class)
                     ->addFromUrl($model, $imageUrl, $collectionName);
