@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Hotel;
 use App\Models\Room;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 
 class RoomSeeder extends Seeder
 {
@@ -91,26 +92,54 @@ class RoomSeeder extends Seeder
         });
     }
 
+    /**
+     * Seed fake room media locally using GD.
+     */
     private function seedFakeMedia(Room $room, int $roomIndex): void
     {
+        // Clear existing media to avoid duplicate records
         $room->clearMediaCollection('room_pictures');
+
+        // Ensure the temporary storage folder exists
+        $tempDir = storage_path('app/temp_images');
+        if (!File::exists($tempDir)) {
+            File::makeDirectory($tempDir, 0755, true);
+        }
 
         for ($imageIndex = 0; $imageIndex < 4; $imageIndex++) {
             try {
-              $media =  app(\App\Services\ImageUploadService::class)->addFromUrl(
-                    $room,
-                    "http://picsum.photos/800/600?random=room-{$room->id}-{$roomIndex}-{$imageIndex}-" . uniqid(),
-                    'room_pictures',
-                );
+                // 1. Create a unique temporary local file path
+                $tempPath = $tempDir . '/fake_room_' . uniqid() . '.jpg';
+                $this->createLocalDummyImage($tempPath);
 
-                if($imageIndex < 2) {
+                // 2. Pass local path to Spatie's native addMedia method
+                $media = $room->addMedia($tempPath)
+                    ->toMediaCollection('room_pictures');
+
+                // 3. Keep thumbnail flag logic for the first 2 images
+                if ($imageIndex < 2) {
                     $media->setCustomProperty('is_thumbnail', true);
                     $media->save();
                 }
-            } catch (\Exception) {
+            } catch (\Exception $e) {
+                logger()->error("Failed seeding room media: " . $e->getMessage());
                 continue;
             }
         }
     }
-}
 
+    /**
+     * Helper method to dynamically generate an image file offline.
+     */
+    protected function createLocalDummyImage(string $path): void
+    {
+        $image = imagecreatetruecolor(800, 600);
+        
+        // Random background color for visual distinction between room items
+        $bgColor = imagecolorallocate($image, rand(40, 160), rand(40, 160), rand(40, 160));
+        imagefill($image, 0, 0, $bgColor);
+        
+        imagejpeg($image, $path);
+        imagedestroy($image);
+    }
+}
