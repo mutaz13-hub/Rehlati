@@ -9,6 +9,7 @@ use App\Models\Package;
 use App\Models\Region;
 use App\Services\ImageUploadService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 use Spatie\MediaLibrary\HasMedia;
 
 class PackageSeeder extends Seeder
@@ -166,24 +167,59 @@ class PackageSeeder extends Seeder
         }
     }
 
+    /**
+     * Seed fake media locally with a safe environment fallback method.
+     */
     protected function seedFakeMedia(HasMedia $model, string $collectionName, int $count): void
     {
+        // Clear old media objects
         $model->clearMediaCollection($collectionName);
+
+        // Prepare temporary image folder paths
+        $tempDir = storage_path('app/temp_images');
+        if (!File::exists($tempDir)) {
+            File::makeDirectory($tempDir, 0755, true);
+        }
 
         for ($i = 0; $i < $count; $i++) {
             try {
-                $imageUrl = "https://picsum.photos/800/600?random=package-{$i}-".uniqid();
+                // 1. Path assignment
+                $tempPath = $tempDir . '/fake_pkg_' . uniqid() . '.jpg';
+                $this->createLocalDummyImage($tempPath);
 
-                $media = app(ImageUploadService::class)
-                    ->addFromUrl($model, $imageUrl, $collectionName);
+                // 2. Integration into Spatie native media system
+                $media = $model->addMedia($tempPath)
+                    ->toMediaCollection($collectionName);
 
+                // 3. Mark primary element index as thumbnail container
                 if ($i === 0) {
                     $media->setCustomProperty('is_thumbnail', true);
                     $media->save();
                 }
-            } catch (\Exception) {
+            } catch (\Exception $e) {
+                logger()->error("Failed seeding package media: " . $e->getMessage());
                 continue;
             }
+        }
+    }
+
+    /**
+     * Generate true JPEG images locally with a text-mock file format fallback.
+     */
+    protected function createLocalDummyImage(string $path): void
+    {
+        if (function_exists('imagecreatetruecolor')) {
+            $image = imagecreatetruecolor(800, 600);
+            
+            // Build random contrast spectrum colors
+            $bgColor = imagecolorallocate($image, rand(80, 190), rand(80, 190), rand(80, 190));
+            imagefill($image, 0, 0, $bgColor);
+            
+            imagejpeg($image, $path);
+            imagedestroy($image);
+        } else {
+            // Environment fallback structure for machines missing the GD drivers
+            File::put($path, 'Offline environment placeholder data stream string asset.');
         }
     }
 }
