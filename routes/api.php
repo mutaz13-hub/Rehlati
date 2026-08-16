@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\RatingController;
+use App\Http\Controllers\Api\TripTrackingController;
 use App\Http\Controllers\Mutual\AmenityController;
 use App\Http\Controllers\Mutual\CityController;
 use App\Http\Controllers\Mutual\HotelController;
@@ -20,6 +24,8 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
 
     require __DIR__.'/admin.php';
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware(['ensure_can_refresh', 'throttle:refresh']);
+
+    // Public deep-linking: anyone holding the uuid may view the shared trip.
 
     Route::middleware('check_guest')->group(function () {
         Route::controller(AuthController::class)->group(function () {
@@ -92,6 +98,52 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::get('/amenities/{amenity}', [AmenityController::class, 'show']);
             // Route::get('/tags', [TagController::class, 'index']);
             // Route::get('/tags/{tag}', [TagController::class, 'show']);
+
+            // Trip planning, live tracking and route archiving
+            Route::apiResource('trips', TripTrackingController::class)->only(['index', 'store', 'update', 'show', 'destroy']);
+            Route::post('/trips/{trip}/cities', [TripTrackingController::class, 'storePlannedCity']);
+            Route::put('/trips/{trip}/cities', [TripTrackingController::class, 'updatePlannedCity']);
+            Route::delete('/trips/{trip}/cities/{tripCity}', [TripTrackingController::class, 'removePlannedCity']);
+            Route::post('/trips/{trip}/destinations', [TripTrackingController::class, 'storePlannedDestination']);
+            Route::put('/trips/{trip}/destinations', [TripTrackingController::class, 'updatePlannedDestination']);
+            Route::delete('/trips/{trip}/destinations/{tripDestination}', [TripTrackingController::class, 'removePlannedDestination']);
+            Route::patch('/trips/{trip}/status', [TripTrackingController::class, 'updateStatus']);
+            Route::post('/trips/{trip}/pings', [TripTrackingController::class, 'storeLocationPing']);
+            Route::post('/trips/{trip}/notes', [TripTrackingController::class, 'storeTripNote']);
+            Route::post('/trips/{trip}/members', [TripTrackingController::class, 'inviteMember']);
+            Route::put('/trips/{trip}/members/{user}', [TripTrackingController::class, 'updateMemberRole']);
+            Route::delete('/trips/{trip}/members/{tripMember}', [TripTrackingController::class, 'removeMember']);
+            Route::post('/trips/{trip}/members/{user}/accept', [TripTrackingController::class, 'acceptInvitation']);
+            Route::post('/trips/{trip}/members/{user}/reject', [TripTrackingController::class, 'rejectInvitation']);
+            Route::post('/trips/{trip}/rotate-link', [TripTrackingController::class, 'rotateLink']);
+            Route::get('trips/shared-trips/{uuid}', [TripTrackingController::class, 'showByUuid'])->name('shared-trips.show');
+
+            // Communities
+            Route::apiResource('communities', CommunityController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+            Route::get('/communities/{community}/members', [CommunityController::class, 'members']);
+            Route::post('/communities/{community}/join', [CommunityController::class, 'join']);
+            Route::post('/communities/{community}/leave', [CommunityController::class, 'leave']);
+            Route::put('/communities/{community}/members/{user}', [CommunityController::class, 'updateMemberRole']);
+            Route::post('/communities/{community}/members/{user}/approve', [CommunityController::class, 'approveMember']);
+            Route::post('/communities/{community}/members/{user}/reject', [CommunityController::class, 'rejectMember']);
+            Route::delete('/communities/{community}/members/{communityMember}', [CommunityController::class, 'removeMember']);
+            Route::post('/communities/{community}/rotate-link', [CommunityController::class, 'rotateLink']);
+
+            // Posts
+            Route::get('/communities/{community}/posts', [PostController::class, 'index']);
+            Route::post('/communities/{community}/posts', [PostController::class, 'store']);
+            Route::get('/posts/{post}', [PostController::class, 'show']);
+            Route::patch('/posts/{post}', [PostController::class, 'update']);
+            Route::delete('/posts/{post}', [PostController::class, 'destroy']);
+            Route::post('/posts/{post}/vote', [PostController::class, 'vote']);
+
+            // Comments
+            Route::get('/posts/{post}/comments', [CommentController::class, 'index']);
+            Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
+            Route::patch('/comments/{comment}', [CommentController::class, 'update']);
+            Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+            Route::post('/comments/{comment}/vote', [CommentController::class, 'vote']);
+
         });
     });
 

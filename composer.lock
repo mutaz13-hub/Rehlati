@@ -4,8 +4,51 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "079deeb37b8c158fe9281f2af3c466ad",
+    "content-hash": "724a29c7aabf485e529c1b2c96692424",
     "packages": [
+        {
+            "name": "aywan/polyline",
+            "version": "0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aywan/polyline.git",
+                "reference": "f5181c5b145c4e03697c09e54c9afc0ae6a04a80"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aywan/polyline/zipball/f5181c5b145c4e03697c09e54c9afc0ae6a04a80",
+                "reference": "f5181c5b145c4e03697c09e54c9afc0ae6a04a80",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "aywan\\Polyline\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Bragin",
+                    "email": "aywan@aywan.ru"
+                }
+            ],
+            "description": "Google-esque polyline encoder/decoder implementation in Php.",
+            "support": {
+                "issues": "https://github.com/aywan/polyline/issues",
+                "source": "https://github.com/aywan/polyline/tree/0.1"
+            },
+            "time": "2021-02-15T05:43:00+00:00"
+        },
         {
             "name": "beste/clock",
             "version": "3.0.0",

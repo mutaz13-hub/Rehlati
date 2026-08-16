@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,19 +14,20 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             SocialProviderSeeder::class,
-           TagSeeder::class,
-           SyrianCitiesSeeder::class,
-           LocationSeeder::class,
-           AmenitySeeder::class,
+            TagSeeder::class,
+            SyrianCitiesSeeder::class,
+            LocationSeeder::class,
+            AmenitySeeder::class,
             HotelSeeder::class,
             RoomSeeder::class,
             RoomAmenitySeeder::class,
             CityAndRegionMediaSeeder::class,
             PackageSeeder::class,
-           UserSeeder::class,
-           RatingSeeder::class,
-           AdminSeeder::class,
-           BedTypeSeeder::class,
+            UserSeeder::class,
+            TripSeeder::class,
+            RatingSeeder::class,
+            AdminSeeder::class,
+            BedTypeSeeder::class,
         ]);
     }
 }

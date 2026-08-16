@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AdminSeeder extends Seeder
@@ -15,6 +14,7 @@ class AdminSeeder extends Seeder
     {
         User::create([
             'name' => 'Hamza',
+            'username' => User::generateUniqueUsername(),
             'email' => 'hamza@example.com',
             'password' => bcrypt('Password123'),
         ])->assignRole('admin');

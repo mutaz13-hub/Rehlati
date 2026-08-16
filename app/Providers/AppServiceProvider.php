@@ -4,15 +4,21 @@ namespace App\Providers;
 
 use App\Models\CarAgency;
 use App\Models\City;
+use App\Models\Comment;
+use App\Models\Community;
 use App\Models\Hotel;
 use App\Models\Package;
+use App\Models\Post;
 use App\Models\Rating;
 use App\Models\Region;
 use App\Models\Room;
+use App\Models\TripNote;
 use App\Models\User;
 use App\Models\Vote;
 use App\Observers\CityObserver;
+use App\Observers\CommentObserver;
 use App\Observers\HotelObserver;
+use App\Observers\PostObserver;
 use App\Observers\RegionObserver;
 use App\Observers\RoomObserver;
 use App\Observers\VoteObserver;
@@ -58,9 +64,15 @@ class AppServiceProvider extends ServiceProvider
             Rating::MORPH_KEY => Rating::class,
             Package::MORPH_KEY => Package::class,
             CarAgency::MORPH_KEY => CarAgency::class,
+            TripNote::MORPH_KEY => TripNote::class,
+            Community::MORPH_KEY => Community::class,
+            Post::MORPH_KEY => Post::class,
+            Comment::MORPH_KEY => Comment::class,
         ]);
 
         Vote::observe(VoteObserver::class);
+        Post::observe(PostObserver::class);
+        Comment::observe(CommentObserver::class);
         Hotel::observe(HotelObserver::class);
         Room::observe(RoomObserver::class);
         City::observe(CityObserver::class);

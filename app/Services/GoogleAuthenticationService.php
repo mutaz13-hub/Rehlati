@@ -23,8 +23,7 @@ class GoogleAuthenticationService
     ) {}
 
     /**
-     * @param array{id_token: string, fcm_token?: string|null} $data
-     *
+     * @param  array{id_token: string, fcm_token?: string|null}  $data
      * @return array{status: bool, message: string, access_token?: string, refresh_token?: string, device?: string}
      */
     public function google_login(array $data): array
@@ -118,6 +117,7 @@ class GoogleAuthenticationService
             if (! $user) {
                 $user = User::create([
                     'name' => $verified_token->claims()->get('name') ?? strstr((string) $email, '@', true),
+                    'username' => User::generateUniqueUsername(),
                     'email' => $email,
                     'email_verified_at' => now(),
                 ]);

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
- //use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
-implements HasLocalePreference
+class User extends Authenticatable implements HasLocalePreference
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
-     protected $guard_name = ['api'];
+    protected $guard_name = ['api'];
 
     public const MORPH_KEY = 'user';
 
@@ -30,6 +30,7 @@ implements HasLocalePreference
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'phone_number',
         'password',
@@ -112,6 +113,15 @@ implements HasLocalePreference
     public function preferredLocale(): string
     {
         return cache()->get('lang_for_user: '.$this->id, app()->getLocale());
+    }
+
+    public static function generateUniqueUsername(): string
+    {
+        do {
+            $username = Str::lower(Str::random(12));
+        } while (static::where('username', $username)->exists());
+
+        return $username;
     }
 
     public function ratings(): HasMany

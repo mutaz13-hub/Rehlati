@@ -360,4 +360,8 @@ return [
      * disabled lazy loading globally in the service provider.
      */
     'force_lazy_loading' => env('FORCE_MEDIA_LIBRARY_LAZY_LOADING', true),
+
+    'guzzle_options' => [
+        'verify' => false,
+    ],
 ];
