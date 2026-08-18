@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminCityController;
 use App\Http\Controllers\Admin\AdminCurrencySettingController;
 use App\Http\Controllers\Admin\AdminExchangeRateController;
+use App\Http\Controllers\Admin\AdminGuideRequestController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\AdminPackageController;
 use App\Http\Controllers\Admin\AdminPriceController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\AdminRegionController;
 use App\Http\Controllers\Admin\AdminRoomController;
 use App\Http\Controllers\Admin\AdminSeasonController;
 use App\Http\Controllers\Admin\AdminTagController;
+use App\Http\Controllers\Admin\AdminTouristGuideController;
 use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Mutual\PictureController;
 use Illuminate\Support\Facades\Route;
@@ -75,5 +77,13 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
         Route::get('prices/clear-caches', [AdminPriceController::class, 'clearCaches'])->name('prices.clear-caches');
         Route::post('prices/bulk', [AdminPriceController::class, 'bulkUpsert'])->name('prices.bulk');
         Route::apiResource('prices', AdminPriceController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+
+        Route::apiResource('tourist-guides', AdminTouristGuideController::class);
+        Route::get('tourist-guides/{touristGuide}/ratings', [RatingController::class, 'indexForGuide'])->name('tourist-guides.ratings');
+
+        Route::get('guide-requests', [AdminGuideRequestController::class, 'index'])->name('guide-requests.index');
+        Route::get('guide-requests/{guideRequest}', [AdminGuideRequestController::class, 'show'])->name('guide-requests.show');
+        Route::post('guide-requests/{guideRequest}/approve', [AdminGuideRequestController::class, 'approve'])->name('guide-requests.approve');
+        Route::post('guide-requests/{guideRequest}/reject', [AdminGuideRequestController::class, 'reject'])->name('guide-requests.reject');
     });
 });

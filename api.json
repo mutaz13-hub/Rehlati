@@ -890,6 +890,117 @@
                 }
             }
         },
+        "/admin/currency-settings": {
+            "get": {
+                "operationId": "admin.currency-settings.index",
+                "tags": [
+                    "AdminCurrencySetting"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Currency settings retrieved"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "base_currency": {
+                                                    "type": "string",
+                                                    "const": "USD"
+                                                },
+                                                "active_currency": {},
+                                                "exchange_rate": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "required": [
+                                                "base_currency",
+                                                "active_currency",
+                                                "exchange_rate"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "admin.currency-settings.update",
+                "tags": [
+                    "AdminCurrencySetting"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCurrencySettingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Active currency updated"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "base_currency": {
+                                                    "type": "string",
+                                                    "const": "USD"
+                                                },
+                                                "active_currency": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "base_currency",
+                                                "active_currency"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/admin/exchange-rates/clear-caches": {
             "get": {
                 "operationId": "admin.exchange-rates.clear-caches",
@@ -986,7 +1097,7 @@
                                                 "exchange_rates": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/ExchangeRate"
+                                                        "type": "object"
                                                     }
                                                 }
                                             },
@@ -1086,15 +1197,13 @@
                                             "const": "Exchange rate saved"
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "exchange_rate": {
-                                                    "$ref": "#/components/schemas/ExchangeRate"
-                                                }
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
                                             },
-                                            "required": [
-                                                "exchange_rate"
-                                            ]
+                                            "minItems": 0,
+                                            "maxItems": 0,
+                                            "additionalItems": false
                                         }
                                     },
                                     "required": [
@@ -1210,15 +1319,7 @@
                                             "const": "Exchange rate updated"
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "exchange_rate": {
-                                                    "$ref": "#/components/schemas/ExchangeRate"
-                                                }
-                                            },
-                                            "required": [
-                                                "exchange_rate"
-                                            ]
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -1257,8 +1358,279 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No content"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Exchange rate deleted"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/guide-requests": {
+            "get": {
+                "operationId": "admin.guide-requests.index",
+                "tags": [
+                    "AdminGuideRequest"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Guide booking requests fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "guide_requests": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/AdminGuideRequestResource"
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "required": [
+                                                                    "trip",
+                                                                    "tourist_guide"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "per_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "total": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "per_page",
+                                                        "total"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "guide_requests",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/guide-requests/{guideRequest}": {
+            "get": {
+                "operationId": "admin.guide-requests.show",
+                "tags": [
+                    "AdminGuideRequest"
+                ],
+                "parameters": [
+                    {
+                        "name": "guideRequest",
+                        "in": "path",
+                        "required": true,
+                        "description": "The guide request ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Guide booking request fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "guide_request": {
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "#/components/schemas/AdminGuideRequestResource"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "trip",
+                                                                "tourist_guide"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "guide_request"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/guide-requests/{guideRequest}/approve": {
+            "post": {
+                "operationId": "admin.guide-requests.approve",
+                "tags": [
+                    "AdminGuideRequest"
+                ],
+                "parameters": [
+                    {
+                        "name": "guideRequest",
+                        "in": "path",
+                        "required": true,
+                        "description": "The guide request ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Guide booking request approved successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/guide-requests/{guideRequest}/reject": {
+            "post": {
+                "operationId": "admin.guide-requests.reject",
+                "tags": [
+                    "AdminGuideRequest"
+                ],
+                "parameters": [
+                    {
+                        "name": "guideRequest",
+                        "in": "path",
+                        "required": true,
+                        "description": "The guide request ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Guide booking request rejected successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -1950,16 +2322,29 @@
                                             "const": "Package fetched successfully"
                                         },
                                         "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/AdminPackageResource"
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "required": [
-                                                        "description"
+                                            "type": "object",
+                                            "properties": {
+                                                "package": {
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "#/components/schemas/AdminPackageResource"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "description",
+                                                                "prices",
+                                                                "regions",
+                                                                "cities",
+                                                                "hotels",
+                                                                "tourist_guides"
+                                                            ]
+                                                        }
                                                     ]
                                                 }
+                                            },
+                                            "required": [
+                                                "package"
                                             ]
                                         }
                                     },
@@ -1996,6 +2381,7 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -2017,17 +2403,7 @@
                                             "const": "Package updated successfully"
                                         },
                                         "data": {
-                                            "allOf": [
-                                                {
-                                                    "$ref": "#/components/schemas/AdminPackageResource"
-                                                },
-                                                {
-                                                    "type": "object",
-                                                    "required": [
-                                                        "description"
-                                                    ]
-                                                }
-                                            ]
+                                            "type": "string"
                                         }
                                     },
                                     "required": [
@@ -2159,9 +2535,6 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
                     }
                 }
             },
@@ -2284,9 +2657,6 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
-                    },
-                    "403": {
-                        "$ref": "#/components/responses/AuthorizationException"
                     }
                 }
             }
@@ -2355,6 +2725,7 @@
                                                     "type": "string",
                                                     "enum": [
                                                         "base_price",
+                                                        "child_price",
                                                         "extra_bed_price",
                                                         "package_price"
                                                     ]
@@ -2365,14 +2736,6 @@
                                                         "syrian",
                                                         "expat",
                                                         "foreigner"
-                                                    ]
-                                                },
-                                                "currency": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "SYP",
-                                                        "USD",
-                                                        "EUR"
                                                     ]
                                                 },
                                                 "amount": {
@@ -2389,7 +2752,6 @@
                                             "required": [
                                                 "price_type",
                                                 "nationality_category",
-                                                "currency",
                                                 "amount"
                                             ]
                                         },
@@ -2495,117 +2857,35 @@
                                         "data": {
                                             "type": "object",
                                             "properties": {
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
                                                 "data": {
                                                     "type": "array",
                                                     "items": {
-                                                        "$ref": "#/components/schemas/Price"
+                                                        "$ref": "#/components/schemas/AdminPriceResource"
                                                     }
                                                 },
-                                                "first_page_url": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "from": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "minimum": 1
-                                                },
-                                                "last_page_url": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "minimum": 1
-                                                },
-                                                "links": {
-                                                    "type": "array",
-                                                    "description": "Generated paginator links.",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "url": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "label": {
-                                                                "type": "string"
-                                                            },
-                                                            "active": {
-                                                                "type": "boolean"
-                                                            }
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "integer"
                                                         },
-                                                        "required": [
-                                                            "url",
-                                                            "label",
-                                                            "active"
-                                                        ]
-                                                    }
-                                                },
-                                                "next_page_url": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
+                                                        "last_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "total"
                                                     ]
-                                                },
-                                                "path": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ],
-                                                    "description": "Base path for paginator generated URLs."
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "description": "Number of items shown per page.",
-                                                    "minimum": 0
-                                                },
-                                                "prev_page_url": {
-                                                    "type": [
-                                                        "string",
-                                                        "null"
-                                                    ]
-                                                },
-                                                "to": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ],
-                                                    "description": "Number of the last item in the slice.",
-                                                    "minimum": 1
-                                                },
-                                                "total": {
-                                                    "type": "integer",
-                                                    "description": "Total number of items being paginated.",
-                                                    "minimum": 0
                                                 }
                                             },
                                             "required": [
-                                                "current_page",
                                                 "data",
-                                                "first_page_url",
-                                                "from",
-                                                "last_page_url",
-                                                "last_page",
-                                                "links",
-                                                "next_page_url",
-                                                "path",
-                                                "per_page",
-                                                "prev_page_url",
-                                                "to",
-                                                "total"
+                                                "meta"
                                             ]
                                         }
                                     },
@@ -2709,7 +2989,7 @@
                                             "type": "object",
                                             "properties": {
                                                 "price": {
-                                                    "$ref": "#/components/schemas/Price"
+                                                    "$ref": "#/components/schemas/AdminPriceResource"
                                                 }
                                             },
                                             "required": [
@@ -2750,6 +3030,7 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -2810,8 +3091,28 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No content"
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Price deleted"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
@@ -4348,6 +4649,303 @@
                 }
             }
         },
+        "/admin/tourist-guides": {
+            "get": {
+                "operationId": "admin.tourist-guides.index",
+                "tags": [
+                    "AdminTouristGuide"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Tourist guides fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tourist_guides": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/AdminTouristGuideResource"
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "per_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "total": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "per_page",
+                                                        "total"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "tourist_guides",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "admin.tourist-guides.store",
+                "tags": [
+                    "AdminTouristGuide"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreTouristGuideRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Tourist guide created successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "minItems": 0,
+                                            "maxItems": 0,
+                                            "additionalItems": false
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/admin/tourist-guides/{touristGuide}": {
+            "get": {
+                "operationId": "admin.tourist-guides.show",
+                "tags": [
+                    "AdminTouristGuide"
+                ],
+                "parameters": [
+                    {
+                        "name": "touristGuide",
+                        "in": "path",
+                        "required": true,
+                        "description": "The tourist guide ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Tourist guide fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "tourist_guide": {
+                                                    "$ref": "#/components/schemas/AdminTouristGuideResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "tourist_guide"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "admin.tourist-guides.update",
+                "tags": [
+                    "AdminTouristGuide"
+                ],
+                "parameters": [
+                    {
+                        "name": "touristGuide",
+                        "in": "path",
+                        "required": true,
+                        "description": "The tourist guide ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTouristGuideRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Tourist guide updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "admin.tourist-guides.destroy",
+                "tags": [
+                    "AdminTouristGuide"
+                ],
+                "parameters": [
+                    {
+                        "name": "touristGuide",
+                        "in": "path",
+                        "required": true,
+                        "description": "The tourist guide ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Tourist guide deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/admin/hotels/{hotel}/ratings": {
             "get": {
                 "operationId": "rating.indexForHotel",
@@ -4827,6 +5425,126 @@
                     }
                 }
             }
+        },
+        "/admin/tourist-guides/{touristGuide}/ratings": {
+            "get": {
+                "operationId": "admin.tourist-guides.ratings",
+                "tags": [
+                    "Rating"
+                ],
+                "parameters": [
+                    {
+                        "name": "touristGuide",
+                        "in": "path",
+                        "required": true,
+                        "description": "The tourist guide ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "top",
+                                "latest",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 255
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Ratings fetched"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "ratings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/RatingResource"
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "total"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "ratings",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -4938,9 +5656,79 @@
                 "required": [
                     "id",
                     "name",
-                    "status"
+                    "status",
+                    "thumbnails"
                 ],
                 "title": "AdminCityResource"
+            },
+            "AdminGuideRequestResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "trip": {
+                        "$ref": "#/components/schemas/TripListResource"
+                    },
+                    "requester": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "email"
+                        ]
+                    },
+                    "tourist_guide": {
+                        "$ref": "#/components/schemas/AdminTouristGuideResource"
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status_label": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "responded_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "status",
+                    "status_label",
+                    "note",
+                    "responded_at",
+                    "created_at"
+                ],
+                "title": "AdminGuideRequestResource"
             },
             "AdminHotelResource": {
                 "type": "object",
@@ -5083,6 +5871,12 @@
                             "null"
                         ]
                     },
+                    "prices": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminPriceResource"
+                        }
+                    },
                     "pics": {
                         "type": "array",
                         "items": {
@@ -5097,42 +5891,36 @@
                     },
                     "regions": {
                         "type": "array",
-                        "items": {}
-                    },
-                    "cities": {
-                        "type": "array",
-                        "items": {}
-                    },
-                    "hotels": {
-                        "type": "array",
-                        "items": {}
-                    },
-                    "car_agencies": {
-                        "type": "array",
-                        "items": {}
-                    },
-                    "regions": {
-                        "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/RegionResource"
+                            "$ref": "#/components/schemas/AdminRegionResource"
                         }
                     },
                     "cities": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/App.Http.Resources.CityResource"
+                            "$ref": "#/components/schemas/AdminCityResource"
                         }
                     },
                     "hotels": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/HotelResource"
+                            "$ref": "#/components/schemas/AdminHotelResource"
                         }
                     },
                     "car_agencies": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/CarAgencyResource"
+                            "type": "string"
+                        },
+                        "minItems": 0,
+                        "maxItems": 0,
+                        "additionalItems": false
+                    },
+                    "tourist_guides": {
+                        "type": "array",
+                        "description": "fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),",
+                        "items": {
+                            "$ref": "#/components/schemas/AdminTouristGuideResource"
                         }
                     }
                 },
@@ -5144,11 +5932,7 @@
                     "duration_days",
                     "price",
                     "currency",
-                    "status",
-                    "regions",
-                    "cities",
-                    "hotels",
-                    "car_agencies"
+                    "status"
                 ],
                 "title": "AdminPackageResource"
             },
@@ -5170,8 +5954,33 @@
                     "amount": {
                         "type": "number"
                     },
+                    "active_currency": {
+                        "type": "string"
+                    },
+                    "active_amount": {
+                        "type": "string"
+                    },
                     "season": {
                         "$ref": "#/components/schemas/AdminSeasonResource"
+                    },
+                    "priceable": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/AdminHotelResource"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AdminRoomResource"
+                            },
+                            {
+                                "$ref": "#/components/schemas/CarAgencyResource"
+                            },
+                            {
+                                "$ref": "#/components/schemas/AdminPackageResource"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
                     }
                 },
                 "required": [
@@ -5179,7 +5988,9 @@
                     "price_type",
                     "nationality_category",
                     "currency",
-                    "amount"
+                    "amount",
+                    "active_currency",
+                    "active_amount"
                 ],
                 "title": "AdminPriceResource"
             },
@@ -5480,6 +6291,7 @@
                         "type": "string",
                         "enum": [
                             "base_price",
+                            "child_price",
                             "extra_bed_price",
                             "package_price"
                         ]
@@ -5490,14 +6302,6 @@
                             "syrian",
                             "expat",
                             "foreigner"
-                        ]
-                    },
-                    "currency": {
-                        "type": "string",
-                        "enum": [
-                            "SYP",
-                            "USD",
-                            "EUR"
                         ]
                     },
                     "amount": {
@@ -5516,7 +6320,6 @@
                     "priceable_type",
                     "price_type",
                     "nationality_category",
-                    "currency",
                     "amount"
                 ],
                 "title": "AdminStorePriceRequest"
@@ -5615,6 +6418,7 @@
                                     "type": "string",
                                     "enum": [
                                         "base_price",
+                                        "child_price",
                                         "extra_bed_price"
                                     ]
                                 },
@@ -5629,9 +6433,7 @@
                                 "currency": {
                                     "type": "string",
                                     "enum": [
-                                        "SYP",
-                                        "USD",
-                                        "EUR"
+                                        "USD"
                                     ]
                                 },
                                 "amount": {
@@ -5733,6 +6535,100 @@
                     "name"
                 ],
                 "title": "AdminTagResource"
+            },
+            "AdminTouristGuideResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "availability": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {}
+                    },
+                    "price_per_hour": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string",
+                        "const": "USD"
+                    },
+                    "average_rating": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "total_reviews": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "integer",
+                                "enum": [
+                                    0
+                                ]
+                            }
+                        ]
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "active_currency": {
+                        "type": "string"
+                    },
+                    "active_price_per_hour": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "availability",
+                    "price_per_hour",
+                    "currency",
+                    "average_rating",
+                    "total_reviews",
+                    "email",
+                    "phone",
+                    "is_active",
+                    "created_at",
+                    "active_currency",
+                    "active_price_per_hour"
+                ],
+                "title": "AdminTouristGuideResource"
             },
             "AdminUpdateExchangeRateRequest": {
                 "type": "object",
@@ -5893,6 +6789,7 @@
                         "type": "string",
                         "enum": [
                             "base_price",
+                            "child_price",
                             "extra_bed_price",
                             "package_price"
                         ]
@@ -5903,14 +6800,6 @@
                             "syrian",
                             "expat",
                             "foreigner"
-                        ]
-                    },
-                    "currency": {
-                        "type": "string",
-                        "enum": [
-                            "SYP",
-                            "USD",
-                            "EUR"
                         ]
                     },
                     "amount": {
@@ -5924,6 +6813,11 @@
                         ]
                     }
                 },
+                "required": [
+                    "price_type",
+                    "nationality_category",
+                    "amount"
+                ],
                 "title": "AdminUpdatePriceRequest"
             },
             "AdminUpdateRoomRequest": {
@@ -6020,6 +6914,7 @@
                                     "type": "string",
                                     "enum": [
                                         "base_price",
+                                        "child_price",
                                         "extra_bed_price"
                                     ]
                                 },
@@ -6034,9 +6929,7 @@
                                 "currency": {
                                     "type": "string",
                                     "enum": [
-                                        "SYP",
-                                        "USD",
-                                        "EUR"
+                                        "USD"
                                     ]
                                 },
                                 "amount": {
@@ -6293,9 +7186,8 @@
                     "total_bed_capacity": {
                         "type": "string"
                     },
-                    "prices": {
-                        "type": "array",
-                        "items": {}
+                    "pricing": {
+                        "$ref": "#/components/schemas/UnifiedPricingResource"
                     },
                     "hotel": {
                         "$ref": "#/components/schemas/HotelResource"
@@ -6449,10 +7341,7 @@
                         "type": "integer"
                     },
                     "status": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -6769,65 +7658,6 @@
                 ],
                 "title": "PictureResource"
             },
-            "Price": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "priceable_type": {
-                        "type": "string"
-                    },
-                    "priceable_id": {
-                        "type": "integer"
-                    },
-                    "price_type": {
-                        "type": "string"
-                    },
-                    "nationality_category": {
-                        "type": "string"
-                    },
-                    "currency": {
-                        "type": "string"
-                    },
-                    "amount": {
-                        "type": "string"
-                    },
-                    "season_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
-                    },
-                    "created_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "priceable_type",
-                    "priceable_id",
-                    "price_type",
-                    "nationality_category",
-                    "currency",
-                    "amount",
-                    "season_id",
-                    "created_at",
-                    "updated_at"
-                ],
-                "title": "Price"
-            },
             "RatingResource": {
                 "type": "object",
                 "properties": {
@@ -6835,19 +7665,7 @@
                         "type": "integer"
                     },
                     "user": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "id",
-                            "name"
-                        ]
+                        "$ref": "#/components/schemas/UserResource"
                     },
                     "rate": {
                         "type": "integer"
@@ -7053,9 +7871,8 @@
                     "total_bed_capacity": {
                         "type": "string"
                     },
-                    "prices": {
-                        "type": "array",
-                        "items": {}
+                    "pricing": {
+                        "$ref": "#/components/schemas/UnifiedPricingResource"
                     },
                     "hotel": {
                         "$ref": "#/components/schemas/HotelResource"
@@ -7233,18 +8050,12 @@
                         "type": "string",
                         "format": "date"
                     },
-                    "duration_days": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ],
-                        "minimum": 1
-                    },
                     "price": {
                         "type": [
                             "number",
                             "null"
                         ],
+                        "description": "'duration_days' => ['nullable', 'integer', 'min:1'],",
                         "minimum": 0
                     },
                     "currency": {
@@ -7302,13 +8113,23 @@
                         "items": {
                             "type": "integer"
                         }
+                    },
+                    "tourist_guides": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
                     "name_en",
                     "name_ar",
                     "start_date",
-                    "end_date"
+                    "end_date",
+                    "status"
                 ],
                 "title": "StorePackageRequest"
             },
@@ -7411,6 +8232,50 @@
                 ],
                 "title": "StoreTagRequest"
             },
+            "StoreTouristGuideRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "availability": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "$ref": "#/components/schemas/Weekday"
+                        },
+                        "uniqueItems": true
+                    },
+                    "price_per_hour": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "phone"
+                ],
+                "title": "StoreTouristGuideRequest"
+            },
             "TagResource": {
                 "type": "object",
                 "properties": {
@@ -7426,6 +8291,46 @@
                     "name"
                 ],
                 "title": "TagResource"
+            },
+            "TripListResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "uuid": {
+                        "type": "string"
+                    },
+                    "start_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "status_label": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "uuid",
+                    "start_date",
+                    "status",
+                    "status_label"
+                ],
+                "title": "TripListResource"
+            },
+            "UnifiedPricingResource": {
+                "type": "array",
+                "items": {},
+                "title": "UnifiedPricingResource"
             },
             "UpdateAmenityRequest": {
                 "type": "object",
@@ -7563,6 +8468,22 @@
                 },
                 "title": "UpdateCityThumbnailsRequest"
             },
+            "UpdateCurrencySettingRequest": {
+                "type": "object",
+                "properties": {
+                    "active_currency": {
+                        "type": "string",
+                        "enum": [
+                            "USD",
+                            "SYP"
+                        ]
+                    }
+                },
+                "required": [
+                    "active_currency"
+                ],
+                "title": "UpdateCurrencySettingRequest"
+            },
             "UpdatePackagePicturesRequest": {
                 "type": "object",
                 "properties": {
@@ -7692,8 +8613,24 @@
                         "items": {
                             "type": "integer"
                         }
+                    },
+                    "tourist_guides": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
+                "required": [
+                    "name_en",
+                    "name_ar",
+                    "start_date",
+                    "end_date",
+                    "status"
+                ],
                 "title": "UpdatePackageRequest"
             },
             "UpdatePackageThumbnailsRequest": {
@@ -7857,6 +8794,70 @@
                 ],
                 "title": "UpdateTagRequest"
             },
+            "UpdateTouristGuideRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "phone": {
+                        "type": "string",
+                        "maxLength": 30
+                    },
+                    "availability": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "$ref": "#/components/schemas/Weekday"
+                        },
+                        "uniqueItems": true
+                    },
+                    "price_per_hour": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "phone"
+                ],
+                "title": "UpdateTouristGuideRequest"
+            },
+            "UserResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "avatar": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "avatar"
+                ],
+                "title": "UserResource"
+            },
             "VoteType": {
                 "type": "string",
                 "enum": [
@@ -7864,6 +8865,19 @@
                     "down"
                 ],
                 "title": "VoteType"
+            },
+            "Weekday": {
+                "type": "string",
+                "enum": [
+                    "sunday",
+                    "monday",
+                    "tuesday",
+                    "wednesday",
+                    "thursday",
+                    "friday",
+                    "saturday"
+                ],
+                "title": "Weekday"
             }
         },
         "responses": {

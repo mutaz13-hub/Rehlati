@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Enums\VoteType;
 use App\Models\City;
 use App\Models\Hotel;
 use App\Models\Rating;
+use App\Models\TouristGuide;
 use App\Models\User;
-use App\Enums\VoteType;
 use Illuminate\Database\Seeder;
 
 class RatingSeeder extends Seeder
@@ -21,6 +22,7 @@ class RatingSeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->info('No users found in the database!');
+
             return;
         }
 
@@ -30,6 +32,10 @@ class RatingSeeder extends Seeder
 
         Hotel::query()->eachById(function (Hotel $hotel) use ($users): void {
             $this->seedRatings($hotel, Hotel::MORPH_KEY, $users);
+        });
+
+        TouristGuide::query()->where('is_active', true)->eachById(function (TouristGuide $guide) use ($users): void {
+            $this->seedRatings($guide, TouristGuide::MORPH_KEY, $users);
         });
     }
 

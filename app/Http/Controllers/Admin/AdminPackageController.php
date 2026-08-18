@@ -36,7 +36,7 @@ class AdminPackageController extends Controller
 
     public function show(Package $package): JsonResponse
     {
-        $package->load(['description', 'regions', 'cities', 'hotels', 'carAgencies', 'prices']);
+        $package->load(['description', 'regions', 'cities', 'hotels', 'carAgencies', 'touristGuides', 'prices']);
 
         return $this->succeed(__('Package fetched successfully'), ['package' => new AdminPackageResource($package)]);
     }
@@ -82,6 +82,7 @@ class AdminPackageController extends Controller
             'city_id',
             'hotel_id',
             'car_agency_id',
+            'tourist_guide_id',
         ]);
     }
 

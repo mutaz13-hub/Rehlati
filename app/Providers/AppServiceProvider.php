@@ -12,6 +12,7 @@ use App\Models\Post;
 use App\Models\Rating;
 use App\Models\Region;
 use App\Models\Room;
+use App\Models\TouristGuide;
 use App\Models\TripNote;
 use App\Models\User;
 use App\Models\Vote;
@@ -64,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
             Rating::MORPH_KEY => Rating::class,
             Package::MORPH_KEY => Package::class,
             CarAgency::MORPH_KEY => CarAgency::class,
+            TouristGuide::MORPH_KEY => TouristGuide::class,
             TripNote::MORPH_KEY => TripNote::class,
             Community::MORPH_KEY => Community::class,
             Post::MORPH_KEY => Post::class,

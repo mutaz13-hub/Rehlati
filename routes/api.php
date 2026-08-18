@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CommunityController;
 use App\Http\Controllers\Api\ForgotPasswordController;
+use App\Http\Controllers\Api\GuideRequestController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\TripTrackingController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Mutual\PictureController;
 use App\Http\Controllers\Mutual\RegionController;
 use App\Http\Controllers\Mutual\RoomController;
 use App\Http\Controllers\Mutual\TagController;
+use App\Http\Controllers\Mutual\TouristGuideController;
 use App\Models\City;
 use App\Models\Hotel;
 use App\Models\Room;
@@ -87,6 +89,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::post('/ratings/rooms/{id}', [RatingController::class, 'store'])->name('ratings.rooms');
             Route::post('/ratings/regions/{id}', [RatingController::class, 'store'])->name('ratings.regions');
             Route::post('/ratings/car_agencies/{id}', [RatingController::class, 'store'])->name('ratings.car_agencies');
+            Route::post('/ratings/tourist_guides/{id}', [RatingController::class, 'store'])->name('ratings.tourist_guides');
 
             Route::patch('/ratings/{rating}', [RatingController::class, 'update']);
             Route::delete('/ratings/{rating}', [RatingController::class, 'destroy']);
@@ -98,6 +101,11 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::get('/amenities/{amenity}', [AmenityController::class, 'show']);
             // Route::get('/tags', [TagController::class, 'index']);
             // Route::get('/tags/{tag}', [TagController::class, 'show']);
+
+            // Tourist guides (user-facing listing and ratings)
+            Route::get('/tourist-guides', [TouristGuideController::class, 'index'])->name('tourist-guides.index');
+            Route::get('/tourist-guides/{touristGuide}', [TouristGuideController::class, 'show'])->name('tourist-guides.show');
+            Route::get('/tourist-guides/{touristGuide}/ratings', [RatingController::class, 'indexForGuide'])->name('tourist-guides.ratings');
 
             // Trip planning, live tracking and route archiving
             Route::apiResource('trips', TripTrackingController::class)->only(['index', 'store', 'update', 'show', 'destroy']);
@@ -117,6 +125,11 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::post('/trips/{trip}/members/{user}/reject', [TripTrackingController::class, 'rejectInvitation']);
             Route::post('/trips/{trip}/rotate-link', [TripTrackingController::class, 'rotateLink']);
             Route::get('trips/shared-trips/{uuid}', [TripTrackingController::class, 'showByUuid'])->name('shared-trips.show');
+
+            // Guide booking requests on a custom trip
+            Route::get('/trips/{trip}/guides', [GuideRequestController::class, 'index'])->name('trips.guide-requests.index');
+            Route::post('/trips/{trip}/guides', [GuideRequestController::class, 'store'])->name('trips.guide-requests.store');
+            Route::delete('/trips/{trip}/guides/{guideRequest}', [GuideRequestController::class, 'destroy'])->name('trips.guide-requests.destroy');
 
             // Communities
             Route::apiResource('communities', CommunityController::class)->only(['index', 'store', 'show', 'update', 'destroy']);

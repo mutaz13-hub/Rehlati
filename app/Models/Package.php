@@ -77,6 +77,11 @@ class Package extends Model implements HasMedia
         return $this->morphedByMany(CarAgency::class, 'packageable');
     }
 
+    public function touristGuides(): MorphToMany
+    {
+        return $this->morphedByMany(TouristGuide::class, 'packageable');
+    }
+
     public function prices(): MorphMany
     {
         return $this->morphMany(Price::class, 'priceable');

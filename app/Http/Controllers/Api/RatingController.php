@@ -4,19 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\VoteType;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\RatingResource;
 use App\Http\Requests\RatingIndexRequest;
 use App\Http\Requests\RatingStoreRequest;
 use App\Http\Requests\RatingUpdateRequest;
 use App\Http\Requests\RatingVoteRequest;
+use App\Http\Resources\RatingResource;
 use App\Models\City;
 use App\Models\Hotel;
 use App\Models\Rating;
 use App\Models\Region;
 use App\Models\Room;
+use App\Models\TouristGuide;
 use App\Services\RatingService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class RatingController extends Controller
@@ -27,17 +26,18 @@ class RatingController extends Controller
     {
         $this->service = $service;
     }
+
     public function indexForHotel(RatingIndexRequest $request, Hotel $hotel)
     {
         $result = $this->service->indexByMorph(Hotel::MORPH_KEY, $hotel->id, $request->only(['sort']));
 
-        return $this->succeed(__('Ratings fetched'),[ 
-           'ratings' => RatingResource::collection($result),
-           'meta' => [
-            'next_cursor' => $result->currentPage(),
-            'prev_cursor' => $result->lastPage(),
-            'total' => $result->total()
-           ]
+        return $this->succeed(__('Ratings fetched'), [
+            'ratings' => RatingResource::collection($result),
+            'meta' => [
+                'next_cursor' => $result->currentPage(),
+                'prev_cursor' => $result->lastPage(),
+                'total' => $result->total(),
+            ],
         ]);
     }
 
@@ -45,13 +45,13 @@ class RatingController extends Controller
     {
         $result = $this->service->indexByMorph(Room::MORPH_KEY, $room->id, $request->only(['sort', 'per_page']));
 
-        return $this->succeed(__('Ratings fetched'),[ 
-           'ratings' => RatingResource::collection($result['ratings']),
-           'meta' => [
-            'next_cursor' => $result->nextCursor(),
-            'prev_cursor' => $result->previousCursor(),
-            'total' => $result->total()
-           ]
+        return $this->succeed(__('Ratings fetched'), [
+            'ratings' => RatingResource::collection($result['ratings']),
+            'meta' => [
+                'next_cursor' => $result->nextCursor(),
+                'prev_cursor' => $result->previousCursor(),
+                'total' => $result->total(),
+            ],
         ]);
     }
 
@@ -59,13 +59,13 @@ class RatingController extends Controller
     {
         $result = $this->service->indexByMorph(City::MORPH_KEY, $city->id, $request->only(['sort']));
 
-        return $this->succeed(__('Ratings fetched'),[ 
-           'ratings' => RatingResource::collection($result),
-           'meta' => [
-            'current_page' => $result->currentPage(),
-            'last_page' => $result->lastPage(),
-            'total' => $result->total()
-           ]
+        return $this->succeed(__('Ratings fetched'), [
+            'ratings' => RatingResource::collection($result),
+            'meta' => [
+                'current_page' => $result->currentPage(),
+                'last_page' => $result->lastPage(),
+                'total' => $result->total(),
+            ],
         ]);
     }
 
@@ -73,13 +73,27 @@ class RatingController extends Controller
     {
         $result = $this->service->indexByMorph(Region::MORPH_KEY, $region->id, $request->only(['sort', 'per_page']));
 
-        return $this->succeed(__('Ratings fetched'),[ 
-           'ratings' => RatingResource::collection($result['ratings']),
-           'meta' => [
-            'next_cursor' => $result['ratings']->nextCursor(),
-            'prev_cursor' => $result['ratings']->previousCursor(),
-            'total' => $result['total']
-           ]
+        return $this->succeed(__('Ratings fetched'), [
+            'ratings' => RatingResource::collection($result['ratings']),
+            'meta' => [
+                'next_cursor' => $result['ratings']->nextCursor(),
+                'prev_cursor' => $result['ratings']->previousCursor(),
+                'total' => $result['total'],
+            ],
+        ]);
+    }
+
+    public function indexForGuide(RatingIndexRequest $request, TouristGuide $touristGuide)
+    {
+        $result = $this->service->indexByMorph(TouristGuide::MORPH_KEY, $touristGuide->id, $request->only(['sort']));
+
+        return $this->succeed(__('Ratings fetched'), [
+            'ratings' => RatingResource::collection($result),
+            'meta' => [
+                'current_page' => $result->currentPage(),
+                'last_page' => $result->lastPage(),
+                'total' => $result->total(),
+            ],
         ]);
     }
 
@@ -109,7 +123,7 @@ class RatingController extends Controller
         $audio = $request->file('audio');
         $photo = $request->file('photo');
 
-       $this->service->update($rating, $data, $audio, $photo);
+        $this->service->update($rating, $data, $audio, $photo);
 
         return $this->succeed(__('Rating updated'));
     }
@@ -129,7 +143,7 @@ class RatingController extends Controller
 
         $data = $request->validated();
 
-         $this->service->vote($rating, VoteType::from($data['vote']));
+        $this->service->vote($rating, VoteType::from($data['vote']));
 
         return $this->succeed(__('Vote recorded'));
     }

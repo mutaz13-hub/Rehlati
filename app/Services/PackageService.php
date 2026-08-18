@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class PackageService
 {
-    private const LIST_RELATIONS = ['description', 'regions', 'cities', 'hotels', 'carAgencies', 'prices'];
+    private const LIST_RELATIONS = ['description', 'regions', 'cities', 'hotels', 'carAgencies', 'touristGuides', 'prices'];
 
     public function index(array $filters, int $perPage = 10, bool $onlyActive = false): LengthAwarePaginator
     {
@@ -50,6 +50,7 @@ class PackageService
             $package->cities()->sync($data['cities'] ?? []);
             $package->hotels()->sync($data['hotels'] ?? []);
             $package->carAgencies()->sync($data['car_agencies'] ?? []);
+            $package->touristGuides()->sync($data['tourist_guides'] ?? []);
         });
     }
 
@@ -77,7 +78,7 @@ class PackageService
                 );
             }
 
-            foreach (['regions' => 'regions', 'cities' => 'cities', 'hotels' => 'hotels', 'car_agencies' => 'carAgencies'] as $key => $relation) {
+            foreach (['regions' => 'regions', 'cities' => 'cities', 'hotels' => 'hotels', 'car_agencies' => 'carAgencies', 'tourist_guides' => 'touristGuides'] as $key => $relation) {
                 if (array_key_exists($key, $data)) {
                     $package->{$relation}()->sync($data[$key] ?? []);
                 }
@@ -172,7 +173,7 @@ class PackageService
             }
         }
 
-        foreach (['region_id' => 'regions', 'city_id' => 'cities', 'hotel_id' => 'hotels', 'car_agency_id' => 'carAgencies'] as $filterKey => $relation) {
+        foreach (['region_id' => 'regions', 'city_id' => 'cities', 'hotel_id' => 'hotels', 'car_agency_id' => 'carAgencies', 'tourist_guide_id' => 'touristGuides'] as $filterKey => $relation) {
             if (! empty($filters[$filterKey])) {
                 $query->whereHas($relation, fn (Builder $q) => $q->whereKey($filters[$filterKey]));
             }

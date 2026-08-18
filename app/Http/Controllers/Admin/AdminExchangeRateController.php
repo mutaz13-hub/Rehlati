@@ -15,8 +15,7 @@ class AdminExchangeRateController extends Controller
     public function __construct(
         public AdminExchangeRateService $exchangeRateService,
         public PriceUserService $priceUserService,
-    ) {
-    }
+    ) {}
 
     public function index(): JsonResponse
     {
@@ -36,11 +35,9 @@ class AdminExchangeRateController extends Controller
 
     public function store(AdminUpdateExchangeRateRequest $request): JsonResponse
     {
-        $rate = $this->exchangeRateService->updateOrCreateRate($request->validated());
+        $this->exchangeRateService->updateOrCreateRate($request->validated());
 
-        return $this->succeed(__('Exchange rate saved'), [
-            'exchange_rate' => $rate,
-        ], 201);
+        return $this->succeed(__('Exchange rate saved'), [], 201);
     }
 
     public function update(AdminUpdateExchangeRateRequest $request, ExchangeRate $exchangeRate): JsonResponse
@@ -48,18 +45,16 @@ class AdminExchangeRateController extends Controller
         $data = $request->validated();
         $data['currency'] = $data['currency'] ?? $exchangeRate->currency;
 
-        $rate = $this->exchangeRateService->updateOrCreateRate($data);
+        $this->exchangeRateService->updateOrCreateRate($data);
 
-        return $this->succeed(__('Exchange rate updated'), [
-            'exchange_rate' => $rate,
-        ]);
+        return $this->succeed(__('Exchange rate updated'));
     }
 
     public function destroy(ExchangeRate $exchangeRate): JsonResponse
     {
         $this->exchangeRateService->deleteRate($exchangeRate);
 
-        return response()->json(null, 204);
+        return $this->succeed(__('Exchange rate deleted'));
     }
 
     public function bulkUpsert(Request $request): JsonResponse

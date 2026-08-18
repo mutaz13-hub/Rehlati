@@ -2,19 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\Rating;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use App\Enums\VoteType;
-use App\Models\{
-    City,
-    Hotel,
-    Room,
-    Region,
-    CarAgency
-};
+use App\Models\CarAgency;
+use App\Models\City;
+use App\Models\Hotel;
+use App\Models\Rating;
+use App\Models\Region;
+use App\Models\Room;
+use App\Models\TouristGuide;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class RatingService
 {
@@ -25,22 +22,22 @@ class RatingService
         $base = Rating::where('rateable_type', $rateableType)
             ->where('rateable_id', $rateableId);
 
-        $count =  $base->count();
+        $count = $base->count();
 
         $query = $base->with(['user', 'voteTotals']);
 
         if ($sort === 'latest') {
             $query = $query->latest();
         } else { // top
-            $query = $query->leftJoin('vote_totals', function($join){
+            $query = $query->leftJoin('vote_totals', function ($join) {
                 $join->on('vote_totals.voteable_id', 'ratings.id')
-                     ->where('vote_totals.voteable_type', Rating::MORPH_KEY);
+                    ->where('vote_totals.voteable_type', Rating::MORPH_KEY);
             })->select('ratings.*')->groupBy('ratings.id')->orderByRaw("
              SUM(CASE WHEN vote_totals.vote_type = 'up' THEN vote_totals.count ELSE 0 END) -
              SUM(CASE WHEN vote_totals.vote_type = 'down' THEN vote_totals.count ELSE 0 END) DESC
             ")->orderByDesc('ratings.rate');
         }
-       $paginator = $query->paginate(5);
+        $paginator = $query->paginate(5);
 
         return $paginator;
     }
@@ -53,10 +50,11 @@ class RatingService
             'ratings.rooms' => Room::MORPH_KEY,
             'ratings.regions' => Region::MORPH_KEY,
             'ratings.car_agencies' => CarAgency::MORPH_KEY,
+            'ratings.tourist_guides' => TouristGuide::MORPH_KEY,
             default => abort(404),
         };
 
-        DB::transaction(function() use ($validatedData, $alias, $rateableId, $photo, $audio){
+        DB::transaction(function () use ($validatedData, $alias, $rateableId, $photo, $audio) {
             $rating = Rating::create([
                 'user_id' => auth('sanctum')->id(),
                 'rateable_type' => $alias,
@@ -91,7 +89,7 @@ class RatingService
             $updateData['body'] = null;
         }
 
-        if (!empty($updateData) || $audio || $photo || ($data['delete_photo'] ?? false)) {
+        if (! empty($updateData) || $audio || $photo || ($data['delete_photo'] ?? false)) {
             $updateData['edited_at'] = now();
         }
 

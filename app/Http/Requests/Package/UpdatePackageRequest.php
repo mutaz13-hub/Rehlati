@@ -38,6 +38,8 @@ class UpdatePackageRequest extends ApiFormRequest
             'hotels.*' => ['integer', 'exists:hotels,id'],
             'car_agencies' => ['nullable', 'array'],
             'car_agencies.*' => ['integer', 'exists:car_agencies,id'],
+            'tourist_guides' => ['nullable', 'array'],
+            'tourist_guides.*' => ['integer', 'exists:tourist_guides,id'],
         ];
     }
 }

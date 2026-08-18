@@ -43,7 +43,7 @@ class AdminPriceController extends Controller
         }
 
         $data = $query->orderBy('season_id', 'desc')
-            
+
             ->paginate(30);
 
         return $this->succeed(__('Prices retrieved'), [
@@ -51,8 +51,8 @@ class AdminPriceController extends Controller
             'meta' => [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
-                'total' => $data->total()
-            ]
+                'total' => $data->total(),
+            ],
         ]);
     }
 

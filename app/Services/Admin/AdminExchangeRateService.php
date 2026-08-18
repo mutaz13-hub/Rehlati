@@ -11,12 +11,11 @@ class AdminExchangeRateService
 {
     public function __construct(
         private readonly PriceUserService $priceUserService
-    ) {
-    }
+    ) {}
 
-    public function updateOrCreateRate(array $data): ExchangeRate
+    public function updateOrCreateRate(array $data): void
     {
-        return DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data) {
             $rate = ExchangeRate::updateOrCreate(
                 ['currency' => strtoupper($data['currency'])],
                 ['rate_to_syp' => $data['rate_to_syp']]
@@ -26,12 +25,10 @@ class AdminExchangeRateService
             $this->priceUserService->clearPricesCaches();
 
             Cache::put(
-                'exchange_rate:' . strtoupper($rate->currency),
+                'exchange_rate:'.strtoupper($rate->currency),
                 (float) $rate->rate_to_syp,
                 PriceUserService::CACHE_RATES_TTL
             );
-
-            return $rate;
         });
     }
 
@@ -42,6 +39,7 @@ class AdminExchangeRateService
             foreach ($rates as $rate) {
                 $results[] = $this->updateOrCreateRate($rate);
             }
+
             return $results;
         });
     }
@@ -55,8 +53,8 @@ class AdminExchangeRateService
             $this->priceUserService->clearExchangeRatesCaches();
             $this->priceUserService->clearPricesCaches();
 
-            Cache::forget('exchange_rate:' . $currency);
-            Cache::forget('exchange_rate_' . $currency);
+            Cache::forget('exchange_rate:'.$currency);
+            Cache::forget('exchange_rate_'.$currency);
         });
     }
 }

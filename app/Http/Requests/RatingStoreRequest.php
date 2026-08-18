@@ -8,31 +8,41 @@ use App\Models\City;
 use App\Models\Hotel;
 use App\Models\Region;
 use App\Models\Room;
+use App\Models\TouristGuide;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class RatingStoreRequest extends ApiFormRequest
 {
-    public function authorize(): bool | Response   
+    public function authorize(): bool|Response
     {
         $route_name = $this->route()->getName();
         $alias = null;
-        if($route_name === 'ratings.cities') $alias = City::MORPH_KEY;
-        else if($route_name === 'ratings.hotels') $alias = Hotel::MORPH_KEY;
-        else if($route_name === 'ratings.rooms') $alias = Room::MORPH_KEY;
-        else if($route_name === 'ratings.regions') $alias = Region::MORPH_KEY;
-        else if($route_name === 'ratings.car_agencies') $alias = CarAgency::MORPH_KEY;
+        if ($route_name === 'ratings.cities') {
+            $alias = City::MORPH_KEY;
+        } elseif ($route_name === 'ratings.hotels') {
+            $alias = Hotel::MORPH_KEY;
+        } elseif ($route_name === 'ratings.rooms') {
+            $alias = Room::MORPH_KEY;
+        } elseif ($route_name === 'ratings.regions') {
+            $alias = Region::MORPH_KEY;
+        } elseif ($route_name === 'ratings.car_agencies') {
+            $alias = CarAgency::MORPH_KEY;
+        } elseif ($route_name === 'ratings.tourist_guides') {
+            $alias = TouristGuide::MORPH_KEY;
+        }
 
-        if($alias === null)  return false;
+        if ($alias === null) {
+            return false;
+        }
 
         $model = Relation::getMorphedModel($alias);
 
-         Gate::authorize('rate',[$model , $model::findOrFail((int)$this->id)]);
+        Gate::authorize('rate', [$model, $model::findOrFail((int) $this->id)]);
 
-         return true;
+        return true;
     }
 
     public function rules()
