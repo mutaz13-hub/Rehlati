@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CommunityMemberResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,8 @@ class CommunityMemberResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'role' => $this->role->value,
-            'status' => $this->status->value,
-            'joined_at' => $this->joined_at?->toDateTimeString(),
-            'user' => $this->whenLoaded('user', fn () => new UserResource($this->user)),
+            'name' => $this->name,
+            'avatar' => $this->avatar,
         ];
     }
 }

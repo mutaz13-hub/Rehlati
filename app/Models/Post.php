@@ -49,7 +49,7 @@ class Post extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('post_pictures');
-        $this->addMediaCollection('post_videos')->singleFile();
+        $this->addMediaCollection('post_videos');
         $this->addMediaCollection('post_audio')->singleFile();
     }
 }

@@ -19,6 +19,8 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
             AmenitySeeder::class,
             HotelSeeder::class,
+            ExchangeRateSeeder::class,
+            AppSettingSeeder::class,
             RoomSeeder::class,
             RoomAmenitySeeder::class,
             CityAndRegionMediaSeeder::class,

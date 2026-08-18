@@ -15,6 +15,7 @@ class StoreCommunityRequest extends ApiFormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:5000'],
             'visibility' => ['required', Rule::in(CommunityVisibility::values())],
             'cover' => ['nullable', 'image', 'max:5120'],
         ];

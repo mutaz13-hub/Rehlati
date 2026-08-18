@@ -10,8 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
+use Laravolt\Avatar\Facade;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasLocalePreference
@@ -127,5 +129,17 @@ class User extends Authenticatable implements HasLocalePreference
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        $path = 'avatars/'.md5($this->name ?? 'unknown').'.png';
+
+        if (! Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->makeDirectory('avatars');
+            Facade::create($this->name)->save(Storage::disk('public')->path($path));
+        }
+
+        return Storage::disk('public')->url($path);
     }
 }

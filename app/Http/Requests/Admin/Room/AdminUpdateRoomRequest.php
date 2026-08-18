@@ -55,9 +55,9 @@ class AdminUpdateRoomRequest extends ApiFormRequest
             'beds.*.assigned_capacity' => ['required', 'integer', 'min:1'],
 
             'prices' => ['required', 'array', 'min:1'],
-            'prices.*.price_type' => ['required', 'string', Rule::in(['base_price', 'extra_bed_price'])],
+            'prices.*.price_type' => ['required', 'string', Rule::in(['base_price', 'child_price', 'extra_bed_price'])],
             'prices.*.nationality_category' => ['required', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
-            'prices.*.currency' => ['required', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
+            'prices.*.currency' => ['required', 'string', Rule::in(['USD'])],
             'prices.*.amount' => ['required', 'numeric', 'min:0'],
             'prices.*.season_id' => ['nullable', 'integer', 'exists:seasons,id'],
         ];

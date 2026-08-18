@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\ExchangeRate;
+use App\Models\Package;
+use App\Models\Price;
 use App\Models\Season;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -13,8 +15,16 @@ use Illuminate\Support\Facades\Date;
 class PriceUserService
 {
     public const CACHE_SEASONS_TTL = 3600;
+
     public const CACHE_RATES_TTL = 86400;
+
     public const CACHE_PRICE_LOOKUP_TTL = 600;
+
+    public const BASE_CURRENCY = 'USD';
+
+    public const NATIONALITY_CATEGORIES = ['syrian', 'expat', 'foreigner'];
+
+    public const CHILD_PRICE_TYPE = 'child_price';
 
     public function calculateFinalPrice(
         Model $priceable,
@@ -35,15 +45,16 @@ class PriceUserService
             $season?->id
         );
 
-        if (!$price) {
+        if (! $price) {
             return null;
         }
 
-        $amountInSyp = $this->convertToSyp((float) $price->amount, $price->currency);
+        $activeCurrency = $this->getActiveCurrency();
+        $converted = $this->convertToCurrency((float) $price->amount, $price->currency, $activeCurrency);
 
         return [
-            'amount' => round($amountInSyp, 2),
-            'currency' => 'SYP',
+            'amount' => $converted,
+            'currency' => $activeCurrency,
             'base_amount' => (float) $price->amount,
             'base_currency' => $price->currency,
             'season_id' => $season?->id,
@@ -51,6 +62,80 @@ class PriceUserService
             'nationality_category' => $nationalityCategory,
             'price_type' => $priceType,
         ];
+    }
+
+    /**
+     * Unified pricing payload for a priceable (room, package, hotel...).
+     *
+     * For every nationality category it resolves the season-aware adult
+     * (base) price and the child price, then converts them to the active
+     * currency configured by the admin.
+     */
+    public function unifiedPricing(
+        Model $priceable,
+        ?User $user = null,
+        ?\DateTimeInterface $forDate = null
+    ): array {
+        $forDate = Date::parse($forDate ?? now());
+        $season = $this->resolveActiveSeason($priceable, $forDate);
+        $adultPriceType = $this->adultPriceTypeFor($priceable);
+        $activeCurrency = $this->getActiveCurrency();
+
+        $categories = [];
+        foreach (self::NATIONALITY_CATEGORIES as $category) {
+            $adult = $this->lookupMatchingPrice($priceable, $adultPriceType, $category, $season?->id);
+            $child = $this->lookupMatchingPrice($priceable, self::CHILD_PRICE_TYPE, $category, $season?->id);
+            $extraBed = $this->lookupMatchingPrice($priceable, 'extra_bed_price', $category, $season?->id);
+
+            $categories[$category] = [
+                'adult' => $adult ? $this->presentPrice($adult, $activeCurrency) : null,
+                'child' => $child ? $this->presentPrice($child, $activeCurrency) : null,
+                'extra_bed' => $extraBed ? $this->presentPrice($extraBed, $activeCurrency) : null,
+            ];
+        }
+
+        return $categories;
+    }
+
+    public function getActiveCurrency(): string
+    {
+        return strtoupper((string) app(AppSettingService::class)->get('active_currency', self::BASE_CURRENCY));
+    }
+
+    public function convertToCurrency(float $amount, string $fromCurrency, string $toCurrency): float
+    {
+        $fromCurrency = strtoupper($fromCurrency);
+        $toCurrency = strtoupper($toCurrency);
+
+        if ($fromCurrency === $toCurrency) {
+            return round($amount, 2);
+        }
+
+        $amountInSyp = $fromCurrency === 'SYP'
+            ? $amount
+            : $amount * $this->getExchangeRate($fromCurrency);
+
+        if ($toCurrency === 'SYP') {
+            return round($amountInSyp, 2);
+        }
+
+        $rate = $this->getExchangeRate($toCurrency);
+
+        return $rate > 0 ? round($amountInSyp / $rate, 2) : 0.0;
+    }
+
+    private function presentPrice(Price $price, string $activeCurrency): array
+    {
+        return [
+            'amount' => $this->convertToCurrency((float) $price->amount, $price->currency, $activeCurrency),
+            'currency' => $activeCurrency,
+            'price_type' => $price->price_type,
+        ];
+    }
+
+    private function adultPriceTypeFor(Model $priceable): string
+    {
+        return $priceable instanceof Package ? 'package_price' : 'base_price';
     }
 
     public function calculateFinalPriceValue(
@@ -112,7 +197,7 @@ class PriceUserService
             if ($seasonId !== null) {
                 $season = Season::query()->find($seasonId);
 
-                if (!$season || !$season->isFor($priceable)) {
+                if (! $season || ! $season->isFor($priceable)) {
                     return null;
                 }
             }
@@ -233,9 +318,10 @@ class PriceUserService
     public function clearPricesCaches(?Model $priceable = null): void
     {
         if ($priceable) {
-            $prefix = 'price:' . $this->priceableCacheKey($priceable);
+            $prefix = 'price:'.$this->priceableCacheKey($priceable);
             $this->forgetCacheByPrefix($prefix);
-            $this->forgetCacheByPrefix('all_prices:' . $this->priceableCacheKey($priceable));
+            $this->forgetCacheByPrefix('all_prices:'.$this->priceableCacheKey($priceable));
+
             return;
         }
 

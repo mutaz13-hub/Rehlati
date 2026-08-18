@@ -2,28 +2,49 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Enums\MediaType;
 use App\Enums\PostType;
 use App\Http\Requests\Api\ApiFormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 
 class UpdatePostRequest extends ApiFormRequest
 {
+    use ValidatesPostMedia;
+
     /**
      * @return array<string, array<int, string|Rule>>
      */
     public function rules(): array
     {
         return [
-            'type' => ['nullable', Rule::in(PostType::values())],
+            'type' => ['nullable', Rule::in([PostType::TEXT->value, PostType::AUDIO->value])],
             'body' => [
+                Rule::requiredIf(fn () => $this->type === PostType::TEXT->value),
                 Rule::prohibitedIf(fn () => $this->type === PostType::AUDIO->value),
                 'nullable', 'string', 'max:1000',
             ],
-            'pictures' => ['nullable', 'array'],
-            'pictures.*' => ['image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
-            'video' => ['nullable', 'file', 'mimes:mp4,mov,webm,mkv,avi', 'max:204800'],
-            'audio' => ['nullable', 'file', 'mimes:mp3,wav,aac,m4a,ogg', 'max:20480'],
-            'delete_pictures' => ['nullable', 'boolean'],
+            'audio' => [
+                'file',
+                Rule::requiredIf(fn () => $this->type === PostType::AUDIO->value),
+                Rule::prohibitedIf(fn () => $this->type === PostType::TEXT->value),
+                'mimes:mp3,wav,aac,m4a,ogg', 'max:20480',
+            ],
+            'media' => [
+                'nullable', 'array',
+                Rule::prohibitedIf(fn () => $this->boolean('delete_media')),
+            ],
+            'media.*.type' => ['required', Rule::in(MediaType::values())],
+            'media.*.file' => ['required', 'file'],
+            'delete_media' => [
+                'nullable', 'boolean',
+                Rule::prohibitedIf(fn () => $this->has('media')),
+            ],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $this->validateMediaFiles($validator);
     }
 }

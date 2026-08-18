@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 class HotelController extends Controller
 {
-    public function __construct(public HotelService $hotel_service)
+    public function __construct(public AdminHotelService $hotel_service)
     {
     }
 

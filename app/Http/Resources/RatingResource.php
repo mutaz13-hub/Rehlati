@@ -16,10 +16,7 @@ class RatingResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => $this->when($this->user, [
-                'id' => $this->user->id,
-                'name' => $this->user->name ?? null,
-            ]),
+            'user' => $this->when($this->user, fn () => new UserResource($this->user)),
             'rate' => $this->rate,
             'type' => $this->type,
             'body' => $this->body,
@@ -27,10 +24,10 @@ class RatingResource extends JsonResource
             'photo' => $this->when($this->resource->hasMedia('photo_review'), $this->resource->getFirstMediaUrl('photo_review')),
             'up_votes' => $this->up_votes_count ?? $this->upVotes()->count(),
             'down_votes' => $this->down_votes_count ?? $this->downVotes()->count(),
-            'my_vote' => $this->when(auth('sanctum')->check(), function() {
+            'my_vote' => $this->when(auth('sanctum')->check(), function () {
                 return $this->votes()->where('user_id', auth('sanctum')->id())?->first()?->vote;
             }),
-            
+
             'created_at' => $this->created_at?->toDateTimeString(),
             'edited_at' => $this->when($this->edited_at, [
                 'datetime' => $this->edited_at?->toDateTimeString(),

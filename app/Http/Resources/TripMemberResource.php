@@ -16,6 +16,7 @@ class TripMemberResource extends JsonResource
             'user_id' => $this->user_id,
             'name' => $this->whenLoaded('user', fn () => $this->user->name),
             'username' => $this->whenLoaded('user', fn () => $this->user->username),
+            'avatar' => $this->whenLoaded('user', fn () => $this->user->avatar),
             'role' => $this->role->value,
             'status' => $this->status?->value,
         ];

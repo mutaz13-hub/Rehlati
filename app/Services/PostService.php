@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\MediaType;
 use App\Enums\VoteType;
 use App\Models\Community;
 use App\Models\Post;
@@ -19,8 +20,7 @@ class PostService
         $sort = $options['sort'] ?? 'top';
 
         $query = Post::where('community_id', $community->id)
-            ->with(['user:id,name', 'voteTotals'])
-            ->withCount('comments');
+            ->with(['user:id,name', 'voteTotals']);
 
         if ($sort === 'latest') {
             $query = $query->latest();
@@ -34,6 +34,8 @@ class PostService
             ")->orderByDesc('posts.created_at');
         }
 
+        $query->withCount('comments');
+
         return $query->paginate(10);
     }
 
@@ -42,9 +44,9 @@ class PostService
         return $post->load(['user:id,name', 'voteTotals'])->loadCount('comments');
     }
 
-    public function store(Community $community, User $user, array $data, array $pictures = [], ?UploadedFile $video = null, ?UploadedFile $audio = null): void
+    public function store(Community $community, User $user, array $data, array $media = []): void
     {
-        DB::transaction(function () use ($community, $user, $data, $pictures, $video, $audio) {
+        DB::transaction(function () use ($community, $user, $data, $media) {
             $post = Post::create([
                 'community_id' => $community->id,
                 'user_id' => $user->id,
@@ -52,23 +54,17 @@ class PostService
                 'body' => $data['body'] ?? null,
             ]);
 
-            foreach ($pictures as $picture) {
-                $this->imageUploadService->addUploaded($post, $picture, 'post_pictures');
+            if (! empty($data['audio'])) {
+                $post->addMedia($data['audio'])->toMediaCollection('post_audio');
             }
 
-            if ($video) {
-                $post->addMedia($video)->toMediaCollection('post_videos');
-            }
-
-            if ($audio) {
-                $post->addMedia($audio)->toMediaCollection('post_audio');
-            }
+            $this->attachMedia($post, $media);
         });
     }
 
-    public function update(Post $post, array $data, array $pictures = [], ?UploadedFile $video = null, ?UploadedFile $audio = null, bool $deletePictures = false): void
+    public function update(Post $post, array $data, array $media = [], bool $deleteMedia = false): void
     {
-        DB::transaction(function () use ($post, $data, $pictures, $video, $audio, $deletePictures) {
+        DB::transaction(function () use ($post, $data, $media, $deleteMedia) {
             $updateData = [];
 
             if (array_key_exists('body', $data)) {
@@ -86,25 +82,37 @@ class PostService
                 $post->update($updateData);
             }
 
-            if ($pictures) {
+            if ($media) {
                 $post->clearMediaCollection('post_pictures');
-                foreach ($pictures as $picture) {
-                    $this->imageUploadService->addUploaded($post, $picture, 'post_pictures');
-                }
-            } elseif ($deletePictures) {
-                $post->clearMediaCollection('post_pictures');
-            }
-
-            if ($video) {
                 $post->clearMediaCollection('post_videos');
-                $post->addMedia($video)->toMediaCollection('post_videos');
+                $this->attachMedia($post, $media);
+            } elseif ($deleteMedia) {
+                $post->clearMediaCollection('post_pictures');
+                $post->clearMediaCollection('post_videos');
             }
 
-            if ($audio) {
+            if (! empty($data['audio'])) {
                 $post->clearMediaCollection('post_audio');
-                $post->addMedia($audio)->toMediaCollection('post_audio');
+                $post->addMedia($data['audio'])->toMediaCollection('post_audio');
             }
         });
+    }
+
+    private function attachMedia(Post $post, array $media): void
+    {
+        foreach ($media as $item) {
+            $file = $item['file'] ?? null;
+
+            if (! $file instanceof UploadedFile) {
+                continue;
+            }
+
+            if (($item['type'] ?? null) === MediaType::PICTURE->value) {
+                $this->imageUploadService->addUploaded($post, $file, 'post_pictures');
+            } else {
+                $post->addMedia($file)->toMediaCollection('post_videos');
+            }
+        }
     }
 
     public function destroy(Post $post): void

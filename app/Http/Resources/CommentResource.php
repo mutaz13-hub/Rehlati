@@ -18,10 +18,7 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'post_id' => $this->post_id,
-            'user' => $this->whenLoaded('user', fn () => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-            ]),
+            'user' => $this->whenLoaded('user', fn () => new UserResource($this->user)),
             'type' => $this->type->value,
             'body' => $this->body,
             'pictures' => PictureResource::collection($this->getMedia('comment_pictures')),

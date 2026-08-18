@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class PackageService
 {
-    private const LIST_RELATIONS = ['description', 'regions', 'cities', 'hotels', 'carAgencies'];
+    private const LIST_RELATIONS = ['description', 'regions', 'cities', 'hotels', 'carAgencies', 'prices'];
 
     public function index(array $filters, int $perPage = 10, bool $onlyActive = false): LengthAwarePaginator
     {

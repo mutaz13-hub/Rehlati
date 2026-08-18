@@ -23,6 +23,7 @@ class Community extends Model implements HasMedia
     protected $fillable = [
         'uuid',
         'name',
+        'description',
         'visibility',
         'owner_id',
     ];

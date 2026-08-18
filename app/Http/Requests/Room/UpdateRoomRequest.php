@@ -28,9 +28,9 @@ class UpdateRoomRequest extends ApiFormRequest
             'available_rooms' => ['sometimes', 'nullable', 'integer', 'min:0'],
 
             'prices' => ['sometimes', 'required', 'array', 'min:1'],
-            'prices.*.price_type' => ['required_with:prices', 'string', Rule::in(['base_price', 'extra_bed_price', 'package_price'])],
+            'prices.*.price_type' => ['required_with:prices', 'string', Rule::in(['base_price', 'child_price', 'extra_bed_price', 'package_price'])],
             'prices.*.nationality_category' => ['required_with:prices', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
-            'prices.*.currency' => ['required_with:prices', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
+            'prices.*.currency' => ['required_with:prices', 'string', Rule::in(['USD'])],
             'prices.*.amount' => ['required_with:prices', 'numeric', 'min:0'],
             'prices.*.season_id' => ['nullable', 'integer', 'exists:seasons,id'],
         ];

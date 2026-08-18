@@ -6,224 +6,13 @@
     },
     "item": [
         {
-            "name": "communities",
+            "name": "admin",
             "item": [
                 {
-                    "name": "[GET] api/communities",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "device",
-                                "value": "{{device}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/communities",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "communities"
-                            ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"search\": \"sample_text\",\n    \"page\": 7\n}",
-                            "options": []
-                        }
-                    }
-                },
-                {
-                    "name": "[POST] api/communities",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "device",
-                                "value": "{{device}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/communities",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "communities"
-                            ]
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"sample_text\",\n    \"visibility\": \"sample_text\",\n    \"cover\": \"sample_text\"\n}",
-                            "options": []
-                        }
-                    }
-                },
-                {
-                    "name": "[GET] api/communities/{community}",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "device",
-                                "value": "{{device}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/communities/:community",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "communities",
-                                ":community"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[PUT] api/communities/{community}",
-                    "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "device",
-                                "value": "{{device}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/communities/:community",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "communities",
-                                ":community"
-                            ],
-                            "variable": []
-                        },
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n    \"name\": \"sample_text\",\n    \"visibility\": \"sample_text\",\n    \"cover\": \"sample_text\",\n    \"delete_cover\": 1\n}",
-                            "options": []
-                        }
-                    }
-                },
-                {
-                    "name": "[DELETE] api/communities/{community}",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            },
-                            {
-                                "key": "Our-Great-Password",
-                                "value": "{{api_password}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "lang",
-                                "value": "{{lang}}",
-                                "type": "text"
-                            },
-                            {
-                                "key": "device",
-                                "value": "{{device}}",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/api/communities/:community",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "api",
-                                "communities",
-                                ":community"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "members",
+                    "name": "currency-settings",
                     "item": [
                         {
-                            "name": "[GET] api/communities/{community}/members",
+                            "name": "[GET] api/admin/currency-settings",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -249,27 +38,20 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/members",
+                                    "raw": "{{base_url}}/api/admin/currency-settings",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "communities",
-                                        ":community",
-                                        "members"
-                                    ],
-                                    "variable": []
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"status\": \"sample_text\",\n    \"page\": 4\n}",
-                                    "options": []
+                                        "admin",
+                                        "currency-settings"
+                                    ]
                                 }
                             }
                         },
                         {
-                            "name": "[PUT] api/communities/{community}/members/{user}",
+                            "name": "[PUT] api/admin/currency-settings",
                             "request": {
                                 "method": "PUT",
                                 "header": [
@@ -295,31 +77,78 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/members/:user",
+                                    "raw": "{{base_url}}/api/admin/currency-settings",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "communities",
-                                        ":community",
-                                        "members",
-                                        ":user"
-                                    ],
-                                    "variable": []
+                                        "admin",
+                                        "currency-settings"
+                                    ]
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"role\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"active_currency\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }
-                        },
+                        }
+                    ]
+                },
+                {
+                    "name": "prices",
+                    "item": [
                         {
-                            "name": "approve",
+                            "name": "clear-caches",
                             "item": [
                                 {
-                                    "name": "[POST] api/communities/{community}/members/{user}/approve",
+                                    "name": "[GET] api/admin/prices/clear-caches",
+                                    "request": {
+                                        "method": "GET",
+                                        "header": [
+                                            {
+                                                "key": "Accept",
+                                                "value": "application/json",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "Our-Great-Password",
+                                                "value": "{{api_password}}",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "lang",
+                                                "value": "{{lang}}",
+                                                "type": "text"
+                                            },
+                                            {
+                                                "key": "device",
+                                                "value": "{{device}}",
+                                                "type": "text"
+                                            }
+                                        ],
+                                        "url": {
+                                            "raw": "{{base_url}}/api/admin/prices/clear-caches",
+                                            "host": [
+                                                "{{base_url}}"
+                                            ],
+                                            "path": [
+                                                "api",
+                                                "admin",
+                                                "prices",
+                                                "clear-caches"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "bulk",
+                            "item": [
+                                {
+                                    "name": "[POST] api/admin/prices/bulk",
                                     "request": {
                                         "method": "POST",
                                         "header": [
@@ -345,259 +174,23 @@
                                             }
                                         ],
                                         "url": {
-                                            "raw": "{{base_url}}/api/communities/:community/members/:user/approve",
+                                            "raw": "{{base_url}}/api/admin/prices/bulk",
                                             "host": [
                                                 "{{base_url}}"
                                             ],
                                             "path": [
                                                 "api",
-                                                "communities",
-                                                ":community",
-                                                "members",
-                                                ":user",
-                                                "approve"
-                                            ],
-                                            "variable": []
+                                                "admin",
+                                                "prices",
+                                                "bulk"
+                                            ]
                                         }
                                     }
                                 }
                             ]
                         },
                         {
-                            "name": "reject",
-                            "item": [
-                                {
-                                    "name": "[POST] api/communities/{community}/members/{user}/reject",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/communities/:community/members/:user/reject",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "communities",
-                                                ":community",
-                                                "members",
-                                                ":user",
-                                                "reject"
-                                            ],
-                                            "variable": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "[DELETE] api/communities/{community}/members/{communityMember}",
-                            "request": {
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/members/:communityMember",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "members",
-                                        ":communityMember"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "join",
-                    "item": [
-                        {
-                            "name": "[POST] api/communities/{community}/join",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/join",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "join"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "leave",
-                    "item": [
-                        {
-                            "name": "[POST] api/communities/{community}/leave",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/leave",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "leave"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "rotate-link",
-                    "item": [
-                        {
-                            "name": "[POST] api/communities/{community}/rotate-link",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/rotate-link",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "rotate-link"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "posts",
-                    "item": [
-                        {
-                            "name": "[GET] api/communities/{community}/posts",
+                            "name": "[GET] api/admin/prices",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -623,27 +216,20 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/posts",
+                                    "raw": "{{base_url}}/api/admin/prices",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "communities",
-                                        ":community",
-                                        "posts"
-                                    ],
-                                    "variable": []
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"sort\": \"sample_text\",\n    \"page\": 5\n}",
-                                    "options": []
+                                        "admin",
+                                        "prices"
+                                    ]
                                 }
                             }
                         },
                         {
-                            "name": "[POST] api/communities/{community}/posts",
+                            "name": "[POST] api/admin/prices",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -669,22 +255,148 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/posts",
+                                    "raw": "{{base_url}}/api/admin/prices",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "communities",
-                                        ":community",
-                                        "posts"
+                                        "admin",
+                                        "prices"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"priceable_id\": 4,\n    \"priceable_type\": \"sample_text\",\n    \"price_type\": \"sample_text\",\n    \"nationality_category\": \"sample_text\",\n    \"amount\": 89,\n    \"season_id\": \"sample_text\"\n}",
+                                    "options": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[GET] api/admin/prices/{price}",
+                            "request": {
+                                "method": "GET",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Our-Great-Password",
+                                        "value": "{{api_password}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "lang",
+                                        "value": "{{lang}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "device",
+                                        "value": "{{device}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/admin/prices/:price",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "prices",
+                                        ":price"
+                                    ],
+                                    "variable": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[PUT] api/admin/prices/{price}",
+                            "request": {
+                                "method": "PUT",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Our-Great-Password",
+                                        "value": "{{api_password}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "lang",
+                                        "value": "{{lang}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "device",
+                                        "value": "{{device}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/admin/prices/:price",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "prices",
+                                        ":price"
                                     ],
                                     "variable": []
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "{\n    \"type\": \"sample_text\",\n    \"body\": \"sample_text\",\n    \"pictures\": [\n        []\n    ],\n    \"video\": \"sample_text\",\n    \"audio\": \"sample_text\"\n}",
+                                    "raw": "{\n    \"price_type\": \"sample_text\",\n    \"nationality_category\": \"sample_text\",\n    \"amount\": 58,\n    \"season_id\": \"sample_text\"\n}",
                                     "options": []
+                                }
+                            }
+                        },
+                        {
+                            "name": "[DELETE] api/admin/prices/{price}",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Accept",
+                                        "value": "application/json",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "Our-Great-Password",
+                                        "value": "{{api_password}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "lang",
+                                        "value": "{{lang}}",
+                                        "type": "text"
+                                    },
+                                    {
+                                        "key": "device",
+                                        "value": "{{device}}",
+                                        "type": "text"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/api/admin/prices/:price",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "prices",
+                                        ":price"
+                                    ],
+                                    "variable": []
                                 }
                             }
                         }

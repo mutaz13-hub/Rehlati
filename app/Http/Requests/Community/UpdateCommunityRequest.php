@@ -14,10 +14,17 @@ class UpdateCommunityRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'name' => ['nullable', 'string', 'max:255'],
-            'visibility' => ['nullable', Rule::in(CommunityVisibility::values())],
-            'cover' => ['nullable', 'image', 'max:5120'],
-            'delete_cover' => ['nullable', 'boolean'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:5000'],
+            'visibility' => ['required', Rule::in(CommunityVisibility::values())],
+            'cover' => [
+                'nullable', 'image', 'max:5120',
+                Rule::prohibitedIf(fn () => $this->exists('delete_cover')),
+            ],
+            'delete_cover' => [
+                'nullable', 'boolean',
+                Rule::prohibitedIf(fn () => $this->hasFile('cover')),
+            ],
         ];
     }
 }

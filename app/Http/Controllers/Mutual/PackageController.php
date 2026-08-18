@@ -25,11 +25,11 @@ class PackageController extends Controller
 
     public function show(Package $package): JsonResponse
     {
-        $package->load(['description', 'regions', 'cities', 'hotels', 'carAgencies']);
+        $package->load(['description', 'regions', 'cities', 'hotels', 'carAgencies', 'prices']);
 
         return $this->succeed(__('Package fetched successfully'), [
-           'package' =>  new PackageResource($package)
-            ]);
+            'package' => new PackageResource($package),
+        ]);
     }
 
     private function filters(Request $request): array

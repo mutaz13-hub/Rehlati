@@ -14,8 +14,7 @@ class AdminPriceService
 {
     public function __construct(
         private readonly PriceUserService $priceUserService
-    ) {
-    }
+    ) {}
 
     public function storePrice(Model $priceable, array $data): Price
     {
@@ -25,7 +24,7 @@ class AdminPriceService
             $price = $priceable->prices()->create([
                 'price_type' => $data['price_type'],
                 'nationality_category' => $data['nationality_category'],
-                'currency' => $data['currency'],
+                'currency' => PriceUserService::BASE_CURRENCY,
                 'amount' => $data['amount'],
                 'season_id' => $data['season_id'] ?? null,
             ]);
@@ -47,7 +46,6 @@ class AdminPriceService
             $updates = array_filter([
                 'price_type' => $data['price_type'] ?? null,
                 'nationality_category' => $data['nationality_category'] ?? null,
-                'currency' => $data['currency'] ?? null,
                 'amount' => $data['amount'] ?? null,
             ], fn ($value) => $value !== null);
 
@@ -105,6 +103,7 @@ class AdminPriceService
             foreach ($tiers as $tier) {
                 $results[] = $this->upsertPriceTier($priceable, $tier);
             }
+
             return $results;
         });
     }
@@ -117,7 +116,7 @@ class AdminPriceService
 
         $season = Season::query()->find($seasonId);
 
-        if (!$season || !$season->isFor($priceable)) {
+        if (! $season || ! $season->isFor($priceable)) {
             throw ValidationException::withMessages([
                 'season_id' => [__('The selected season is not related to this priceable target.')],
             ]);
@@ -139,7 +138,7 @@ class AdminPriceService
 
     private function forgetLegacyCacheKeys(string $currency, ?int $seasonId): void
     {
-        Cache::forget('exchange_rate_' . $currency);
+        Cache::forget('exchange_rate_'.$currency);
 
         if ($seasonId) {
             $today = now()->format('Y-m-d');

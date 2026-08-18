@@ -12,7 +12,6 @@ use App\Http\Resources\CommunityMemberResource;
 use App\Http\Resources\CommunityResource;
 use App\Models\Community;
 use App\Models\CommunityMember;
-use App\Models\User;
 use App\Services\CommunityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -94,29 +93,29 @@ class CommunityController extends Controller
         ]);
     }
 
-    public function updateMemberRole(UpdateCommunityMemberRoleRequest $request, Community $community, User $user): JsonResponse
+    public function updateMemberRole(UpdateCommunityMemberRoleRequest $request, Community $community, CommunityMember $communityMember): JsonResponse
     {
         Gate::authorize('manageMembers', $community);
 
-        $this->service->updateMemberRole($community, $user, $request->role);
+        $this->service->updateMemberRole($community, $communityMember, $request->role);
 
         return $this->succeed(__('Member role updated successfully'));
     }
 
-    public function approveMember(Request $request, Community $community, User $user): JsonResponse
+    public function approveMember(Request $request, Community $community, CommunityMember $communityMember): JsonResponse
     {
         Gate::authorize('manageMembers', $community);
 
-        $this->service->approveMember($community, $user);
+        $this->service->approveMember($community, $communityMember);
 
         return $this->succeed(__('Join request approved successfully'));
     }
 
-    public function rejectMember(Request $request, Community $community, User $user): JsonResponse
+    public function rejectMember(Request $request, Community $community, CommunityMember $communityMember): JsonResponse
     {
         Gate::authorize('manageMembers', $community);
 
-        $this->service->rejectMember($community, $user);
+        $this->service->rejectMember($community, $communityMember);
 
         return $this->succeed(__('Join request rejected successfully'));
     }

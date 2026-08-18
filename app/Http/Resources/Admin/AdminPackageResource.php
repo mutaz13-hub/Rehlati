@@ -2,11 +2,12 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Http\Resources\CarAgencyResource;
 use App\Http\Resources\DescriptionResource;
 use App\Http\Resources\PictureResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CarAgencyResource;
+
 class AdminPackageResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -25,6 +26,9 @@ class AdminPackageResource extends JsonResource
             'price' => $this->price !== null ? (float) $this->price : null,
             'currency' => $this->currency,
             'status' => $this->status?->value,
+            'prices' => $this->whenLoaded('prices', function () {
+                return AdminPriceResource::collection($this->prices);
+            }),
             'pics' => $this->when($request_type === 'show', fn () => PictureResource::collection(
                 $this->getMedia('package_pictures')->take(10)->values()
             )),
@@ -34,9 +38,7 @@ class AdminPackageResource extends JsonResource
             'regions' => $this->when($request_type === 'show', fn () => AdminRegionResource::collection($this->whenLoaded('regions'))),
             'cities' => $this->when($request_type === 'show', fn () => AdminCityResource::collection($this->whenLoaded('cities'))),
             'hotels' => $this->when($request_type === 'show', fn () => AdminHotelResource::collection($this->whenLoaded('hotels'))),
-            'car_agencies' => $this->when($request_type === 'show', [])//fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
+            'car_agencies' => $this->when($request_type === 'show', []), // fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
         ];
     }
-
-    
 }

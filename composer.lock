@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "724a29c7aabf485e529c1b2c96692424",
+    "content-hash": "74992c37c2631de07bcf362eeee13a80",
     "packages": [
         {
             "name": "aywan/polyline",
@@ -3144,6 +3144,97 @@
                 "source": "https://github.com/laravel/tinker/tree/v2.11.1"
             },
             "time": "2026-02-06T14:12:35+00:00"
+        },
+        {
+            "name": "laravolt/avatar",
+            "version": "6.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravolt/avatar.git",
+                "reference": "b80a0a919081d251a40b07004c7e20a765f16a34"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravolt/avatar/zipball/b80a0a919081d251a40b07004c7e20a765f16a34",
+                "reference": "b80a0a919081d251a40b07004c7e20a765f16a34",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/cache": "^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+                "intervention/image": "^4.0",
+                "php": ">=8.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.6.7",
+                "pestphp/pest": "^2.34|^3.7",
+                "pestphp/pest-plugin-type-coverage": "^2.8|^3.3",
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^11.5.3",
+                "roave/security-advisories": "dev-latest"
+            },
+            "suggest": {
+                "ext-gd": "Needed to support image manipulation",
+                "ext-imagick": "Needed to support image manipulation, better than GD"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Avatar": "Laravolt\\Avatar\\Facade"
+                    },
+                    "providers": [
+                        "Laravolt\\Avatar\\ServiceProvider"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "6.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravolt\\Avatar\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bayu Hendra Winata",
+                    "email": "uyab.exe@gmail.com",
+                    "homepage": "https://laravolt.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Turn name, email, and any other string into initial-based avatar or gravatar.",
+            "homepage": "https://github.com/laravolt/avatar",
+            "keywords": [
+                "avatar",
+                "gravatar",
+                "laravel",
+                "laravolt"
+            ],
+            "support": {
+                "issues": "https://github.com/laravolt/avatar/issues",
+                "source": "https://github.com/laravolt/avatar/tree/6.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/bayuhendra",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://ko-fi.com/bayuhendra",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://www.patreon.com/uyab",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2026-07-09T23:13:38+00:00"
         },
         {
             "name": "lcobucci/jwt",

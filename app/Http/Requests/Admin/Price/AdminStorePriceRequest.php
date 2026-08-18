@@ -17,9 +17,8 @@ class AdminStorePriceRequest extends ApiFormRequest
         return [
             'priceable_id' => ['required', 'integer'],
             'priceable_type' => ['required', 'string'],
-            'price_type' => ['required', 'string', Rule::in(['base_price', 'extra_bed_price', 'package_price'])],
+            'price_type' => ['required', 'string', Rule::in(['base_price', 'child_price', 'extra_bed_price', 'package_price'])],
             'nationality_category' => ['required', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
-            'currency' => ['required', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
             'amount' => ['required', 'numeric', 'min:0'],
             'season_id' => ['nullable', 'exists:seasons,id'],
         ];

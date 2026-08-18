@@ -15,10 +15,9 @@ class AdminUpdatePriceRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'price_type' => ['sometimes', 'string', Rule::in(['base_price', 'extra_bed_price', 'package_price'])],
-            'nationality_category' => ['sometimes', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
-            'currency' => ['sometimes', 'string', Rule::in(['SYP', 'USD', 'EUR'])],
-            'amount' => ['sometimes', 'numeric', 'min:0'],
+            'price_type' => ['required', 'string', Rule::in(['base_price', 'child_price', 'extra_bed_price', 'package_price'])],
+            'nationality_category' => ['required', 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
+            'amount' => ['required', 'numeric', 'min:0'],
             'season_id' => ['nullable', 'exists:seasons,id'],
         ];
     }

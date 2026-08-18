@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\MediaType;
 use App\Enums\VoteType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PostResource extends JsonResource
 {
@@ -18,15 +20,21 @@ class PostResource extends JsonResource
         return [
             'id' => $this->id,
             'community_id' => $this->community_id,
-            'user' => $this->whenLoaded('user', fn () => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-            ]),
+            'user' => $this->whenLoaded('user', fn () => new UserResource($this->user)),
             'type' => $this->type->value,
             'body' => $this->body,
-            'pictures' => PictureResource::collection($this->getMedia('post_pictures')),
-            'video' => $this->hasMedia('post_videos') ? $this->getFirstMediaUrl('post_videos') : null,
             'audio' => $this->hasMedia('post_audio') ? $this->getFirstMediaUrl('post_audio') : null,
+            'media' => $this->getMedia('post_pictures')
+                ->concat($this->getMedia('post_videos'))
+                ->sortBy('id')
+                ->values()
+                ->map(fn (Media $item) => [
+                    'id' => $item->id,
+                    'type' => $item->collection_name === 'post_videos' ? MediaType::VIDEO->value : MediaType::PICTURE->value,
+                    'url' => $item->getUrl(),
+                    'name' => $item->name,
+                    'is_thumbnail' => (bool) $item->getCustomProperty('is_thumbnail'),
+                ]),
             'up_votes' => $this->up_votes_count ?? $this->voteTotals->firstWhere('vote_type', VoteType::UP)?->count ?? 0,
             'down_votes' => $this->down_votes_count ?? $this->voteTotals->firstWhere('vote_type', VoteType::DOWN)?->count ?? 0,
             'my_vote' => $this->when(auth('sanctum')->check(), function () {

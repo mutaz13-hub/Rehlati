@@ -19,7 +19,7 @@ class RoomSeeder extends Seeder
                 [
                     'name_en' => 'Deluxe King Room',
                     'name_ar' => 'غرفة ديلوكس بسرير كينغ',
-                    
+
                     'description_en' => 'A bright and spacious room with a king-size bed, a comfortable seating area, and views over the city.',
                     'description_ar' => 'غرفة مشرقة وواسعة تضم سريراً بحجم كينغ ومنطقة جلوس مريحة وإطلالة على المدينة.',
                     'base_price_usd' => 40 + ($hotel->stars * 20),
@@ -29,7 +29,7 @@ class RoomSeeder extends Seeder
                 [
                     'name_en' => 'Family Twin Suite',
                     'name_ar' => 'جناح عائلي بسريرين منفصلين',
-                    
+
                     'description_en' => 'A welcoming family suite with two twin beds, extra living space, and everything needed for a relaxed stay.',
                     'description_ar' => 'جناح عائلي مريح يضم سريرين منفصلين ومساحة معيشة إضافية وكل ما يلزم لإقامة هادئة.',
                     'base_price_usd' => 65 + ($hotel->stars * 20),
@@ -61,24 +61,28 @@ class RoomSeeder extends Seeder
                 $syrianMultiplier = 1.0;
                 $expatMultiplier = 1.1;
                 $foreignerMultiplier = 1.25;
+                $childMultiplier = 0.5;
 
-                $basePriceTiers = [
-                    ['nationality_category' => 'syrian',    'amount' => round($data['base_price_usd'] * $syrianMultiplier, 2)],
-                    ['nationality_category' => 'expat',     'amount' => round($data['base_price_usd'] * $expatMultiplier, 2)],
-                    ['nationality_category' => 'foreigner', 'amount' => round($data['base_price_usd'] * $foreignerMultiplier, 2)],
+                $priceTiers = [
+                    ['price_type' => 'base_price', 'nationality_category' => 'syrian',    'amount' => round($data['base_price_usd'] * $syrianMultiplier, 2)],
+                    ['price_type' => 'base_price', 'nationality_category' => 'expat',     'amount' => round($data['base_price_usd'] * $expatMultiplier, 2)],
+                    ['price_type' => 'base_price', 'nationality_category' => 'foreigner', 'amount' => round($data['base_price_usd'] * $foreignerMultiplier, 2)],
+                    ['price_type' => 'child_price', 'nationality_category' => 'syrian',    'amount' => round($data['base_price_usd'] * $syrianMultiplier * $childMultiplier, 2)],
+                    ['price_type' => 'child_price', 'nationality_category' => 'expat',     'amount' => round($data['base_price_usd'] * $expatMultiplier * $childMultiplier, 2)],
+                    ['price_type' => 'child_price', 'nationality_category' => 'foreigner', 'amount' => round($data['base_price_usd'] * $foreignerMultiplier * $childMultiplier, 2)],
                 ];
 
                 $existingKeys = [];
-                foreach ($room->prices()->where('price_type', 'base_price')->get() as $p) {
-                    $existingKey = "{$p->nationality_category}|" . ($p->season_id ?? 'NULL');
+                foreach ($room->prices()->get() as $p) {
+                    $existingKey = "{$p->price_type}|{$p->nationality_category}|".($p->season_id ?? 'NULL');
                     $existingKeys[$existingKey] = true;
                 }
 
-                foreach ($basePriceTiers as $tier) {
-                    $key = "{$tier['nationality_category']}|NULL";
-                    if (!isset($existingKeys[$key])) {
+                foreach ($priceTiers as $tier) {
+                    $key = "{$tier['price_type']}|{$tier['nationality_category']}|NULL";
+                    if (! isset($existingKeys[$key])) {
                         $room->prices()->create([
-                            'price_type' => 'base_price',
+                            'price_type' => $tier['price_type'],
                             'nationality_category' => $tier['nationality_category'],
                             'currency' => 'USD',
                             'amount' => $tier['amount'],
@@ -102,14 +106,14 @@ class RoomSeeder extends Seeder
 
         // Ensure the temporary storage folder exists
         $tempDir = storage_path('app/temp_images');
-        if (!File::exists($tempDir)) {
+        if (! File::exists($tempDir)) {
             File::makeDirectory($tempDir, 0755, true);
         }
 
         for ($imageIndex = 0; $imageIndex < 4; $imageIndex++) {
             try {
                 // 1. Create a unique temporary local file path
-                $tempPath = $tempDir . '/fake_room_' . uniqid() . '.jpg';
+                $tempPath = $tempDir.'/fake_room_'.uniqid().'.jpg';
                 $this->createLocalDummyImage($tempPath);
 
                 // 2. Pass local path to Spatie's native addMedia method
@@ -122,7 +126,8 @@ class RoomSeeder extends Seeder
                     $media->save();
                 }
             } catch (\Exception $e) {
-                logger()->error("Failed seeding room media: " . $e->getMessage());
+                logger()->error('Failed seeding room media: '.$e->getMessage());
+
                 continue;
             }
         }
@@ -134,11 +139,11 @@ class RoomSeeder extends Seeder
     protected function createLocalDummyImage(string $path): void
     {
         $image = imagecreatetruecolor(800, 600);
-        
+
         // Random background color for visual distinction between room items
         $bgColor = imagecolorallocate($image, rand(40, 160), rand(40, 160), rand(40, 160));
         imagefill($image, 0, 0, $bgColor);
-        
+
         imagejpeg($image, $path);
         imagedestroy($image);
     }

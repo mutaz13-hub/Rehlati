@@ -22,10 +22,7 @@ class TripResource extends JsonResource
             'status' => $this->status->value,
             'status_label' => $this->status->label(),
             'role' => $role,
-            'owner' => $this->whenLoaded('owner', fn () => [
-                'id' => $this->owner->id,
-                'name' => $this->owner->name,
-            ]),
+            'owner' => $this->whenLoaded('owner', fn () => new UserResource($this->owner)),
             'cities' => TripCityResource::collection($this->whenLoaded('cities')),
             'notes' => TripNoteResource::collection($this->whenLoaded('notes')),
             'route_polyline' => $this->status === TripStatus::FINISHED ? $this->route_polyline : null,

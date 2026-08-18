@@ -123,9 +123,9 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::get('/communities/{community}/members', [CommunityController::class, 'members']);
             Route::post('/communities/{community}/join', [CommunityController::class, 'join']);
             Route::post('/communities/{community}/leave', [CommunityController::class, 'leave']);
-            Route::put('/communities/{community}/members/{user}', [CommunityController::class, 'updateMemberRole']);
-            Route::post('/communities/{community}/members/{user}/approve', [CommunityController::class, 'approveMember']);
-            Route::post('/communities/{community}/members/{user}/reject', [CommunityController::class, 'rejectMember']);
+            Route::put('/communities/{community}/members/{communityMember}', [CommunityController::class, 'updateMemberRole']);
+            Route::post('/communities/{community}/members/{communityMember}/approve', [CommunityController::class, 'approveMember']);
+            Route::post('/communities/{community}/members/{communityMember}/reject', [CommunityController::class, 'rejectMember']);
             Route::delete('/communities/{community}/members/{communityMember}', [CommunityController::class, 'removeMember']);
             Route::post('/communities/{community}/rotate-link', [CommunityController::class, 'rotateLink']);
 

@@ -14,6 +14,7 @@ use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
@@ -40,9 +41,7 @@ class PostController extends Controller
             $community,
             $request->user(),
             $request->validated(),
-            array_values($request->file('pictures') ?? []),
-            $request->file('video'),
-            $request->file('audio'),
+            $this->mediaItems($request),
         );
 
         return $this->succeed(__('Post created successfully'), [], 201);
@@ -64,10 +63,8 @@ class PostController extends Controller
         $this->service->update(
             $post,
             $request->validated(),
-            array_values($request->file('pictures') ?? []),
-            $request->file('video'),
-            $request->file('audio'),
-            (bool) $request->delete_pictures,
+            $this->mediaItems($request),
+            (bool) $request->delete_media,
         );
 
         return $this->succeed(__('Post updated successfully'));
@@ -91,6 +88,20 @@ class PostController extends Controller
         $this->service->vote($post, VoteType::from($request->vote));
 
         return $this->succeed(__('Vote recorded'));
+    }
+
+    private function mediaItems(Request $request): array
+    {
+        $items = [];
+
+        foreach ($request->file('media') ?? [] as $index => $files) {
+            $items[] = [
+                'type' => $request->input("media.$index.type"),
+                'file' => $files['file'] ?? null,
+            ];
+        }
+
+        return array_values(array_filter($items, fn (array $item) => $item['file'] instanceof UploadedFile));
     }
 
     private function paginationMeta($paginator): array

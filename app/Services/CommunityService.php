@@ -43,6 +43,7 @@ class CommunityService
         return DB::transaction(function () use ($user, $data, $cover) {
             $community = Community::create([
                 'name' => $data['name'],
+                'description' => $data['description'] ?? null,
                 'visibility' => $data['visibility'] ?? CommunityVisibility::PUBLIC->value,
                 'owner_id' => $user->id,
             ]);
@@ -65,10 +66,11 @@ class CommunityService
     public function update(Community $community, array $data, ?UploadedFile $cover = null, bool $deleteCover = false): void
     {
         DB::transaction(function () use ($community, $data, $cover, $deleteCover) {
-            $community->update(array_filter([
-                'name' => $data['name'] ?? null,
-                'visibility' => $data['visibility'] ?? null,
-            ], fn ($value) => $value !== null));
+            $community->update([
+                'name' => $data['name'],
+                'description' => $data['description'] ?? null,
+                'visibility' => $data['visibility'],
+            ]);
 
             if ($cover) {
                 $community->clearMediaCollection('community_covers');
@@ -146,27 +148,34 @@ class CommunityService
             ->paginate(10);
     }
 
-    public function updateMemberRole(Community $community, User $user, string $role): void
+    public function updateMemberRole(Community $community, CommunityMember $member, string $role): void
     {
-        if ($community->owner_id === $user->id) {
+        if ($member->community_id !== $community->id) {
+            abort(404);
+        }
+
+        if ($community->owner_id === $member->user_id) {
             throw ValidationException::withMessages([
                 'user' => __('The community owner role cannot be changed'),
             ]);
         }
 
-        $member = $community->memberPivots()
-            ->where('user_id', $user->id)
-            ->where('status', CommunityMemberStatus::APPROVED->value)
-            ->firstOrFail();
+        if ($member->status !== CommunityMemberStatus::APPROVED) {
+            throw ValidationException::withMessages([
+                'user' => __('This user is not an approved member of the community'),
+            ]);
+        }
 
         $member->update(['role' => $role]);
     }
 
-    public function approveMember(Community $community, User $user): void
+    public function approveMember(Community $community, CommunityMember $member): void
     {
-        $member = $community->memberPivots()->where('user_id', $user->id)->first();
+        if ($member->community_id !== $community->id) {
+            abort(404);
+        }
 
-        if (! $member || $member->status !== CommunityMemberStatus::PENDING) {
+        if ($member->status !== CommunityMemberStatus::PENDING) {
             throw ValidationException::withMessages([
                 'user' => __('No pending join request was found for this user'),
             ]);
@@ -178,11 +187,13 @@ class CommunityService
         ]);
     }
 
-    public function rejectMember(Community $community, User $user): void
+    public function rejectMember(Community $community, CommunityMember $member): void
     {
-        $member = $community->memberPivots()->where('user_id', $user->id)->first();
+        if ($member->community_id !== $community->id) {
+            abort(404);
+        }
 
-        if (! $member || $member->status !== CommunityMemberStatus::PENDING) {
+        if ($member->status !== CommunityMemberStatus::PENDING) {
             throw ValidationException::withMessages([
                 'user' => __('No pending join request was found for this user'),
             ]);

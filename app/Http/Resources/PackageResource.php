@@ -21,6 +21,9 @@ class PackageResource extends JsonResource
             'end_date' => $this->end_date?->toDateString(),
             'duration_days' => $this->duration_days,
             'status' => $this->status?->value,
+            'pricing' => $this->whenLoaded('prices', function () {
+                return new UnifiedPricingResource($this->resource);
+            }),
             'pics' => $this->when($request_type === 'show', fn () => PictureResource::collection(
                 $this->getMedia('package_pictures')->take(10)->values()
             )),
@@ -30,7 +33,7 @@ class PackageResource extends JsonResource
             'regions' => $this->when($request_type === 'show', fn () => RegionResource::collection($this->whenLoaded('regions'))),
             'cities' => $this->when($request_type === 'show', fn () => CityResource::collection($this->whenLoaded('cities'))),
             'hotels' => $this->when($request_type === 'show', fn () => HotelResource::collection($this->whenLoaded('hotels'))),
-            'car_agencies' => $this->when($request_type === 'show', [])//fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
+            'car_agencies' => $this->when($request_type === 'show', []), // fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
         ];
     }
 }

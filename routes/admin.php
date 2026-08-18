@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminCityController;
+use App\Http\Controllers\Admin\AdminCurrencySettingController;
 use App\Http\Controllers\Admin\AdminExchangeRateController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\AdminPackageController;
@@ -67,6 +68,9 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
         Route::get('exchange-rates/clear-caches', [AdminExchangeRateController::class, 'clearCaches'])->name('exchange-rates.clear-caches');
         Route::post('exchange-rates/bulk', [AdminExchangeRateController::class, 'bulkUpsert'])->name('exchange-rates.bulk');
         Route::apiResource('exchange-rates', AdminExchangeRateController::class)->only(['store', 'update', 'destroy', 'index', 'show']);
+
+        Route::get('currency-settings', [AdminCurrencySettingController::class, 'index'])->name('currency-settings.index');
+        Route::put('currency-settings', [AdminCurrencySettingController::class, 'update'])->name('currency-settings.update');
 
         Route::get('prices/clear-caches', [AdminPriceController::class, 'clearCaches'])->name('prices.clear-caches');
         Route::post('prices/bulk', [AdminPriceController::class, 'bulkUpsert'])->name('prices.bulk');

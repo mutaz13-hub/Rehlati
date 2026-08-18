@@ -4,10 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\CarAgency;
 use App\Models\City;
+use App\Models\ExchangeRate;
 use App\Models\Hotel;
 use App\Models\Package;
 use App\Models\Region;
-use App\Services\ImageUploadService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Spatie\MediaLibrary\HasMedia;
@@ -145,6 +145,26 @@ class PackageSeeder extends Seeder
                 'description_ar' => $packageData['description_ar'],
             ]);
 
+            $usdRate = ExchangeRate::query()->where('currency', 'USD')->value('rate_to_syp') ?? 15000;
+            $baseUsd = $usdRate > 0 ? $packageData['price'] / $usdRate : $packageData['price'];
+            $categoryMultipliers = ['syrian' => 1.0, 'expat' => 1.1, 'foreigner' => 1.25];
+
+            foreach ($categoryMultipliers as $category => $multiplier) {
+                foreach ([['package_price', 1.0], ['child_price', 0.5]] as [$priceType, $childMultiplier]) {
+                    $package->prices()->updateOrCreate(
+                        [
+                            'price_type' => $priceType,
+                            'nationality_category' => $category,
+                            'season_id' => null,
+                        ],
+                        [
+                            'currency' => 'USD',
+                            'amount' => round($baseUsd * $multiplier * $childMultiplier, 2),
+                        ]
+                    );
+                }
+            }
+
             $package->cities()->sync(
                 $cities->whereIn('name_en', $packageData['city_names'])->pluck('id')->all()
             );
@@ -177,14 +197,14 @@ class PackageSeeder extends Seeder
 
         // Prepare temporary image folder paths
         $tempDir = storage_path('app/temp_images');
-        if (!File::exists($tempDir)) {
+        if (! File::exists($tempDir)) {
             File::makeDirectory($tempDir, 0755, true);
         }
 
         for ($i = 0; $i < $count; $i++) {
             try {
                 // 1. Path assignment
-                $tempPath = $tempDir . '/fake_pkg_' . uniqid() . '.jpg';
+                $tempPath = $tempDir.'/fake_pkg_'.uniqid().'.jpg';
                 $this->createLocalDummyImage($tempPath);
 
                 // 2. Integration into Spatie native media system
@@ -197,7 +217,8 @@ class PackageSeeder extends Seeder
                     $media->save();
                 }
             } catch (\Exception $e) {
-                logger()->error("Failed seeding package media: " . $e->getMessage());
+                logger()->error('Failed seeding package media: '.$e->getMessage());
+
                 continue;
             }
         }
@@ -210,11 +231,11 @@ class PackageSeeder extends Seeder
     {
         if (function_exists('imagecreatetruecolor')) {
             $image = imagecreatetruecolor(800, 600);
-            
+
             // Build random contrast spectrum colors
             $bgColor = imagecolorallocate($image, rand(80, 190), rand(80, 190), rand(80, 190));
             imagefill($image, 0, 0, $bgColor);
-            
+
             imagejpeg($image, $path);
             imagedestroy($image);
         } else {

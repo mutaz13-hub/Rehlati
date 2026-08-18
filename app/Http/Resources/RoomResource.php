@@ -9,6 +9,7 @@ class RoomResource extends JsonResource
     public function toArray($request): array
     {
         $request_type = $request->routeIs('rooms.index') ? 'index' : ($request->routeIs('rooms.show') ? 'show' : 'else');
+
         return [
             'id' => $this->id,
             'hotel_id' => $this->hotel_id,
@@ -26,10 +27,8 @@ class RoomResource extends JsonResource
             'total_beds_count' => $this->whenLoaded('bedTypes', fn () => $this->total_beds_count),
             'total_bed_capacity' => $this->whenLoaded('bedTypes', fn () => $this->total_bed_capacity),
 
-            
-
-            'prices' => $this->whenLoaded('prices', function () {
-                return PriceResource::collection($this->prices)->resolve();
+            'pricing' => $this->whenLoaded('prices', function () {
+                return new UnifiedPricingResource($this->resource);
             }),
 
             'hotel' => new HotelResource($this->whenLoaded('hotel')),

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Price\AdminStorePriceRequest;
 use App\Http\Requests\Admin\Price\AdminUpdatePriceRequest;
+use App\Http\Resources\Admin\AdminPriceResource;
 use App\Models\Car;
 use App\Models\CarAgency;
 use App\Models\Hotel;
@@ -26,7 +27,7 @@ class AdminPriceController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $query = Price::query()->with(['season']);
+        $query = Price::query()->with(['season', 'priceable']);
 
         if ($request->filled('priceable_type') && $request->filled('priceable_id')) {
             $query->where('priceable_type', $request->input('priceable_type'))
@@ -41,18 +42,24 @@ class AdminPriceController extends Controller
             $query->where('price_type', $request->input('price_type'));
         }
 
-        $prices = $query->orderBy('season_id', 'desc')
-            ->orderBy('nationality_category')
-            ->orderBy('price_type')
+        $data = $query->orderBy('season_id', 'desc')
+            
             ->paginate(30);
 
-        return $this->succeed(__('Prices retrieved'), $prices);
+        return $this->succeed(__('Prices retrieved'), [
+            'data' => AdminPriceResource::collection($data),
+            'meta' => [
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'total' => $data->total()
+            ]
+        ]);
     }
 
     public function show(Price $price): JsonResponse
     {
         return $this->succeed(__('Price details'), [
-            'price' => $price->load(['season', 'priceable']),
+            'price' => new AdminPriceResource($price->load(['season', 'priceable'])),
         ]);
     }
 
@@ -85,7 +92,7 @@ class AdminPriceController extends Controller
     {
         $this->priceService->deletePrice($price);
 
-        return response()->json(null, 204);
+        return $this->succeed(__('Price deleted'));
     }
 
     public function bulkUpsert(Request $request): JsonResponse
@@ -94,9 +101,8 @@ class AdminPriceController extends Controller
             'priceable_type' => ['required', 'string'],
             'priceable_id' => ['required', 'integer'],
             'tiers' => ['required', 'array', 'min:1'],
-            'tiers.*.price_type' => ['required', 'string', 'in:base_price,extra_bed_price,package_price'],
+            'tiers.*.price_type' => ['required', 'string', 'in:base_price,child_price,extra_bed_price,package_price'],
             'tiers.*.nationality_category' => ['required', 'string', 'in:syrian,expat,foreigner'],
-            'tiers.*.currency' => ['required', 'string', 'in:SYP,USD,EUR'],
             'tiers.*.amount' => ['required', 'numeric', 'min:0'],
             'tiers.*.season_id' => ['nullable', 'exists:seasons,id'],
         ]);
