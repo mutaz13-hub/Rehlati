@@ -2,23 +2,18 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TripMemberResource extends JsonResource
 {
-    /**
-     * @return array<string, mixed>
-     */
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'name' => $this->whenLoaded('user', fn () => $this->user->name),
-            'username' => $this->whenLoaded('user', fn () => $this->user->username),
-            'avatar' => $this->whenLoaded('user', fn () => $this->user->avatar),
             'role' => $this->role->value,
-            'status' => $this->status?->value,
+            'status' => $this->status->value,
+            'user' => $this->whenLoaded('user', fn () => new UserResource($this->user)),
         ];
     }
 }

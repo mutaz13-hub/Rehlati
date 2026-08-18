@@ -57,6 +57,11 @@ class Trip extends Model
         return $this->hasMany(TripNote::class);
     }
 
+    public function guideRequests(): HasMany
+    {
+        return $this->hasMany(GuideRequest::class);
+    }
+
     public function memberPivots(): HasMany
     {
         return $this->hasMany(TripMember::class);

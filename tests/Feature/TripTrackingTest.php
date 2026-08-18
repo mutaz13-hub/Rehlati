@@ -1178,6 +1178,52 @@ class TripTrackingTest extends TestCase
         $this->assertSame('active', $trip->fresh()->status->value);
     }
 
+    public function test_show_returns_members_with_roles(): void
+    {
+        $owner = $this->regularUser();
+        $editor = $this->regularUser();
+        $viewer = $this->regularUser();
+        $trip = Trip::factory()->for($owner, 'owner')->create();
+        $trip->memberPivots()->create(['user_id' => $editor->id, 'role' => 'editor', 'status' => 'approved']);
+        $trip->memberPivots()->create(['user_id' => $viewer->id, 'role' => 'viewer', 'status' => 'approved']);
+
+        $this->withHeaders($this->authHeaders($owner))
+            ->getJson("/api/trips/{$trip->id}")
+            ->assertOk()
+            ->assertJsonCount(2, 'data.members')
+            ->assertJsonPath('data.members.0.role', 'editor')
+            ->assertJsonPath('data.members.0.status', 'approved')
+            ->assertJsonPath('data.members.0.user.id', $editor->id)
+            ->assertJsonPath('data.members.0.user.name', $editor->name)
+            ->assertJsonPath('data.members.1.role', 'viewer')
+            ->assertJsonPath('data.members.1.user.id', $viewer->id);
+    }
+
+    public function test_members_are_only_exposed_to_owner_or_admin(): void
+    {
+        $owner = $this->regularUser();
+        $editor = $this->regularUser();
+        $viewer = $this->regularUser();
+        $trip = Trip::factory()->for($owner, 'owner')->create();
+        $trip->memberPivots()->create(['user_id' => $editor->id, 'role' => 'editor', 'status' => 'approved']);
+        $trip->memberPivots()->create(['user_id' => $viewer->id, 'role' => 'viewer', 'status' => 'approved']);
+
+        $this->withHeaders($this->authHeaders($owner))
+            ->getJson("/api/trips/{$trip->id}")
+            ->assertOk()
+            ->assertJsonCount(2, 'data.members');
+
+        $this->withHeaders($this->authHeaders($editor))
+            ->getJson("/api/trips/{$trip->id}")
+            ->assertOk()
+            ->assertJsonMissingPath('data.members');
+
+        $this->withHeaders($this->authHeaders($viewer))
+            ->getJson("/api/trips/{$trip->id}")
+            ->assertOk()
+            ->assertJsonMissingPath('data.members');
+    }
+
     private function adminUser(): User
     {
         $user = User::factory()->create();

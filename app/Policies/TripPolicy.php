@@ -67,6 +67,11 @@ class TripPolicy
         return $this->isGlobalAdmin($user) || $this->isOwner($user, $trip);
     }
 
+    public function bookGuide(User $user, Trip $trip): bool
+    {
+        return $this->isGlobalAdmin($user) || $this->isOwner($user, $trip);
+    }
+
     public function respondToInvitation(User $user, Trip $trip, User $member): bool
     {
         return $user->id === $member->id;

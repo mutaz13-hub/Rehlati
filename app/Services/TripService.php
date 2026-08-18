@@ -82,6 +82,7 @@ class TripService
             $trip->locations()->delete();
             $trip->cities()->delete();
             $trip->memberPivots()->delete();
+            $trip->guideRequests()->delete();
             $trip->delete();
         });
     }
@@ -468,8 +469,9 @@ class TripService
                 'city',
                 'destinations' => fn ($query) => $query->orderBy('order')->with('destinable.location'),
             ]),
-            'memberPivots',
+            'memberPivots.user:id,name',
             'owner:id,name,email',
+            'guideRequests.touristGuide',
             'notes' => function ($query) {
                 $query->selectRaw($this->spatial->pointSelectRaw('trip_notes'))
                     ->with('media');

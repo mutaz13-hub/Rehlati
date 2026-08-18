@@ -13,6 +13,7 @@ class TripResource extends JsonResource
     public function toArray($request): array
     {
         $role = $this->roleFor(auth('sanctum')->user());
+        $isAdmin = (bool) auth('sanctum')->user()?->hasRole('admin');
 
         return [
             'id' => $this->id,
@@ -23,8 +24,16 @@ class TripResource extends JsonResource
             'status_label' => $this->status->label(),
             'role' => $role,
             'owner' => $this->whenLoaded('owner', fn () => new UserResource($this->owner)),
+            'members' => $this->when(
+                $this->relationLoaded('memberPivots') && ($role === 'owner' || $isAdmin),
+                fn () => TripMemberResource::collection($this->memberPivots)
+            ),
             'cities' => TripCityResource::collection($this->whenLoaded('cities')),
             'notes' => TripNoteResource::collection($this->whenLoaded('notes')),
+            'guide_requests' => $this->when(
+                $this->relationLoaded('guideRequests') && ($role === 'owner' || $isAdmin),
+                fn () => GuideRequestResource::collection($this->guideRequests)
+            ),
             'route_polyline' => $this->status === TripStatus::FINISHED ? $this->route_polyline : null,
         ];
     }
