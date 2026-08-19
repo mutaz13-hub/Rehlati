@@ -20,12 +20,13 @@ class CheckAccessTokenDeviceMiddleware extends BaseMiddleware
 
         $device = Device::findOrFail($access_token->device_id);
 
-        if($request->header('device') != $device->identifier){
+        if ($request->header('device') != $device->identifier) {
 
             $device->delete();
 
             return $this->failed(__('For Security Reasons, We Want You To Login Again Please'), 401);
         }
+
         return $next($request);
     }
 }

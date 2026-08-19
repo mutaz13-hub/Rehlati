@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
         // Create 10 test users with default password 'password'
         $users = User::factory(10)->create();
 
-        foreach($users as $user){
+        foreach ($users as $user) {
             $user->assignRole('user');
         }
     }

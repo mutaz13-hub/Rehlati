@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Hotel;
-use App\Http\Resources\Admin\AdminHotelResource;
-use App\Http\Resources\Admin\AdminAmenityResource;
 use App\Http\Requests\Admin\Hotel\AdminStoreHotelRequest;
 use App\Http\Requests\Admin\Hotel\AdminUpdateHotelRequest;
+use App\Http\Resources\Admin\AdminAmenityResource;
+use App\Http\Resources\Admin\AdminHotelResource;
+use App\Models\Hotel;
 use App\Services\Admin\AdminHotelService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 
 class HotelController extends Controller
 {
-    public function __construct(public AdminHotelService $hotel_service)
-    {
-    }
+    public function __construct(public AdminHotelService $hotel_service) {}
 
     public function index(): JsonResponse
     {
@@ -51,7 +49,7 @@ class HotelController extends Controller
         $hotel->load('amenities');
 
         return $this->succeed(__('Amenities retrieved successfully'), [
-            'amenities' => AdminAmenityResource::collection($hotel->amenities)
+            'amenities' => AdminAmenityResource::collection($hotel->amenities),
         ]);
     }
 

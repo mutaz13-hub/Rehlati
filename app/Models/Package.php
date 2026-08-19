@@ -86,4 +86,9 @@ class Package extends Model implements HasMedia
     {
         return $this->morphMany(Price::class, 'priceable');
     }
+
+    public function bookings(): MorphMany
+    {
+        return $this->morphMany(Booking::class, 'bookable');
+    }
 }

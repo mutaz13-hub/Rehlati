@@ -12,7 +12,6 @@ use Throwable;
 
 class AdminUpdateHotelRequest extends ApiFormRequest
 {
-
     protected function prepareForValidation(): void
     {
         if (! $this->filled('phone')) {
@@ -66,14 +65,14 @@ class AdminUpdateHotelRequest extends ApiFormRequest
                 Rule::unique('contact_details', 'phone')->where(function ($q) use ($hotelId) {
                     return $q->whereNot(function ($q) use ($hotelId) {
                         return $q->where('contactable_type', Hotel::MORPH_KEY)
-                                ->where('contactable_id', $hotelId);
+                            ->where('contactable_id', $hotelId);
                     });
                 }),
             ],
             'email' => ['nullable', 'required_with:phone', 'string', 'email', 'max:255', Rule::unique('contact_details', 'email')->where(function ($q) use ($hotelId) {
                 return $q->whereNot(function ($q) use ($hotelId) {
                     return $q->where('contactable_type', Hotel::MORPH_KEY)
-                            ->where('contactable_id', $hotelId);
+                        ->where('contactable_id', $hotelId);
                 });
             })],
             'description_en' => 'nullable|string|max:10000',

@@ -14,21 +14,21 @@ return new class extends Migration
         Schema::create('prices', function (Blueprint $table) {
             $table->id();
             $table->morphs('priceable');
-            
+
             // e.g., 'base_price', 'extra_bed_price'
             $table->string('price_type')->default('base_price');
-            
+
             // 'syrian', 'expat', 'foreigner'
             $table->string('nationality_category');
-            
+
             // 'SYP', 'USD', 'EUR'
             $table->string('currency');
-            
+
             $table->decimal('amount', 15, 2);
-            
+
             // Nullable for default non-seasonal prices
             $table->foreignId('season_id')->nullable()->constrained()->nullOnDelete();
-            
+
             $table->timestamps();
         });
     }

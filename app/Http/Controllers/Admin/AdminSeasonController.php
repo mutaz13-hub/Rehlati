@@ -17,8 +17,7 @@ class AdminSeasonController extends Controller
     public function __construct(
         public AdminSeasonService $seasonService,
         public PriceUserService $priceUserService,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): JsonResponse
     {
@@ -50,7 +49,7 @@ class AdminSeasonController extends Controller
 
     public function store(AdminStoreSeasonRequest $request): JsonResponse
     {
-         $this->seasonService->store($request->validated());
+        $this->seasonService->store($request->validated());
 
         return $this->succeed(__('Season created'), [], 201);
     }

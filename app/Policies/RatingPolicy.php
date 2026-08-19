@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Rating;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 
 class RatingPolicy
 {

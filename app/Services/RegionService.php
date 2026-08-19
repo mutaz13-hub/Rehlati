@@ -49,7 +49,7 @@ class RegionService
 
     public function updateRegion(Region $region, array $data): void
     {
-        DB::transaction(function () use ($region, $data) {  
+        DB::transaction(function () use ($region, $data) {
             $region->update(array_filter([
                 'name_en' => $data['name_en'] ?? null,
                 'name_ar' => $data['name_ar'] ?? null,
@@ -121,12 +121,14 @@ class RegionService
             // Add thumbnails (max 3 total)
             if (isset($data['added']) && is_array($data['added'])) {
                 // Get current number of thumbnails
-                $currentThumbnailCount = $region->getMedia('region_pictures')->filter(fn($media) => (bool) $media->getCustomProperty('is_thumbnail'))->count();
-                
+                $currentThumbnailCount = $region->getMedia('region_pictures')->filter(fn ($media) => (bool) $media->getCustomProperty('is_thumbnail'))->count();
+
                 foreach ($data['added'] as $mediaId) {
-                    if ($currentThumbnailCount >= 3) break;
+                    if ($currentThumbnailCount >= 3) {
+                        break;
+                    }
                     $media = $region->getMedia('region_pictures')->find($mediaId);
-                    if ($media && !$media->getCustomProperty('is_thumbnail')) {
+                    if ($media && ! $media->getCustomProperty('is_thumbnail')) {
                         $media->setCustomProperty('is_thumbnail', true);
                         $media->save();
                         $currentThumbnailCount++;
@@ -141,6 +143,7 @@ class RegionService
         return DB::transaction(function () use ($region) {
             $region->description()->delete();
             $region->clearMediaCollection('region_pictures');
+
             return $region->delete();
         });
     }

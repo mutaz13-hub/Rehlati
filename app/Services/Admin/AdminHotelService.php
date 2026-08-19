@@ -3,8 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Models\Hotel;
-use Illuminate\Support\Facades\DB;
 use App\Services\ImageUploadService;
+use Illuminate\Support\Facades\DB;
 
 class AdminHotelService
 {
@@ -86,12 +86,14 @@ class AdminHotelService
             // Add thumbnails (max 3 total)
             if (isset($data['added']) && is_array($data['added'])) {
                 // Get current number of thumbnails
-                $currentThumbnailCount = $hotel->getMedia('hotel_pictures')->filter(fn($media) => (bool) $media->getCustomProperty('is_thumbnail'))->count();
-                
+                $currentThumbnailCount = $hotel->getMedia('hotel_pictures')->filter(fn ($media) => (bool) $media->getCustomProperty('is_thumbnail'))->count();
+
                 foreach ($data['added'] as $mediaId) {
-                    if ($currentThumbnailCount >= 3) break;
+                    if ($currentThumbnailCount >= 3) {
+                        break;
+                    }
                     $media = $hotel->getMedia('hotel_pictures')->find($mediaId);
-                    if ($media && !$media->getCustomProperty('is_thumbnail')) {
+                    if ($media && ! $media->getCustomProperty('is_thumbnail')) {
                         $media->setCustomProperty('is_thumbnail', true);
                         $media->save();
                         $currentThumbnailCount++;

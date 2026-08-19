@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Hotel;
-use App\Models\City;
 use App\Models\Amenity;
 use App\Models\AmenityHotel;
+use App\Models\City;
+use App\Models\Hotel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Spatie\MediaLibrary\HasMedia;
 
 class HotelSeeder extends Seeder
 {
@@ -18,8 +19,9 @@ class HotelSeeder extends Seeder
         $homs = City::where('name_en', '=', 'Homs')->first();
         $latakia = City::where('name_en', '=', 'Latakia')->first();
 
-        if (!$damascus || !$aleppo || !$homs || !$latakia) {
+        if (! $damascus || ! $aleppo || ! $homs || ! $latakia) {
             $this->command->error('Required cities not found. Please run SyrianCitiesSeeder first.');
+
             return;
         }
 
@@ -94,34 +96,35 @@ class HotelSeeder extends Seeder
     /**
      * Seed fake media locally for a hotel using GD.
      */
-    protected function seedFakeMedia(\Spatie\MediaLibrary\HasMedia $model, string $collectionName, int $count): void
+    protected function seedFakeMedia(HasMedia $model, string $collectionName, int $count): void
     {
         // Clear existing media to avoid duplicate records
         $model->clearMediaCollection($collectionName);
 
         // Ensure the temporary storage folder exists
         $tempDir = storage_path('app/temp_images');
-        if (!File::exists($tempDir)) {
+        if (! File::exists($tempDir)) {
             File::makeDirectory($tempDir, 0755, true);
         }
 
         for ($i = 0; $i < $count; $i++) {
             try {
                 // 1. Create a unique temporary local file path
-                $tempPath = $tempDir . '/fake_' . uniqid() . '.jpg';
+                $tempPath = $tempDir.'/fake_'.uniqid().'.jpg';
                 $this->createLocalDummyImage($tempPath);
 
                 // 2. Pass local path to Spatie's native addMedia method
                 $media = $model->addMedia($tempPath)
                     ->toMediaCollection($collectionName);
-                
+
                 // 3. Keep thumbnail flag logic for the first 3 images
                 if ($i < 3) {
                     $media->setCustomProperty('is_thumbnail', true);
                     $media->save();
                 }
             } catch (\Exception $e) {
-                logger()->error("Failed seeding hotel media: " . $e->getMessage());
+                logger()->error('Failed seeding hotel media: '.$e->getMessage());
+
                 continue;
             }
         }
@@ -133,11 +136,11 @@ class HotelSeeder extends Seeder
     protected function createLocalDummyImage(string $path): void
     {
         $image = imagecreatetruecolor(800, 600);
-        
+
         // Random background color for variety
         $bgColor = imagecolorallocate($image, rand(50, 180), rand(50, 180), rand(50, 180));
         imagefill($image, 0, 0, $bgColor);
-        
+
         imagejpeg($image, $path);
         imagedestroy($image);
     }

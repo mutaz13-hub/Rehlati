@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\City;
+use App\Http\Requests\Admin\City\StoreCityRequest;
+use App\Http\Requests\Admin\City\UpdateCityPicturesRequest;
+use App\Http\Requests\Admin\City\UpdateCityRequest;
+use App\Http\Requests\Admin\City\UpdateCityThumbnailsRequest;
 use App\Http\Resources\Admin\AdminCityResource;
 use App\Http\Resources\Admin\AdminHotelResource;
 use App\Http\Resources\Admin\AdminRegionResource;
-use App\Http\Requests\Admin\City\StoreCityRequest;
-use App\Http\Requests\Admin\City\UpdateCityRequest;
-use App\Http\Requests\Admin\City\UpdateCityPicturesRequest;
-use App\Http\Requests\Admin\City\UpdateCityThumbnailsRequest;
+use App\Models\City;
 use App\Services\Admin\AdminCityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,13 +18,12 @@ use Illuminate\Support\Facades\Gate;
 
 class AdminCityController extends Controller
 {
-    public function __construct(protected AdminCityService $cityService)
-    {
-    }
+    public function __construct(protected AdminCityService $cityService) {}
 
     public function index(): JsonResponse
     {
         $cities = City::with(['description', 'media', 'location', 'tags'])->withCount('reviews')->get();
+
         return $this->succeed(__('Cities fetched successfully'), AdminCityResource::collection($cities));
     }
 
@@ -43,7 +42,7 @@ class AdminCityController extends Controller
         }
 
         return $this->succeed(__('City fetched successfully'), [
-            'city' => new AdminCityResource($city)
+            'city' => new AdminCityResource($city),
         ]);
     }
 
@@ -56,8 +55,8 @@ class AdminCityController extends Controller
             'meta' => [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
-                'total' => $data->total()
-            ]
+                'total' => $data->total(),
+            ],
         ]);
     }
 
@@ -70,8 +69,8 @@ class AdminCityController extends Controller
             'meta' => [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
-                'total' => $data->total()
-            ]
+                'total' => $data->total(),
+            ],
         ]);
     }
 
@@ -92,6 +91,7 @@ class AdminCityController extends Controller
     public function updateThumbnails(UpdateCityThumbnailsRequest $request, City $city): JsonResponse
     {
         $this->cityService->updateCityThumbnails($city, $request->validated());
+
         return $this->succeed(__('City thumbnails updated successfully'));
     }
 
@@ -99,6 +99,7 @@ class AdminCityController extends Controller
     {
         Gate::authorize('delete', $city);
         $this->cityService->deleteCity($city);
+
         return $this->succeed(__('City deleted successfully'));
     }
 }

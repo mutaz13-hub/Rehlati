@@ -4,7 +4,6 @@ namespace App\Http\Requests\City;
 
 use App\Http\Requests\Api\ApiFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
 class CityRegionsRequest extends ApiFormRequest
 {

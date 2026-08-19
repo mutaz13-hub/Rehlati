@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\AdminAmenityResource;
 use App\Http\Requests\Admin\Amenity\StoreAmenityRequest;
 use App\Http\Requests\Admin\Amenity\UpdateAmenityRequest;
+use App\Http\Resources\Admin\AdminAmenityResource;
 use App\Models\Amenity;
 use App\Services\Admin\AdminAmenityService;
 use Illuminate\Http\JsonResponse;
@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Gate;
 
 class AmenityController extends Controller
 {
-    public function __construct(public AdminAmenityService $amenity_service)
-    {
-    }
+    public function __construct(public AdminAmenityService $amenity_service) {}
 
     public function index()
     {

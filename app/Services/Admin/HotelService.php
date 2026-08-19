@@ -4,6 +4,4 @@ namespace App\Services\Admin;
 
 use App\Services\HotelService as BaseHotelService;
 
-class HotelService extends BaseHotelService
-{
-}
+class HotelService extends BaseHotelService {}

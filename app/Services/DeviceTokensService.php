@@ -10,14 +10,9 @@ use Illuminate\Support\Str;
 class DeviceTokensService
 {
     /**
-     * @param User $user
-     * @param string $tokenName
-     * @param string $fcmToken
-     * @param \DateTimeInterface $refreshTokenExpiresAt
-     *
      * @return array{access_token: string, refresh_token: string, device: string}
      */
-    public function issueTokenPair(User $user, string $tokenName, string $fcmToken = null, \DateTimeInterface $refreshTokenExpiresAt): array
+    public function issueTokenPair(User $user, string $tokenName, ?string $fcmToken, \DateTimeInterface $refreshTokenExpiresAt): array
     {
         $refreshToken = Str::random(64);
         $salt = Str::random(32);
@@ -41,7 +36,7 @@ class DeviceTokensService
     {
         $token = $user->createToken(
             $tokenName,
-            ['*'], 
+            ['*'],
             now()->addMinutes(config('sanctum.expiration'))
         );
 
@@ -53,22 +48,20 @@ class DeviceTokensService
     /**
      * Refresh access token for a device using a refresh token.
      *
-     * @param Device $device
-     * @param string $refreshToken
-     * @param string $tokenName
-     * @return string|null
+     * @param  string  $refreshToken
+     * @param  string  $tokenName
      */
     public function refreshAccessToken(Device $device, array $data): ?string
     {
         if (Carbon::parse($device->token_expires_at)->isPast()) {
-           
+
             return null;
         }
 
-        $hashedRefreshToken = hash('sha256', $data['refresh_token'] . $device->salt);
+        $hashedRefreshToken = hash('sha256', $data['refresh_token'].$device->salt);
 
         if (! hash_equals($device->refresh_token, $hashedRefreshToken)) {
-            
+
             return null;
         }
 

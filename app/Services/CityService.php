@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\City;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 class CityService
 {
@@ -15,7 +14,7 @@ class CityService
 
     public function createCity(array $data): void
     {
-         DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data) {
             $city = City::create([
                 'name_en' => $data['name_en'],
                 'name_ar' => $data['name_ar'],
@@ -34,7 +33,7 @@ class CityService
                 }
             }
 
-            if(isset($data['longitude']) && isset($data['latitude'])) {
+            if (isset($data['longitude']) && isset($data['latitude'])) {
                 $city->location()->create([
                     'longitude' => $data['longitude'],
                     'latitude' => $data['latitude'],
@@ -49,7 +48,7 @@ class CityService
 
     public function updateCity(City $city, array $data): void
     {
-         DB::transaction(function () use ($city, $data) {
+        DB::transaction(function () use ($city, $data) {
             $city->update(array_filter([
                 'name_en' => $data['name_en'] ?? null,
                 'name_ar' => $data['name_ar'] ?? null,
@@ -118,12 +117,14 @@ class CityService
             // Add thumbnails (max 3 total)
             if (isset($data['added']) && is_array($data['added'])) {
                 // Get current number of thumbnails
-                $currentThumbnailCount = $city->getMedia('city_pictures')->filter(fn($media) => (bool) $media->getCustomProperty('is_thumbnail'))->count();
-                
+                $currentThumbnailCount = $city->getMedia('city_pictures')->filter(fn ($media) => (bool) $media->getCustomProperty('is_thumbnail'))->count();
+
                 foreach ($data['added'] as $mediaId) {
-                    if ($currentThumbnailCount >= 3) break;
+                    if ($currentThumbnailCount >= 3) {
+                        break;
+                    }
                     $media = $city->getMedia('city_pictures')->find($mediaId);
-                    if ($media && !$media->getCustomProperty('is_thumbnail')) {
+                    if ($media && ! $media->getCustomProperty('is_thumbnail')) {
                         $media->setCustomProperty('is_thumbnail', true);
                         $media->save();
                         $currentThumbnailCount++;
@@ -138,6 +139,7 @@ class CityService
         return DB::transaction(function () use ($city) {
             $city->description()->delete();
             $city->clearMediaCollection('city_pictures');
+
             return $city->delete();
         });
     }

@@ -20,19 +20,15 @@ class AuthController extends Controller
         protected GoogleAuthenticationService $googleAuthenticationService,
     ) {}
 
-
     /**
      * Handle user registration.
-     *
-     * @param RegisterRequest $request
-     * @return JsonResponse
      */
     public function register(RegisterRequest $request): JsonResponse
     {
         $result = $this->authService->register($request->validated());
 
         return $this->succeed(
-             __('User registered successfully. Please verify your account.'),
+            __('User registered successfully. Please verify your account.'),
             $result,
             201
         );
@@ -40,13 +36,10 @@ class AuthController extends Controller
 
     /**
      * Handle user login.
-     *
-     * @param LoginRequest $request
-     * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
     {
-       if ($response = $request->check_credentials()) {
+        if ($response = $request->check_credentials()) {
             return $response;
         }
 
@@ -79,9 +72,6 @@ class AuthController extends Controller
 
     /**
      * Refresh access token.
-     *
-     * @param RefreshTokenRequest $request
-     * @return JsonResponse
      */
     public function refresh(RefreshTokenRequest $request): JsonResponse
     {
@@ -98,9 +88,6 @@ class AuthController extends Controller
 
     /**
      * Verify email with the provided code.
-     *
-     * @param EmailVerificationRequest $request
-     * @return JsonResponse
      */
     public function verify_email(EmailVerificationRequest $request): JsonResponse
     {
@@ -113,8 +100,6 @@ class AuthController extends Controller
 
     /**
      * Resend verification code to user.
-     *
-     * @return JsonResponse
      */
     public function resend_verification_code(): JsonResponse
     {
@@ -125,8 +110,6 @@ class AuthController extends Controller
 
     /**
      * Logout from current device.
-     *
-     * @return JsonResponse
      */
     public function logout(): JsonResponse
     {
@@ -137,8 +120,6 @@ class AuthController extends Controller
 
     /**
      * Logout from all devices except current one.
-     *
-     * @return JsonResponse
      */
     public function logout_other_devices(): JsonResponse
     {
@@ -149,8 +130,6 @@ class AuthController extends Controller
 
     /**
      * Logout from all devices.
-     *
-     * @return JsonResponse
      */
     public function logout_all_devices(): JsonResponse
     {

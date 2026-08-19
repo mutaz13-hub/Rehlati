@@ -55,4 +55,14 @@ class CommunityPolicy
     {
         return $community->canViewPosts($user);
     }
+
+    public function viewMessages(User $user, Community $community): bool
+    {
+        return $community->isMember($user);
+    }
+
+    public function sendMessage(User $user, Community $community): bool
+    {
+        return $community->isMember($user);
+    }
 }

@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Booking;
+use App\Models\BookingGuest;
 use App\Models\CarAgency;
 use App\Models\City;
 use App\Models\Comment;
 use App\Models\Community;
+use App\Models\CommunityMessage;
 use App\Models\Hotel;
 use App\Models\Package;
 use App\Models\Post;
@@ -23,6 +26,8 @@ use App\Observers\PostObserver;
 use App\Observers\RegionObserver;
 use App\Observers\RoomObserver;
 use App\Observers\VoteObserver;
+use App\Services\Payment\PaymentStrategyInterface;
+use App\Services\Payment\StripePaymentStrategy;
 use Dedoc\Scramble\Scramble;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -38,7 +43,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            PaymentStrategyInterface::class,
+            StripePaymentStrategy::class
+        );
     }
 
     /**
@@ -70,6 +78,9 @@ class AppServiceProvider extends ServiceProvider
             Community::MORPH_KEY => Community::class,
             Post::MORPH_KEY => Post::class,
             Comment::MORPH_KEY => Comment::class,
+            Booking::MORPH_KEY => Booking::class,
+            BookingGuest::MORPH_KEY => BookingGuest::class,
+            CommunityMessage::MORPH_KEY => CommunityMessage::class,
         ]);
 
         Vote::observe(VoteObserver::class);

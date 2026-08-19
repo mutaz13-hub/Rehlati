@@ -10,12 +10,11 @@ class AdminSeasonService
 {
     public function __construct(
         private readonly PriceUserService $priceUserService
-    ) {
-    }
+    ) {}
 
     public function store(array $data): void
     {
-         DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data) {
             $season = Season::create([
                 'name_en' => $data['name_en'],
                 'name_ar' => $data['name_ar'] ?? null,

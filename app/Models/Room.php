@@ -45,9 +45,9 @@ class Room extends Model implements HasMedia
 
     public const MORPH_KEY = 'room';
 
-     public function getLocalizedNameAttribute(): string
+    public function getLocalizedNameAttribute(): string
     {
-        $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
+        $locale = Cache::get('lang_for_user: '.auth()->id(), app()->getLocale());
 
         return $this->{"name_{$locale}"} ?? $this->name_en;
     }
@@ -65,6 +65,11 @@ class Room extends Model implements HasMedia
     public function prices(): MorphMany
     {
         return $this->morphMany(Price::class, 'priceable');
+    }
+
+    public function bookings(): MorphMany
+    {
+        return $this->morphMany(Booking::class, 'bookable');
     }
 
     public function amenities(): BelongsToMany

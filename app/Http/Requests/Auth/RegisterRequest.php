@@ -3,15 +3,17 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Api\ApiFormRequest;
-use Spatie\ValidationRules\Rules\CountryCode;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Propaganistas\LaravelPhone\PhoneNumber;
 use Propaganistas\LaravelPhone\Rules\Phone;
+use Spatie\ValidationRules\Rules\CountryCode;
 use Throwable;
+
 class RegisterRequest extends ApiFormRequest
 {
-     protected function prepareForValidation(): void
+    protected function prepareForValidation(): void
     {
         if (! $this->filled('phone_number')) {
             return;
@@ -30,14 +32,14 @@ class RegisterRequest extends ApiFormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'min:2', 'max:255'],
             'email' => ['required', 'string', 'email:rfc', 'max:255', 'unique:users'],
-            'nationality' => ['required', new CountryCode()],
+            'nationality' => ['required', new CountryCode],
             'nationality_category' => [Rule::requiredIf(fn () => $this->input('nationality') === 'SY'), 'string', Rule::in(['syrian', 'expat', 'foreigner'])],
             'phone_number' => ['required',
                 'string',
@@ -45,12 +47,12 @@ class RegisterRequest extends ApiFormRequest
                 (new Phone)->international(),
                 'unique:users'],
             'password' => ['required', 'string', 'confirmed', Password::min(8)
-                                                                       ->max(70)
-                                                                       ->letters()
-                                                                       ->mixedCase()
-                                                                       ->numbers()
-                                                                       ->symbols()],
-            'fcm_token' => ['nullable', 'string', 'max:255', Rule::unique('devices', 'fcm_token')], //just until we add firebase notifications
+                ->max(70)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()],
+            'fcm_token' => ['nullable', 'string', 'max:255', Rule::unique('devices', 'fcm_token')], // just until we add firebase notifications
         ];
     }
 }

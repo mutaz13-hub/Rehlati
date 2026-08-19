@@ -9,7 +9,6 @@ class AmenityHotel extends Model
 {
     protected $fillable = ['hotel_id', 'amenity_id'];
 
-
     public function hotel(): BelongsTo
     {
         return $this->belongsTo(Hotel::class);

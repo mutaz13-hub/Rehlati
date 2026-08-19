@@ -16,20 +16,20 @@ class CheckLanguageMiddleware extends BaseMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-         $request_lang = $request->header('lang') ?? 'ar';
+        $request_lang = $request->header('lang') ?? 'ar';
 
-        if(!in_array($request_lang, config('app.supported_locales'))){
+        if (! in_array($request_lang, config('app.supported_locales'))) {
             return $this->failed(__('Un supported language'));
         }
 
         app()->setLocale($request_lang);
 
-         $id = auth()->id();
+        $id = auth()->id();
 
         if ($id) {
-            Cache::put('lang_for_user: ' . $id, $request_lang, now()->addDays(30));
+            Cache::put('lang_for_user: '.$id, $request_lang, now()->addDays(30));
         }
-        
+
         return $next($request);
     }
 }

@@ -11,10 +11,6 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    
-
-    
-
     /**
      * Create a new notification instance.
      */
@@ -39,7 +35,7 @@ class VerifyEmailNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject( __('Email Verification'))
+            ->subject(__('Email Verification'))
             ->view('email.verify-email', [
                 'name' => $this->name,
                 'code' => $this->code,

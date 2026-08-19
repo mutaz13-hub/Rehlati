@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Region;
 
 use App\Http\Requests\Api\ApiFormRequest;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class UpdateRegionRequest extends ApiFormRequest
@@ -16,6 +15,7 @@ class UpdateRegionRequest extends ApiFormRequest
     public function rules(): array
     {
         $regionId = $this->route('region')->id;
+
         return [
             'name_en' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('regions', 'name_en')->where('city_id', $this->route('city')->id)->ignore($regionId)],
             'name_ar' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('regions', 'name_ar')->where('city_id', $this->route('city')->id)->ignore($regionId)],

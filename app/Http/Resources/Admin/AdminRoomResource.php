@@ -11,6 +11,7 @@ class AdminRoomResource extends JsonResource
     public function toArray($request): array
     {
         $request_type = $request->routeIs('admin.rooms.index') ? 'index' : ($request->routeIs('admin.rooms.show') ? 'show' : 'else');
+
         return [
             'id' => $this->id,
             'hotel_id' => $this->hotel_id,

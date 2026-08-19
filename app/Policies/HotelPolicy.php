@@ -46,14 +46,14 @@ class HotelPolicy
      */
     public function delete(User $user, Hotel $hotel): bool
     {
-       return $user->hasRole('admin');
+        return $user->hasRole('admin');
     }
 
     public function rate(User $user, Hotel $hotel): Response
     {
-        return ($user->ratings()->where('rateable_type', Hotel::MORPH_KEY)
-                         ->where('rateable_id', $hotel->id)
-                         ->exists() ? Response::deny(__('You have already rated this item.'))
-                                    : Response::allow());
+        return $user->ratings()->where('rateable_type', Hotel::MORPH_KEY)
+            ->where('rateable_id', $hotel->id)
+            ->exists() ? Response::deny(__('You have already rated this item.'))
+                                    : Response::allow();
     }
 }

@@ -10,7 +10,7 @@ class UpdatePackagePicturesRequest extends ApiFormRequest
     public function authorize(): bool
     {
         return true;
-        //return auth()->user()->can('update', [Package::class, $this->route('package')]);
+        // return auth()->user()->can('update', [Package::class, $this->route('package')]);
     }
 
     public function rules(): array

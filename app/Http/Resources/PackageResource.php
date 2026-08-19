@@ -35,6 +35,37 @@ class PackageResource extends JsonResource
             'hotels' => $this->when($request_type === 'show', fn () => HotelResource::collection($this->whenLoaded('hotels'))),
             'car_agencies' => $this->when($request_type === 'show', []), // fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),
             'tourist_guides' => $this->when($request_type === 'show', fn () => TouristGuideResource::collection($this->whenLoaded('touristGuides'))),
+            'map_track' => $this->when($request_type === 'show', fn () => $this->mapTrack()),
+        ];
+    }
+
+    private function mapTrack(): array
+    {
+        $points = collect();
+
+        if ($this->relationLoaded('hotels')) {
+            $points = $points->concat($this->hotels->map(fn ($hotel) => $this->trackPoint('hotel', $hotel)));
+        }
+
+        if ($this->relationLoaded('regions')) {
+            $points = $points->concat($this->regions->map(fn ($region) => $this->trackPoint('region', $region)));
+        }
+
+        return $points->filter(fn ($point) => $point['location'] !== null)->values()->all();
+    }
+
+    private function trackPoint(string $type, $model): array
+    {
+        $location = $model->location;
+
+        return [
+            'type' => $type,
+            'id' => $model->id,
+            'name' => $model->localized_name,
+            'location' => $location ? [
+                'latitude' => (float) $location->latitude,
+                'longitude' => (float) $location->longitude,
+            ] : null,
         ];
     }
 }

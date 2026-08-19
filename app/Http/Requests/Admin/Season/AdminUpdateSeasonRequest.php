@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin\Season;
 
 use App\Http\Requests\Api\ApiFormRequest;
-use Illuminate\Validation\Rule;
 
 class AdminUpdateSeasonRequest extends ApiFormRequest
 {

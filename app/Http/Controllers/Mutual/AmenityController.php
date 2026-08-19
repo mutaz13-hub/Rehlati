@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Mutual;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\AmenityResource;
 use App\Http\Requests\Amenity\StoreAmenityRequest;
 use App\Http\Requests\Amenity\UpdateAmenityRequest;
+use App\Http\Resources\AmenityResource;
 use App\Models\Amenity;
 use App\Services\AmenityService;
 use Illuminate\Http\JsonResponse;

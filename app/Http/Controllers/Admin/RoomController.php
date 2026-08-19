@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Admin\AdminRoomResource;
-use App\Http\Resources\Admin\AdminAmenityResource;
 use App\Http\Requests\Admin\Room\AdminStoreRoomRequest;
 use App\Http\Requests\Admin\Room\AdminUpdateRoomRequest;
+use App\Http\Resources\Admin\AdminAmenityResource;
+use App\Http\Resources\Admin\AdminRoomResource;
 use App\Models\Hotel;
 use App\Models\Room;
 use App\Services\Admin\AdminRoomService;
@@ -15,9 +15,7 @@ use Illuminate\Support\Facades\Gate;
 
 class RoomController extends Controller
 {
-    public function __construct(public AdminRoomService $room_service)
-    {
-    }
+    public function __construct(public AdminRoomService $room_service) {}
 
     public function index(Hotel $hotel)
     {
@@ -36,7 +34,7 @@ class RoomController extends Controller
         $room->load('amenities');
 
         return $this->succeed(__('Amenities retrieved successfully'), [
-            'amenities' => AdminAmenityResource::collection($room->amenities)
+            'amenities' => AdminAmenityResource::collection($room->amenities),
         ]);
     }
 

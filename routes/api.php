@@ -1,13 +1,17 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CommunityController;
+use App\Http\Controllers\Api\CommunityMessageController;
+use App\Http\Controllers\Api\EmergencyNumberController;
 use App\Http\Controllers\Api\ForgotPasswordController;
 use App\Http\Controllers\Api\GuideRequestController;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\TripTrackingController;
+use App\Http\Controllers\Api\VaultController;
 use App\Http\Controllers\Mutual\AmenityController;
 use App\Http\Controllers\Mutual\CityController;
 use App\Http\Controllers\Mutual\HotelController;
@@ -156,6 +160,25 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::patch('/comments/{comment}', [CommentController::class, 'update']);
             Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
             Route::post('/comments/{comment}/vote', [CommentController::class, 'vote']);
+
+            // Bookings for rooms and packages (payment handled separately later)
+            Route::post('/rooms/{room}/bookings', [BookingController::class, 'storeForRoom'])->name('bookings.rooms.store');
+            Route::post('/packages/{package}/bookings', [BookingController::class, 'storeForPackage'])->name('bookings.packages.store');
+            Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+            Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+            Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+            Route::post('/bookings/{booking}/confirm-payment', [BookingController::class, 'confirmPayment'])->name('bookings.confirm-payment');
+
+            // Community chat (no realtime yet)
+            Route::get('/communities/{community}/messages', [CommunityMessageController::class, 'index'])->name('communities.messages.index');
+            Route::post('/communities/{community}/messages', [CommunityMessageController::class, 'store'])->name('communities.messages.store');
+            Route::delete('/communities/{community}/messages/{message}', [CommunityMessageController::class, 'destroy'])->name('communities.messages.destroy');
+
+            // Vault: documents the user submitted with their bookings
+            Route::get('/vault', [VaultController::class, 'index'])->name('vault.index');
+
+            // Emergency numbers
+            Route::get('/emergency-numbers', [EmergencyNumberController::class, 'index'])->name('emergency-numbers.index');
 
         });
     });

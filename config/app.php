@@ -87,7 +87,7 @@ return [
     'supported_locales' => ['ar', 'en'],
 
     'refresh_token_expiration_days_with_remember_me' => 30,
-    
+
     'refresh_token_expiration_days_WITHOUT_remember_me' => 7,
 
     'api_password' => env('API_PASSWORD'),

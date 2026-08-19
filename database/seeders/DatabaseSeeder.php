@@ -32,6 +32,9 @@ class DatabaseSeeder extends Seeder
             RatingSeeder::class,
             AdminSeeder::class,
             BedTypeSeeder::class,
+            BookingSeeder::class,
+            AdminBookingSeeder::class,
+            CommunitySeeder::class,
         ]);
     }
 }

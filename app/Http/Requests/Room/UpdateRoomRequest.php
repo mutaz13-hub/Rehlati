@@ -23,7 +23,7 @@ class UpdateRoomRequest extends ApiFormRequest
             'name_ar' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('rooms', 'name_ar')->where(function ($query) {
                 return $query->where('hotel_id', $this->route('hotel')->id);
             })->ignore($this->route('room')->id)],
-            
+
             'total_rooms' => ['sometimes', 'required', 'integer', 'min:0'],
             'available_rooms' => ['sometimes', 'nullable', 'integer', 'min:0'],
 

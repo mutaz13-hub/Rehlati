@@ -38,6 +38,7 @@ trait Votable
     public function getVoteCount(VoteType $voteType): int
     {
         $voteTotal = $this->voteTotal($voteType)->first();
+
         return $voteTotal ? $voteTotal->count : 0;
     }
 

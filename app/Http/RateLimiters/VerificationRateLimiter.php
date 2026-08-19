@@ -54,7 +54,7 @@ class VerificationRateLimiter implements RateLimiterInterface
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function logRateLimited(string $action, array $data): void
     {

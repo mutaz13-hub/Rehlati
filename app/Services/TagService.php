@@ -8,7 +8,7 @@ class TagService
 {
     public function create(array $data): void
     {
-         Tag::create($data);
+        Tag::create($data);
     }
 
     public function update(Tag $tag, array $data): void

@@ -23,7 +23,7 @@ class StoreRoomRequest extends ApiFormRequest
             'name_ar' => ['required', 'string', 'max:255', Rule::unique('rooms', 'name_ar')->where(function ($query) {
                 return $query->where('hotel_id', $this->route('hotel')->id);
             })],
-            
+
             'total_rooms' => ['required', 'integer', 'min:0'],
             'available_rooms' => ['required', 'integer', 'min:0'],
 

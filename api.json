@@ -241,6 +241,257 @@
                 }
             }
         },
+        "/admin/bookings": {
+            "get": {
+                "operationId": "admin.bookings.index",
+                "tags": [
+                    "AdminBooking"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Bookings fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "bookings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/AdminBookingResource"
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "required": [
+                                                                    "bookable",
+                                                                    "guests"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "current_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "per_page": {
+                                                            "type": "string"
+                                                        },
+                                                        "total": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "current_page",
+                                                        "last_page",
+                                                        "per_page",
+                                                        "total"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "bookings",
+                                                "meta"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/bookings/{booking}": {
+            "get": {
+                "operationId": "admin.bookings.show",
+                "tags": [
+                    "AdminBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Booking fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "booking": {
+                                                    "allOf": [
+                                                        {
+                                                            "$ref": "#/components/schemas/AdminBookingResource"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "required": [
+                                                                "bookable",
+                                                                "guests"
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "booking"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/bookings/{booking}/approve": {
+            "post": {
+                "operationId": "admin.bookings.approve",
+                "tags": [
+                    "AdminBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Booking approved successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/admin/bookings/{booking}/reject": {
+            "post": {
+                "operationId": "admin.bookings.reject",
+                "tags": [
+                    "AdminBooking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Booking rejected successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/admin/cities": {
             "get": {
                 "operationId": "admin.cities.index",
@@ -997,6 +1248,278 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/admin/emergency-numbers": {
+            "get": {
+                "operationId": "admin.emergency-numbers.index",
+                "tags": [
+                    "AdminEmergencyNumber"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Emergency numbers fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "emergency_numbers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/EmergencyNumberResource"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "emergency_numbers"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "admin.emergency-numbers.store",
+                "tags": [
+                    "AdminEmergencyNumber"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreEmergencyNumberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Emergency number created successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "minItems": 0,
+                                            "maxItems": 0,
+                                            "additionalItems": false
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/admin/emergency-numbers/{emergencyNumber}": {
+            "get": {
+                "operationId": "admin.emergency-numbers.show",
+                "tags": [
+                    "AdminEmergencyNumber"
+                ],
+                "parameters": [
+                    {
+                        "name": "emergencyNumber",
+                        "in": "path",
+                        "required": true,
+                        "description": "The emergency number ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Emergency number fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "emergency_number": {
+                                                    "$ref": "#/components/schemas/EmergencyNumberResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "emergency_number"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "admin.emergency-numbers.update",
+                "tags": [
+                    "AdminEmergencyNumber"
+                ],
+                "parameters": [
+                    {
+                        "name": "emergencyNumber",
+                        "in": "path",
+                        "required": true,
+                        "description": "The emergency number ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEmergencyNumberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Emergency number updated successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "admin.emergency-numbers.destroy",
+                "tags": [
+                    "AdminEmergencyNumber"
+                ],
+                "parameters": [
+                    {
+                        "name": "emergencyNumber",
+                        "in": "path",
+                        "required": true,
+                        "description": "The emergency number ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "const": "Emergency number deleted successfully"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -5569,6 +6092,120 @@
                 ],
                 "title": "AdminAmenityResource"
             },
+            "AdminBookingResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "booking_reference": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "phone_number": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "email",
+                            "phone_number"
+                        ]
+                    },
+                    "bookable": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "id",
+                            "name"
+                        ]
+                    },
+                    "check_in": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "check_out": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "guests_count": {
+                        "type": "string"
+                    },
+                    "total_price": {
+                        "type": [
+                            "number",
+                            "null"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "note": {
+                        "type": "string"
+                    },
+                    "guests": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BookingGuestResource"
+                        }
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "booking_reference",
+                    "status",
+                    "check_in",
+                    "check_out",
+                    "guests_count",
+                    "total_price",
+                    "currency",
+                    "note",
+                    "created_at"
+                ],
+                "title": "AdminBookingResource"
+            },
             "AdminCityResource": {
                 "type": "object",
                 "properties": {
@@ -5921,6 +6558,12 @@
                         "description": "fn () => CarAgencyResource::collection($this->whenLoaded('carAgencies'))),",
                         "items": {
                             "$ref": "#/components/schemas/AdminTouristGuideResource"
+                        }
+                    },
+                    "map_track": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
                         }
                     }
                 },
@@ -7334,6 +7977,71 @@
                 ],
                 "title": "App.Http.Resources.CityResource"
             },
+            "BookingGuestResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "nationality": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "national_id": {
+                        "type": "string"
+                    },
+                    "id_files": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "file_name": {
+                                    "type": "string"
+                                },
+                                "mime_type": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "size": {
+                                    "type": "integer"
+                                },
+                                "url": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name",
+                                "file_name",
+                                "mime_type",
+                                "size",
+                                "url"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "full_name",
+                    "nationality",
+                    "national_id",
+                    "id_files"
+                ],
+                "title": "BookingGuestResource"
+            },
             "CarAgencyResource": {
                 "type": "object",
                 "properties": {
@@ -7462,6 +8170,49 @@
                     "description"
                 ],
                 "title": "DescriptionResource"
+            },
+            "EmergencyNumberResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "name_en": {
+                        "type": "string"
+                    },
+                    "name_ar": {
+                        "type": "string"
+                    },
+                    "phone_number": {
+                        "type": "string"
+                    },
+                    "icon": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "name_en",
+                    "name_ar",
+                    "phone_number",
+                    "icon",
+                    "is_active",
+                    "created_at"
+                ],
+                "title": "EmergencyNumberResource"
             },
             "ExchangeRate": {
                 "type": "object",
@@ -8017,6 +8768,42 @@
                 ],
                 "title": "StoreCityRequest"
             },
+            "StoreEmergencyNumberRequest": {
+                "type": "object",
+                "properties": {
+                    "name_en": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "name_ar": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "phone_number": {
+                        "type": "string",
+                        "maxLength": 50
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "is_active": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "name_en",
+                    "name_ar",
+                    "phone_number"
+                ],
+                "title": "StoreEmergencyNumberRequest"
+            },
             "StorePackageRequest": {
                 "type": "object",
                 "properties": {
@@ -8484,6 +9271,46 @@
                 ],
                 "title": "UpdateCurrencySettingRequest"
             },
+            "UpdateEmergencyNumberRequest": {
+                "type": "object",
+                "properties": {
+                    "name_en": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "name_ar": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "phone_number": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 50
+                    },
+                    "icon": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "is_active": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    }
+                },
+                "title": "UpdateEmergencyNumberRequest"
+            },
             "UpdatePackagePicturesRequest": {
                 "type": "object",
                 "properties": {
@@ -8846,15 +9673,11 @@
                     },
                     "name": {
                         "type": "string"
-                    },
-                    "avatar": {
-                        "type": "string"
                     }
                 },
                 "required": [
                     "id",
-                    "name",
-                    "avatar"
+                    "name"
                 ],
                 "title": "UserResource"
             },

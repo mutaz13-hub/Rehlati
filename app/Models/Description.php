@@ -16,7 +16,7 @@ class Description extends Model
     public function getLocalizedDescriptionAttribute(): string
     {
         $locale = app()->getLocale();
-        
+
         return $this->{"description_{$locale}"} ?? $this->description_en;
     }
 

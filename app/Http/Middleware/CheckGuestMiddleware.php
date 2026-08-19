@@ -2,23 +2,23 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Device;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\Device;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckGuestMiddleware extends BaseMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::guard('sanctum')->check()) {
-            return $this->failed( __('You are already authenticated'), 409);
+            return $this->failed(__('You are already authenticated'), 409);
         }
 
         $device = Device::where('identifier', $request->header('device'))->first();
@@ -26,9 +26,7 @@ class CheckGuestMiddleware extends BaseMiddleware
         if ($device && $device->refresh_token && now()->lt($device->token_expires_at)) {
             return $this->failed(__('You are already authenticated'), 409);
         }
-        
 
         return $next($request);
     }
-
 }

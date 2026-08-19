@@ -5,8 +5,8 @@ namespace App\Http\Requests\Auth;
 use App\Enums\Role;
 use App\Http\Requests\Api\ApiFormRequest;
 use App\Models\User;
+use App\Services\LoggingServices\NormalAuthenticationLoggingService;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -16,7 +16,7 @@ class LoginRequest extends ApiFormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -28,7 +28,7 @@ class LoginRequest extends ApiFormRequest
         ];
     }
 
-     /**
+    /**
      * @return array<string, string>
      */
     public function messages(): array
@@ -46,9 +46,9 @@ class LoginRequest extends ApiFormRequest
             ->whereRelation('roles', 'name', Role::USER->value)
             ->first();
 
-        if (! $user || 
+        if (! $user ||
         ! Hash::check($this->password, $user->password)) {
-            app(\App\Services\LoggingServices\NormalAuthenticationLoggingService::class)->failed_login([
+            app(NormalAuthenticationLoggingService::class)->failed_login([
                 'email' => $this->string('email')->toString(),
                 'user_agent' => $this->userAgent(),
                 'ip' => $this->ip(),

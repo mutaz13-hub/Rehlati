@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Http\Requests\Api\ApiFormRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rules\Password;
 
 class ResetPasswordRequest extends ApiFormRequest
@@ -10,7 +11,7 @@ class ResetPasswordRequest extends ApiFormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -18,11 +19,11 @@ class ResetPasswordRequest extends ApiFormRequest
             'email' => ['required', 'string', 'email', 'max:255'],
             'code' => ['required', 'string', 'size:6'],
             'new_password' => ['required', 'string', 'confirmed', Password::min(8)
-                                                                       ->max(70)
-                                                                       ->letters()
-                                                                       ->mixedCase()
-                                                                       ->numbers()
-                                                                       ->symbols()],
+                ->max(70)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols()],
         ];
     }
 }

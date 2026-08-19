@@ -35,7 +35,7 @@ class ImageUploadService
 
         return $model->addMediaFromString((string) $webp)
             ->usingName($name)
-            ->usingFileName($name . '.webp')
+            ->usingFileName($name.'.webp')
             ->toMediaCollection($collection);
     }
 }

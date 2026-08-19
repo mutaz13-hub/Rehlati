@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Gate;
 
 class TagController extends Controller
 {
-    public function __construct(public AdminTagService $tag_service)
-    {
-    }
+    public function __construct(public AdminTagService $tag_service) {}
 
     public function index()
     {
@@ -31,7 +29,7 @@ class TagController extends Controller
 
     public function store(StoreTagRequest $request): JsonResponse
     {
-         $this->tag_service->create($request->validated());
+        $this->tag_service->create($request->validated());
 
         return $this->succeed(__('Tag created'), 201);
     }

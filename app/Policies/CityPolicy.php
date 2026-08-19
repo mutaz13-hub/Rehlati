@@ -29,14 +29,16 @@ class CityPolicy
      */
     public function create(User $user): Response
     {
-        if($user->hasRole('admin')){
-            if(City::count('id') >= 14){
+        if ($user->hasRole('admin')) {
+            if (City::count('id') >= 14) {
                 return Response::deny(__('You have reached the maximum number of cities you can create.'));
             }
+
             return Response::allow();
         }
+
         return Response::deny();
-       
+
     }
 
     /**
@@ -52,7 +54,7 @@ class CityPolicy
      */
     public function delete(User $user, City $city): bool
     {
-       return auth()->user()->hasRole('admin');
+        return auth()->user()->hasRole('admin');
     }
 
     /**
@@ -73,9 +75,9 @@ class CityPolicy
 
     public function rate(User $user, City $city): Response
     {
-        return ($user->ratings()->where('rateable_type', City::MORPH_KEY)
-                         ->where('rateable_id', $city->id)
-                         ->exists() ? Response::deny(__('You have already rated this item.'))
-                                    : Response::allow());
+        return $user->ratings()->where('rateable_type', City::MORPH_KEY)
+            ->where('rateable_id', $city->id)
+            ->exists() ? Response::deny(__('You have already rated this item.'))
+                                    : Response::allow();
     }
 }

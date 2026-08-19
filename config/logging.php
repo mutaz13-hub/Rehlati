@@ -68,7 +68,7 @@ return [
         'auth' => [
             'driver' => 'daily',
             'path' => storage_path('logs/auth.log'),
-            'level' => 'debug'
+            'level' => 'debug',
         ],
 
         'daily' => [

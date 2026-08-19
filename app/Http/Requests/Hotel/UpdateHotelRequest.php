@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Hotel;
 
 use App\Http\Requests\Api\ApiFormRequest;
-use App\Models\Hotel;
 use App\Models\Location;
 use Illuminate\Validation\Rule;
 use Propaganistas\LaravelPhone\PhoneNumber;

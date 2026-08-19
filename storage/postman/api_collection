@@ -6,13 +6,13 @@
     },
     "item": [
         {
-            "name": "admin",
+            "name": "communities",
             "item": [
                 {
-                    "name": "tourist-guides",
+                    "name": "messages",
                     "item": [
                         {
-                            "name": "[GET] api/admin/tourist-guides",
+                            "name": "[GET] api/communities/{community}/messages",
                             "request": {
                                 "method": "GET",
                                 "header": [
@@ -38,20 +38,22 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/tourist-guides",
+                                    "raw": "{{base_url}}/api/communities/:community/messages",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "admin",
-                                        "tourist-guides"
-                                    ]
+                                        "communities",
+                                        ":community",
+                                        "messages"
+                                    ],
+                                    "variable": []
                                 }
                             }
                         },
                         {
-                            "name": "[POST] api/admin/tourist-guides",
+                            "name": "[POST] api/communities/{community}/messages",
                             "request": {
                                 "method": "POST",
                                 "header": [
@@ -77,112 +79,27 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/tourist-guides",
+                                    "raw": "{{base_url}}/api/communities/:community/messages",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "admin",
-                                        "tourist-guides"
-                                    ]
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"name\": \"sample_text\",\n    \"email\": \"user30@example.com\",\n    \"phone\": \"sample_text\",\n    \"availability\": [\n        []\n    ],\n    \"is_active\": 0\n}",
-                                    "options": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[GET] api/admin/tourist-guides/{tourist_guide}",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/tourist-guides/:tourist_guide",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "tourist-guides",
-                                        ":tourist_guide"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[PUT] api/admin/tourist-guides/{tourist_guide}",
-                            "request": {
-                                "method": "PUT",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/tourist-guides/:tourist_guide",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "tourist-guides",
-                                        ":tourist_guide"
+                                        "communities",
+                                        ":community",
+                                        "messages"
                                     ],
                                     "variable": []
                                 },
                                 "body": {
                                     "mode": "raw",
-                                    "raw": "[]",
+                                    "raw": "{\n    \"body\": \"sample_text\"\n}",
                                     "options": []
                                 }
                             }
                         },
                         {
-                            "name": "[DELETE] api/admin/tourist-guides/{tourist_guide}",
+                            "name": "[DELETE] api/communities/{community}/messages/{message}",
                             "request": {
                                 "method": "DELETE",
                                 "header": [
@@ -208,250 +125,20 @@
                                     }
                                 ],
                                 "url": {
-                                    "raw": "{{base_url}}/api/admin/tourist-guides/:tourist_guide",
+                                    "raw": "{{base_url}}/api/communities/:community/messages/:message",
                                     "host": [
                                         "{{base_url}}"
                                     ],
                                     "path": [
                                         "api",
-                                        "admin",
-                                        "tourist-guides",
-                                        ":tourist_guide"
+                                        "communities",
+                                        ":community",
+                                        "messages",
+                                        ":message"
                                     ],
                                     "variable": []
                                 }
                             }
-                        },
-                        {
-                            "name": "ratings",
-                            "item": [
-                                {
-                                    "name": "[GET] api/admin/tourist-guides/{touristGuide}/ratings",
-                                    "request": {
-                                        "method": "GET",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/tourist-guides/:touristGuide/ratings",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "tourist-guides",
-                                                ":touristGuide",
-                                                "ratings"
-                                            ],
-                                            "variable": []
-                                        },
-                                        "body": {
-                                            "mode": "raw",
-                                            "raw": "{\n    \"sort\": \"sample_text\",\n    \"page\": 8,\n    \"cursor\": \"sample_text\"\n}",
-                                            "options": []
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "guide-requests",
-                    "item": [
-                        {
-                            "name": "[GET] api/admin/guide-requests",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/guide-requests",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "guide-requests"
-                                    ]
-                                }
-                            }
-                        },
-                        {
-                            "name": "[GET] api/admin/guide-requests/{guideRequest}",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/admin/guide-requests/:guideRequest",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "admin",
-                                        "guide-requests",
-                                        ":guideRequest"
-                                    ],
-                                    "variable": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "approve",
-                            "item": [
-                                {
-                                    "name": "[POST] api/admin/guide-requests/{guideRequest}/approve",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/guide-requests/:guideRequest/approve",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "guide-requests",
-                                                ":guideRequest",
-                                                "approve"
-                                            ],
-                                            "variable": []
-                                        }
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "reject",
-                            "item": [
-                                {
-                                    "name": "[POST] api/admin/guide-requests/{guideRequest}/reject",
-                                    "request": {
-                                        "method": "POST",
-                                        "header": [
-                                            {
-                                                "key": "Accept",
-                                                "value": "application/json",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "Our-Great-Password",
-                                                "value": "{{api_password}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "lang",
-                                                "value": "{{lang}}",
-                                                "type": "text"
-                                            },
-                                            {
-                                                "key": "device",
-                                                "value": "{{device}}",
-                                                "type": "text"
-                                            }
-                                        ],
-                                        "url": {
-                                            "raw": "{{base_url}}/api/admin/guide-requests/:guideRequest/reject",
-                                            "host": [
-                                                "{{base_url}}"
-                                            ],
-                                            "path": [
-                                                "api",
-                                                "admin",
-                                                "guide-requests",
-                                                ":guideRequest",
-                                                "reject"
-                                            ],
-                                            "variable": []
-                                        }
-                                    }
-                                }
-                            ]
                         }
                     ]
                 }

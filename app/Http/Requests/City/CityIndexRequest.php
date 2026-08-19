@@ -4,7 +4,6 @@ namespace App\Http\Requests\City;
 
 use App\Http\Requests\Api\ApiFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
 class CityIndexRequest extends ApiFormRequest
 {
@@ -16,7 +15,7 @@ class CityIndexRequest extends ApiFormRequest
     public function rules(): array
     {
         return [
-            'page' => ['nullable', 'numeric', 'integer']
+            'page' => ['nullable', 'numeric', 'integer'],
         ];
     }
 }

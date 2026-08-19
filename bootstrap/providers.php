@@ -1,7 +1,11 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\CityServiceProvider;
+use App\Providers\RateLimitingServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\CityServiceProvider::class,
-    App\Providers\RateLimitingServiceProvider::class,
+    AppServiceProvider::class,
+    CityServiceProvider::class,
+    RateLimitingServiceProvider::class,
 ];

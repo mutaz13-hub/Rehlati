@@ -6,5 +6,5 @@ use App\Traits\JsonResponseTrait;
 
 abstract class BaseMiddleware
 {
-     use JsonResponseTrait;
+    use JsonResponseTrait;
 }

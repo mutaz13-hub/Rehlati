@@ -16,7 +16,7 @@ class DescriptionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'description' => $this->localized_description
+            'description' => $this->localized_description,
         ];
     }
 }

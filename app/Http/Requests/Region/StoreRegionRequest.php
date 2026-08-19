@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Region;
 
 use App\Http\Requests\Api\ApiFormRequest;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class StoreRegionRequest extends ApiFormRequest

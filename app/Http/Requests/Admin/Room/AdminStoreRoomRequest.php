@@ -32,14 +32,14 @@ class AdminStoreRoomRequest extends ApiFormRequest
             'max_adults' => ['required', 'integer', 'min:1'],
             'max_children' => ['required', 'integer', 'min:0'],
             'max_guests' => ['required', 'integer', 'gte:max_adults', 'gte:max_children', function ($attribute, $value, $fail) {
-            $maxAdults = (int) $this->input('max_adults', 0);
-            $maxChildren = (int) $this->input('max_children', 0);
-            $combinedSum = $maxAdults + $maxChildren;
+                $maxAdults = (int) $this->input('max_adults', 0);
+                $maxChildren = (int) $this->input('max_children', 0);
+                $combinedSum = $maxAdults + $maxChildren;
 
-            if ($value > $combinedSum) {
-                $fail(__("The max guests cannot be greater than the combined sum of adults and children ($combinedSum)."));
-            }
-        }],
+                if ($value > $combinedSum) {
+                    $fail(__("The max guests cannot be greater than the combined sum of adults and children ($combinedSum)."));
+                }
+            }],
 
             'total_rooms' => ['required', 'integer', 'min:0'],
             'available_rooms' => ['required', 'integer', 'min:0', 'lte:total_rooms'],

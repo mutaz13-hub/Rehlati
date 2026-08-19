@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Room;
 use App\Models\Amenity;
+use App\Models\Room;
 use Illuminate\Database\Seeder;
 
 class RoomAmenitySeeder extends Seeder

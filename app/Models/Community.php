@@ -57,6 +57,11 @@ class Community extends Model implements HasMedia
         return $this->hasMany(Post::class);
     }
 
+    public function messages(): HasMany
+    {
+        return $this->hasMany(CommunityMessage::class);
+    }
+
     public function isPublic(): bool
     {
         return $this->visibility === CommunityVisibility::PUBLIC;

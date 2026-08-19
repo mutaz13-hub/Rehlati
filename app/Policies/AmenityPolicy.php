@@ -17,18 +17,9 @@ class AmenityPolicy
         return true;
     }
 
-    public function create(User $user): bool
-    {
-        true;
-    }
+    public function create(User $user): bool {}
 
-    public function update(User $user, Amenity $amenity): bool
-    {
-        true;
-    }
+    public function update(User $user, Amenity $amenity): bool {}
 
-    public function delete(User $user, Amenity $amenity): bool
-    {
-        true;
-    }
+    public function delete(User $user, Amenity $amenity): bool {}
 }

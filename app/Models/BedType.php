@@ -23,7 +23,7 @@ class BedType extends Model
 
     public function getLocalizedNameAttribute(): string
     {
-        $locale = Cache::get('lang_for_user: ' . auth()->id(), app()->getLocale());
+        $locale = Cache::get('lang_for_user: '.auth()->id(), app()->getLocale());
 
         return $this->{"name_{$locale}"} ?? $this->name_en;
     }

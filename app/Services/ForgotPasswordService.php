@@ -8,10 +8,8 @@ use App\Models\Device;
 use App\Models\User;
 use App\Services\LoggingServices\ForgotPasswordLoggingService;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class ForgotPasswordService
 {
@@ -19,8 +17,9 @@ class ForgotPasswordService
         protected SendPasswordResettingCodeAction $sendPasswordResettingCodeAction,
         protected ForgotPasswordLoggingService $forgotPasswordLoggingService
     ) {}
+
     /**
-     * @param array{email: string} $data
+     * @param  array{email: string}  $data
      */
     public function send_resetting_code(array $data): void
     {
@@ -46,7 +45,7 @@ class ForgotPasswordService
     }
 
     /**
-     * @param array{email: string, code: string} $data
+     * @param  array{email: string, code: string}  $data
      */
     public function validate_password_resetting_code(array $data): bool
     {
@@ -74,8 +73,7 @@ class ForgotPasswordService
     }
 
     /**
-     * @param array{email: string, code: string, new_password: string} $data
-     *
+     * @param  array{email: string, code: string, new_password: string}  $data
      * @return array{status: bool, message: string}
      */
     public function reset_password(array $data): array
@@ -88,13 +86,13 @@ class ForgotPasswordService
 
         $status = false;
 
-        if (!$available_token) {
+        if (! $available_token) {
             $this->forgotPasswordLoggingService->no_existing_reset_record([
                 'email' => maskEmail($data['email']),
                 'user_agent' => request()->userAgent(),
                 'ip' => maskIp(request()->ip()),
             ]);
-        } elseif (!Hash::check($data['code'], $available_token->token)) {
+        } elseif (! Hash::check($data['code'], $available_token->token)) {
             $this->forgotPasswordLoggingService->wrong_token_on_reset([
                 'email' => maskEmail($data['email']),
                 'user_agent' => request()->userAgent(),
@@ -117,14 +115,14 @@ class ForgotPasswordService
                 ->firstOrFail();
 
             $user->update([
-                'password' => bcrypt($data['new_password'])
+                'password' => bcrypt($data['new_password']),
             ]);
 
             event(new PasswordReset($user));
 
             // Logout user from all devices for security
             $deviceIds = $user->tokens()->pluck('device_id')->toArray();
-            if (!empty($deviceIds)) {
+            if (! empty($deviceIds)) {
                 Device::whereIn('id', $deviceIds)->delete();
             }
 
@@ -140,7 +138,7 @@ class ForgotPasswordService
 
         return [
             'status' => $status,
-            'message' => $message
+            'message' => $message,
         ];
     }
 }

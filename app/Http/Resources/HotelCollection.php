@@ -12,7 +12,7 @@ class HotelCollection extends ResourceCollection
     public function toArray($request): array
     {
         return [
-            'data' => $this->collection->map(fn($item) => new HotelResource($item)),
+            'data' => $this->collection->map(fn ($item) => new HotelResource($item)),
         ];
     }
 }

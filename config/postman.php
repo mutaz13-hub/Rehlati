@@ -28,7 +28,7 @@ return [
         // Routes to explicitly include
         'include' => [
             // URI patterns to include (supports wildcards)
-            'patterns' => ['api/admin/tourist-guides', 'api/admin/tourist-guides/*', 'api/admin/guide-requests', 'api/admin/guide-requests/*'],
+            'patterns' => ['api/communities/{community}/messages', 'api/communities/{community}/messages/*'],
 
             // Only routes with these middleware
             'middleware' => [],

@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\AdminAmenityController;
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminBookingController;
 use App\Http\Controllers\Admin\AdminCityController;
 use App\Http\Controllers\Admin\AdminCurrencySettingController;
+use App\Http\Controllers\Admin\AdminEmergencyNumberController;
 use App\Http\Controllers\Admin\AdminExchangeRateController;
 use App\Http\Controllers\Admin\AdminGuideRequestController;
 use App\Http\Controllers\Admin\AdminHotelController;
@@ -85,5 +87,12 @@ Route::prefix('admin')->name('admin.')->middleware(['web', 'check_api_password',
         Route::get('guide-requests/{guideRequest}', [AdminGuideRequestController::class, 'show'])->name('guide-requests.show');
         Route::post('guide-requests/{guideRequest}/approve', [AdminGuideRequestController::class, 'approve'])->name('guide-requests.approve');
         Route::post('guide-requests/{guideRequest}/reject', [AdminGuideRequestController::class, 'reject'])->name('guide-requests.reject');
+
+        Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
+        Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
+        Route::post('bookings/{booking}/approve', [AdminBookingController::class, 'approve'])->name('bookings.approve');
+        Route::post('bookings/{booking}/reject', [AdminBookingController::class, 'reject'])->name('bookings.reject');
+
+        Route::apiResource('emergency-numbers', AdminEmergencyNumberController::class);
     });
 });

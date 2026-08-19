@@ -4,8 +4,6 @@ namespace App\Http\Requests\Admin\Hotel;
 
 use App\Http\Requests\Api\ApiFormRequest;
 use App\Models\Hotel;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 
 class AdminUpdateHotelPicturesRequest extends ApiFormRequest
 {

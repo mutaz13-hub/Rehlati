@@ -50,10 +50,10 @@ class RegionPolicy
 
     public function rate(User $user, Region $region): Response
     {
-        return ($user->ratings()->where('rateable_type', Region::MORPH_KEY)
-                         ->where('rateable_id', $region->id)
-                         ->exists() ? Response::deny(__('You have already rated this item.'))
-                                    : Response::allow());
+        return $user->ratings()->where('rateable_type', Region::MORPH_KEY)
+            ->where('rateable_id', $region->id)
+            ->exists() ? Response::deny(__('You have already rated this item.'))
+                                    : Response::allow();
     }
 
     /**

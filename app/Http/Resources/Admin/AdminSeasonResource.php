@@ -9,6 +9,7 @@ class AdminSeasonResource extends JsonResource
     public function toArray($request): array
     {
         $request_type = $request->routeIs('admin.seasons.index') ? 'index' : ($request->routeIs('admin.seasons.show') ? 'show' : 'else');
+
         return [
             'id' => $this->id,
             'name' => $this->when($request_type !== 'show', $this->localized_name),
@@ -18,7 +19,7 @@ class AdminSeasonResource extends JsonResource
             'end_date' => $this->end_date?->toDateString(),
             'seasonable_type' => $this->seasonable_type,
             'seasonable_id' => $this->seasonable_id,
-            //'prices_count' => $this->when(isset($this->prices_count), $this->prices_count),
+            // 'prices_count' => $this->when(isset($this->prices_count), $this->prices_count),
         ];
     }
 }

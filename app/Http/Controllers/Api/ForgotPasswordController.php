@@ -15,9 +15,6 @@ class ForgotPasswordController extends Controller
 
     /**
      * Send password reset code to email.
-     *
-     * @param ForgotPasswordRequest $request
-     * @return JsonResponse
      */
     public function forgot_password(ForgotPasswordRequest $request): JsonResponse
     {
@@ -28,9 +25,6 @@ class ForgotPasswordController extends Controller
 
     /**
      * Validate password reset code.
-     *
-     * @param ValidateResetCodeRequest $request
-     * @return JsonResponse
      */
     public function validate_reset_code(ValidateResetCodeRequest $request): JsonResponse
     {
@@ -43,9 +37,6 @@ class ForgotPasswordController extends Controller
 
     /**
      * Reset user password.
-     *
-     * @param ResetPasswordRequest $request
-     * @return JsonResponse
      */
     public function reset_password(ResetPasswordRequest $request): JsonResponse
     {

@@ -4,7 +4,6 @@ namespace App\Http\Requests\City;
 
 use App\Http\Requests\Api\ApiFormRequest;
 use App\Models\City;
-use Illuminate\Contracts\Validation\ValidationRule;
 
 class UpdateCityThumbnailsRequest extends ApiFormRequest
 {

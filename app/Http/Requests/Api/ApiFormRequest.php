@@ -4,25 +4,25 @@ namespace App\Http\Requests\Api;
 
 use App\Traits\JsonResponseTrait;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
 class ApiFormRequest extends FormRequest
 {
     use JsonResponseTrait;
 
-     protected $stopOnFirstFailure = true;
+    protected $stopOnFirstFailure = true;
+
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool | Response
+    public function authorize(): bool|Response
     {
         return true;
     }
 
-     protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator)
     {
         throw new ValidationException($validator
         );

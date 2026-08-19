@@ -10,7 +10,7 @@ class TagResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->localized_name
+            'name' => $this->localized_name,
         ];
     }
 }

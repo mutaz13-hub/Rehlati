@@ -2,18 +2,16 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Room;
 use App\Models\Hotel;
+use App\Models\Room;
 use App\Services\PriceUserService;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AdminRoomService
 {
     public function __construct(
         private readonly PriceUserService $priceUserService
-    ) {
-    }
+    ) {}
 
     public function create(Hotel $hotel, array $data): Room
     {
@@ -49,7 +47,7 @@ class AdminRoomService
                 $room->bedTypes()->sync($this->formatBedsForSync($data['beds']));
             }
 
-            if (!empty($prices)) {
+            if (! empty($prices)) {
                 $room->prices()->createMany($this->formatPricesForCreate($prices));
             }
 
@@ -97,7 +95,7 @@ class AdminRoomService
 
             if ($prices !== null) {
                 $room->prices()->delete();
-                if (!empty($prices)) {
+                if (! empty($prices)) {
                     $room->prices()->createMany($this->formatPricesForCreate($prices));
                 }
             }
@@ -131,6 +129,7 @@ class AdminRoomService
                 'assigned_capacity' => $bed['assigned_capacity'],
             ];
         }
+
         return $syncData;
     }
 

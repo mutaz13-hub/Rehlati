@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Mutual;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\City\CityRegionsRequest;
-use App\Models\City;
-use App\Http\Resources\CityResource;
-use App\Http\Requests\City\StoreCityRequest;
-use App\Http\Requests\City\UpdateCityRequest;
-use App\Http\Requests\City\UpdateCityPicturesRequest;
-use App\Http\Requests\City\UpdateCityThumbnailsRequest;
 use App\Http\Requests\City\ShowCityRequest;
+use App\Http\Requests\City\StoreCityRequest;
+use App\Http\Requests\City\UpdateCityPicturesRequest;
+use App\Http\Requests\City\UpdateCityRequest;
+use App\Http\Requests\City\UpdateCityThumbnailsRequest;
+use App\Http\Resources\CityResource;
 use App\Http\Resources\HotelResource;
 use App\Http\Resources\RegionResource;
+use App\Models\City;
 use App\Services\CityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,13 +20,12 @@ use Illuminate\Support\Facades\Gate;
 
 class CityController extends Controller
 {
-    public function __construct(protected CityService $cityService)
-    {
-    }
+    public function __construct(protected CityService $cityService) {}
 
     public function index(): JsonResponse
     {
         $cities = City::with(['description', 'media', 'location', 'tags'])->withCount('reviews')->get();
+
         return $this->succeed(__('Cities fetched successfully'), CityResource::collection($cities));
     }
 
@@ -43,9 +42,9 @@ class CityController extends Controller
         if (auth('sanctum')->user()->role('user')) {
             $city->load('myReview');
         }
-        
+
         return $this->succeed(__('City fetched successfully'), [
-            'city' => new CityResource($city)
+            'city' => new CityResource($city),
         ]);
     }
 
@@ -58,8 +57,8 @@ class CityController extends Controller
             'meta' => [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
-                'total' => $data->total()
-            ] 
+                'total' => $data->total(),
+            ],
         ]);
     }
 
@@ -72,18 +71,16 @@ class CityController extends Controller
             'meta' => [
                 'current_page' => $data->currentPage(),
                 'last_page' => $data->lastPage(),
-                'total' => $data->total()
-            ] 
+                'total' => $data->total(),
+            ],
         ]);
 
-
     }
-
 
     public function update(UpdateCityRequest $request, City $city): JsonResponse
     {
         $this->cityService->updateCity($city, $request->validated());
-        
+
         return $this->succeed(__('City updated successfully'));
     }
 
@@ -97,6 +94,7 @@ class CityController extends Controller
     public function updateThumbnails(UpdateCityThumbnailsRequest $request, City $city): JsonResponse
     {
         $this->cityService->updateCityThumbnails($city, $request->validated());
+
         return $this->succeed(__('City thumbnails updated successfully'));
     }
 
@@ -104,6 +102,7 @@ class CityController extends Controller
     {
         Gate::authorize('delete', $city);
         $this->cityService->deleteCity($city);
+
         return $this->succeed(__('City deleted successfully'));
     }
 }

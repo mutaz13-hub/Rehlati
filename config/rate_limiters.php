@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\RateLimiters\AuthenticationRateLimiter;
-use App\Http\RateLimiters\VerificationRateLimiter;
 use App\Http\RateLimiters\ForgotPasswordRateLimiter;
+use App\Http\RateLimiters\VerificationRateLimiter;
 
 return [
     AuthenticationRateLimiter::class,

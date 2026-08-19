@@ -16,7 +16,7 @@ class RatingIndexRequest extends FormRequest
         return [
             'sort' => 'nullable|in:top,latest',
             'page' => 'nullable|numeric|integer',
-            'cursor' => 'nullable|string|max:255'
+            'cursor' => 'nullable|string|max:255',
         ];
     }
 

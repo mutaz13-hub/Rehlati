@@ -9,8 +9,7 @@ class PriceService
 {
     public function __construct(
         private readonly PriceUserService $priceUserService
-    ) {
-    }
+    ) {}
 
     public function calculateFinalPrice(Model $priceable, $user, string $priceType = 'base_price'): ?float
     {
@@ -18,7 +17,7 @@ class PriceService
             return $this->priceUserService->calculateFinalPriceValue($priceable, $user, $priceType);
         }
 
-        $userModel = new User();
+        $userModel = new User;
         if (is_object($user) && isset($user->nationality_category)) {
             $userModel->nationality_category = $user->nationality_category;
         }
