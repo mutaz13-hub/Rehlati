@@ -6,141 +6,45 @@
     },
     "item": [
         {
-            "name": "communities",
+            "name": "profile",
             "item": [
                 {
-                    "name": "messages",
-                    "item": [
-                        {
-                            "name": "[GET] api/communities/{community}/messages",
-                            "request": {
-                                "method": "GET",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/messages",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "messages"
-                                    ],
-                                    "variable": []
-                                }
+                    "name": "[GET] api/profile",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Our-Great-Password",
+                                "value": "{{api_password}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "lang",
+                                "value": "{{lang}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "device",
+                                "value": "{{device}}",
+                                "type": "text"
                             }
-                        },
-                        {
-                            "name": "[POST] api/communities/{community}/messages",
-                            "request": {
-                                "method": "POST",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/messages",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "messages"
-                                    ],
-                                    "variable": []
-                                },
-                                "body": {
-                                    "mode": "raw",
-                                    "raw": "{\n    \"body\": \"sample_text\"\n}",
-                                    "options": []
-                                }
-                            }
-                        },
-                        {
-                            "name": "[DELETE] api/communities/{community}/messages/{message}",
-                            "request": {
-                                "method": "DELETE",
-                                "header": [
-                                    {
-                                        "key": "Accept",
-                                        "value": "application/json",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "Our-Great-Password",
-                                        "value": "{{api_password}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "lang",
-                                        "value": "{{lang}}",
-                                        "type": "text"
-                                    },
-                                    {
-                                        "key": "device",
-                                        "value": "{{device}}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "url": {
-                                    "raw": "{{base_url}}/api/communities/:community/messages/:message",
-                                    "host": [
-                                        "{{base_url}}"
-                                    ],
-                                    "path": [
-                                        "api",
-                                        "communities",
-                                        ":community",
-                                        "messages",
-                                        ":message"
-                                    ],
-                                    "variable": []
-                                }
-                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/profile",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "profile"
+                            ]
                         }
-                    ]
+                    }
                 }
             ]
         }

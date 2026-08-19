@@ -10,6 +10,7 @@ class StoreGuideBookingRequest extends ApiFormRequest
     {
         return [
             'tourist_guide_id' => ['required', 'integer', 'exists:tourist_guides,id'],
+            'hours' => ['required', 'integer', 'min:1', 'max:24'],
             'note' => ['nullable', 'string', 'max:500'],
         ];
     }

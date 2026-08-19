@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\City;
 use App\Models\User;
+use App\Services\RatingEligibilityService;
 use Illuminate\Auth\Access\Response;
 
 class CityPolicy
@@ -75,6 +76,10 @@ class CityPolicy
 
     public function rate(User $user, City $city): Response
     {
+        if (! app(RatingEligibilityService::class)->canRate($user, $city)) {
+            return Response::deny(__('You must have a completed trip or booking to rate this item.'));
+        }
+
         return $user->ratings()->where('rateable_type', City::MORPH_KEY)
             ->where('rateable_id', $city->id)
             ->exists() ? Response::deny(__('You have already rated this item.'))

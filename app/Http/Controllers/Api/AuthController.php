@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\GoogleLoginRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use App\Services\GoogleAuthenticationService;
 use Illuminate\Http\JsonResponse;
@@ -136,5 +137,15 @@ class AuthController extends Controller
         $this->authService->logout_all_devices(Auth::user());
 
         return $this->succeed(__('You have been logged out from all devices.'));
+    }
+
+    /**
+     * Get the authenticated user's profile.
+     */
+    public function profile(): JsonResponse
+    {
+        $user = Auth::user();
+
+        return $this->succeed(__('Profile fetched successfully'), new UserResource($user));
     }
 }

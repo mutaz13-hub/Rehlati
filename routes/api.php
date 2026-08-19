@@ -57,6 +57,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
         Route::middleware('check_email_verified')->controller(AuthController::class)->group(function () {
             Route::post('/logout-other-devices', 'logout_other_devices');
             Route::post('/logout-all-devices', 'logout_all_devices');
+            Route::get('/profile', 'profile');
 
             // Public (user + admin) hotel listings and details
             Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
@@ -134,6 +135,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::get('/trips/{trip}/guides', [GuideRequestController::class, 'index'])->name('trips.guide-requests.index');
             Route::post('/trips/{trip}/guides', [GuideRequestController::class, 'store'])->name('trips.guide-requests.store');
             Route::delete('/trips/{trip}/guides/{guideRequest}', [GuideRequestController::class, 'destroy'])->name('trips.guide-requests.destroy');
+            Route::post('/guide-requests/{guideRequest}/confirm-payment', [GuideRequestController::class, 'confirmPayment'])->name('guide-requests.confirm-payment');
 
             // Communities
             Route::apiResource('communities', CommunityController::class)->only(['index', 'store', 'show', 'update', 'destroy']);

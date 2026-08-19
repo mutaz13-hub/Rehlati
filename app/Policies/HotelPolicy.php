@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Hotel;
 use App\Models\User;
+use App\Services\RatingEligibilityService;
 use Illuminate\Auth\Access\Response;
 
 class HotelPolicy
@@ -51,6 +52,10 @@ class HotelPolicy
 
     public function rate(User $user, Hotel $hotel): Response
     {
+        if (! app(RatingEligibilityService::class)->canRate($user, $hotel)) {
+            return Response::deny(__('You must have a completed trip or booking to rate this item.'));
+        }
+
         return $user->ratings()->where('rateable_type', Hotel::MORPH_KEY)
             ->where('rateable_id', $hotel->id)
             ->exists() ? Response::deny(__('You have already rated this item.'))
