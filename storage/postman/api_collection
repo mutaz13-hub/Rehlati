@@ -6,10 +6,10 @@
     },
     "item": [
         {
-            "name": "profile",
+            "name": "vault",
             "item": [
                 {
-                    "name": "[GET] api/profile",
+                    "name": "[GET] api/vault",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -35,13 +35,13 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/api/profile",
+                            "raw": "{{base_url}}/api/vault",
                             "host": [
                                 "{{base_url}}"
                             ],
                             "path": [
                                 "api",
-                                "profile"
+                                "vault"
                             ]
                         }
                     }

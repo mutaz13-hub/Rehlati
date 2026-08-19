@@ -25,7 +25,7 @@ class PackageController extends Controller
 
     public function show(Package $package): JsonResponse
     {
-        $package->load(['description', 'regions.location', 'cities', 'hotels.location', 'carAgencies', 'touristGuides', 'prices']);
+        $package = $this->packageService->showActive($package);
 
         return $this->succeed(__('Package fetched successfully'), [
             'package' => new PackageResource($package),

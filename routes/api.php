@@ -138,7 +138,8 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
             Route::post('/guide-requests/{guideRequest}/confirm-payment', [GuideRequestController::class, 'confirmPayment'])->name('guide-requests.confirm-payment');
 
             // Communities
-            Route::apiResource('communities', CommunityController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+            Route::apiResource('communities', CommunityController::class)->only(['index', 'show', 'update', 'destroy']);
+            Route::post('/communities', [CommunityController::class, 'store'])->middleware('throttle:create-community');
             Route::get('/communities/{community}/members', [CommunityController::class, 'members']);
             Route::post('/communities/{community}/join', [CommunityController::class, 'join']);
             Route::post('/communities/{community}/leave', [CommunityController::class, 'leave']);
@@ -150,7 +151,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
 
             // Posts
             Route::get('/communities/{community}/posts', [PostController::class, 'index']);
-            Route::post('/communities/{community}/posts', [PostController::class, 'store']);
+            Route::post('/communities/{community}/posts', [PostController::class, 'store'])->middleware('throttle:community-post');
             Route::get('/posts/{post}', [PostController::class, 'show']);
             Route::patch('/posts/{post}', [PostController::class, 'update']);
             Route::delete('/posts/{post}', [PostController::class, 'destroy']);
@@ -173,7 +174,7 @@ Route::middleware(['check_api_password', 'check_language'])->group(function () {
 
             // Community chat (no realtime yet)
             Route::get('/communities/{community}/messages', [CommunityMessageController::class, 'index'])->name('communities.messages.index');
-            Route::post('/communities/{community}/messages', [CommunityMessageController::class, 'store'])->name('communities.messages.store');
+            Route::post('/communities/{community}/messages', [CommunityMessageController::class, 'store'])->middleware('throttle:community-message')->name('communities.messages.store');
             Route::delete('/communities/{community}/messages/{message}', [CommunityMessageController::class, 'destroy'])->name('communities.messages.destroy');
 
             // Vault: documents the user submitted with their bookings

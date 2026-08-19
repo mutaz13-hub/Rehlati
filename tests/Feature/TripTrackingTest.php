@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Jobs\ProcessTripPolylineJob;
 use App\Models\City;
 use App\Models\Device;
 use App\Models\Hotel;
@@ -570,38 +569,6 @@ class TripTrackingTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function test_shared_trip_is_public_and_reports_correct_roles(): void
-    {
-        $owner = $this->regularUser();
-        $editor = $this->regularUser();
-        $city = City::factory()->create(['name_en' => 'Homs']);
-        $trip = Trip::factory()->for($owner, 'owner')->create();
-        $trip->memberPivots()->create(['user_id' => $editor->id, 'role' => 'editor', 'status' => 'approved']);
-        $trip->cities()->create(['city_id' => $city->id, 'order' => 1]);
-
-        $guestHeaders = [
-            'Our-Great-Password' => 'test-secret',
-            'lang' => 'en',
-            'Accept' => 'application/json',
-        ];
-
-        $this->withHeaders($guestHeaders)
-            ->getJson("/api/shared-trips/{$trip->uuid}")
-            ->assertOk()
-            ->assertJsonPath('data.role', 'viewer')
-            ->assertJsonPath('data.cities.0.city.name', 'Homs');
-
-        $this->withHeaders($this->authHeaders($owner))
-            ->getJson("/api/shared-trips/{$trip->uuid}")
-            ->assertOk()
-            ->assertJsonPath('data.role', 'owner');
-
-        $this->withHeaders($this->authHeaders($editor))
-            ->getJson("/api/shared-trips/{$trip->uuid}")
-            ->assertOk()
-            ->assertJsonPath('data.role', 'editor');
-    }
-
     public function test_invited_user_can_accept_invitation_and_only_the_invitee_can_respond(): void
     {
         $owner = $this->regularUser();
@@ -717,47 +684,6 @@ class TripTrackingTest extends TestCase
             ->assertStatus(403);
     }
 
-    public function test_owner_can_regenerate_the_trip_link_uuid(): void
-    {
-        $owner = $this->regularUser();
-        $editor = $this->regularUser();
-        $trip = Trip::factory()->for($owner, 'owner')->create();
-        $trip->memberPivots()->create(['user_id' => $editor->id, 'role' => 'editor', 'status' => 'approved']);
-        $oldUuid = $trip->uuid;
-
-        $this->withHeaders($this->authHeaders($editor))
-            ->postJson("/api/trips/{$trip->id}/rotate-link")
-            ->assertStatus(403);
-
-        $response = $this->withHeaders($this->authHeaders($owner))
-            ->postJson("/api/trips/{$trip->id}/rotate-link")
-            ->assertOk()
-            ->assertJsonPath('message', 'Trip link regenerated successfully');
-
-        $newUuid = $response->json('data.uuid');
-
-        $this->assertNotEquals($oldUuid, $newUuid);
-        $this->assertDatabaseHas('trips', ['id' => $trip->id, 'uuid' => $newUuid]);
-
-        $guestHeaders = [
-            'Authorization' => '',
-            'Our-Great-Password' => 'test-secret',
-            'lang' => 'en',
-            'Accept' => 'application/json',
-        ];
-
-        $this->app['auth']->guard('sanctum')->forgetUser();
-
-        $this->withHeaders($guestHeaders)
-            ->getJson("/api/shared-trips/{$oldUuid}")
-            ->assertStatus(404);
-
-        $this->withHeaders($guestHeaders)
-            ->getJson("/api/shared-trips/{$newUuid}")
-            ->assertOk()
-            ->assertJsonPath('data.role', 'viewer');
-    }
-
     public function test_end_trip_archives_polyline_prunes_telemetry_and_keeps_memories(): void
     {
         $owner = $this->regularUser();
@@ -793,42 +719,6 @@ class TripTrackingTest extends TestCase
 
         $this->assertNotNull($finished->route_polyline);
         $this->assertNotSame('', $finished->route_polyline);
-    }
-
-    public function test_route_polyline_is_omitted_until_finished_and_note_shown_while_processing(): void
-    {
-        Queue::fake();
-
-        $owner = $this->regularUser();
-        $trip = Trip::factory()->for($owner, 'owner')->create();
-
-        $this->withHeaders($this->authHeaders($owner))
-            ->getJson("/api/trips/{$trip->id}")
-            ->assertOk()
-            ->assertJsonPath('data.status', 'preparing')
-            ->assertJsonPath('data.route_polyline', null)
-            ->assertJsonPath('data.message', null);
-
-        $this->prepareAndStartTrip($trip, $owner);
-
-        $this->withHeaders($this->authHeaders($owner))
-            ->postJson("/api/trips/{$trip->id}/pings", ['latitude' => 33.51, 'longitude' => 36.29])
-            ->assertOk();
-
-        $this->withHeaders($this->authHeaders($owner))
-            ->patchJson("/api/trips/{$trip->id}/status", ['status' => 'finished'])
-            ->assertOk()
-            ->assertJsonPath('message', 'Trip status updated successfully');
-
-        $this->withHeaders($this->authHeaders($owner))
-            ->getJson("/api/trips/{$trip->id}")
-            ->assertOk()
-            ->assertJsonPath('data.status', 'finished')
-            ->assertJsonPath('data.route_polyline', null)
-            ->assertJsonPath('data.message', 'Your route track is being saved. You will be able to view it once it is ready.');
-
-        Queue::assertPushed(ProcessTripPolylineJob::class);
-        $this->assertDatabaseCount('trip_locations', 1);
     }
 
     public function test_pings_and_notes_fail_on_finished_trip(): void

@@ -6,10 +6,23 @@ use App\Enums\Status;
 use App\Models\Package;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class PackageService
 {
+    private const CACHE_TTL = 1800;
+
+    private const SHOW_RELATIONS = [
+        'description',
+        'regions.location',
+        'cities',
+        'hotels.location',
+        'carAgencies',
+        'touristGuides',
+        'prices',
+    ];
+
     private const LIST_RELATIONS = [
         'description',
         'regions.location',
@@ -31,6 +44,18 @@ class PackageService
         $this->applyFilters($query, $filters);
 
         return $query->orderBy('start_date', 'desc')->paginate($perPage);
+    }
+
+    public function showActive(Package $package): Package
+    {
+        return Cache::remember("package:active:{$package->id}", self::CACHE_TTL, function () use ($package) {
+            return $package->load(self::SHOW_RELATIONS);
+        });
+    }
+
+    public function clearPackageCache(Package $package): void
+    {
+        Cache::forget("package:active:{$package->id}");
     }
 
     public function createPackage(array $data): void
@@ -92,6 +117,7 @@ class PackageService
                 }
             }
 
+            $this->clearPackageCache($package);
         });
     }
 
@@ -150,6 +176,7 @@ class PackageService
     public function deletePackage(Package $package): void
     {
         DB::transaction(function () use ($package) {
+            $this->clearPackageCache($package);
             $package->description()->delete();
             $package->delete();
         });

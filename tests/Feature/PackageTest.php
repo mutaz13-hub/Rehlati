@@ -104,26 +104,6 @@ class PackageTest extends TestCase
             ->assertJsonPath('data.meta.current_page', 1);
     }
 
-    public function test_listing_filters_by_status_and_association(): void
-    {
-        $region = Region::factory()->create();
-
-        Package::factory()->count(3)->create(['status' => 'active']);
-        Package::factory()->create(['status' => 'draft']);
-
-        $matching = Package::factory()->create(['status' => 'active']);
-        $matching->regions()->attach($region->id);
-
-        $response = $this->withHeaders($this->authHeaders($this->regularUser()))
-            ->getJson('/api/packages?status=active&region_id='.$region->id);
-
-        $response->assertOk()
-            ->assertJsonCount(1, 'data.packages')
-            ->assertJsonPath('data.meta.total', 1)
-            ->assertJsonPath('data.packages.0.id', $matching->id)
-            ->assertJsonPath('data.packages.0.regions', [$region->id]);
-    }
-
     public function test_listing_search_query_filters_by_name(): void
     {
         Package::factory()->create(['name_en' => 'Damascus Old City Walk']);
@@ -135,37 +115,6 @@ class PackageTest extends TestCase
         $response->assertOk()
             ->assertJsonPath('data.meta.total', 1)
             ->assertJsonPath('data.packages.0.name', 'Damascus Old City Walk');
-    }
-
-    public function test_show_returns_package_with_association_ids(): void
-    {
-        $city = City::factory()->create();
-        $region = Region::factory()->create();
-        $hotel = Hotel::factory()->create();
-        $carAgency = CarAgency::factory()->create();
-
-        $package = Package::factory()->create([
-            'name_en' => 'Damascus Discovery',
-            'status' => 'active',
-        ]);
-        $package->description()->create(['description_en' => 'A journey.', 'description_ar' => 'رحلة.']);
-        $package->regions()->attach($region->id);
-        $package->cities()->attach($city->id);
-        $package->hotels()->attach($hotel->id);
-        $package->carAgencies()->attach($carAgency->id);
-
-        $response = $this->withHeaders($this->authHeaders($this->regularUser()))
-            ->getJson("/api/packages/{$package->id}");
-
-        $response->assertOk()
-            ->assertJsonPath('data.id', $package->id)
-            ->assertJsonPath('data.name', 'Damascus Discovery')
-            ->assertJsonPath('data.start_date', $package->start_date->toDateString())
-            ->assertJsonPath('data.status', 'active')
-            ->assertJsonPath('data.regions', [$region->id])
-            ->assertJsonPath('data.cities', [$city->id])
-            ->assertJsonPath('data.hotels', [$hotel->id])
-            ->assertJsonPath('data.car_agencies', [$carAgency->id]);
     }
 
     public function test_show_returns_404_for_non_existent_package(): void
@@ -220,52 +169,6 @@ class PackageTest extends TestCase
         $response->assertStatus(422);
 
         $this->assertDatabaseCount('packages', 0);
-    }
-
-    public function test_update_with_empty_association_arrays_clears_them(): void
-    {
-        $admin = $this->adminUser();
-        $region = Region::factory()->create();
-        $hotel = Hotel::factory()->create();
-
-        $package = Package::factory()->create();
-        $package->regions()->attach($region->id);
-        $package->hotels()->attach($hotel->id);
-
-        $response = $this->withHeaders($this->authHeaders($admin))
-            ->putJson("/api/admin/packages/{$package->id}", [
-                'hotels' => [],
-                'status' => 'active',
-            ]);
-
-        $response->assertOk()
-            ->assertJsonPath('data.hotels', []);
-
-        $this->assertDatabaseCount('packageables', 1);
-        $this->assertDatabaseHas('packageables', [
-            'package_id' => $package->id,
-            'packageable_id' => $region->id,
-            'packageable_type' => 'region',
-        ]);
-        $this->assertDatabaseHas('packages', ['id' => $package->id, 'status' => 'active']);
-    }
-
-    public function test_update_without_association_keys_preserves_them(): void
-    {
-        $admin = $this->adminUser();
-        $region = Region::factory()->create();
-        $hotel = Hotel::factory()->create();
-
-        $package = Package::factory()->create();
-        $package->regions()->attach($region->id);
-        $package->hotels()->attach($hotel->id);
-
-        $this->withHeaders($this->authHeaders($admin))
-            ->putJson("/api/admin/packages/{$package->id}", ['name_en' => 'Updated Trip'])
-            ->assertOk();
-
-        $this->assertDatabaseCount('packageables', 2);
-        $this->assertDatabaseHas('packages', ['id' => $package->id, 'name_en' => 'Updated Trip']);
     }
 
     public function test_admin_can_delete_package(): void

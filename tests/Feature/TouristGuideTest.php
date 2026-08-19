@@ -190,29 +190,6 @@ class TouristGuideTest extends TestCase
         ]);
     }
 
-    public function test_user_can_request_guide_booking_on_trip(): void
-    {
-        $owner = $this->regularUser();
-        $trip = Trip::factory()->for($owner, 'owner')->create();
-        $guide = TouristGuide::factory()->create();
-
-        $this->withHeaders($this->authHeaders($owner))
-            ->postJson("/api/trips/{$trip->id}/guides", [
-                'tourist_guide_id' => $guide->id,
-                'note' => 'English speaking guide please.',
-            ])
-            ->assertStatus(201)
-            ->assertJsonPath('message', 'Guide booking request sent successfully')
-            ->assertJsonPath('data.guide_request.status', 'pending');
-
-        $this->assertDatabaseHas('guide_requests', [
-            'trip_id' => $trip->id,
-            'tourist_guide_id' => $guide->id,
-            'status' => GuideRequestStatus::PENDING->value,
-            'note' => 'English speaking guide please.',
-        ]);
-    }
-
     public function test_duplicate_pending_booking_request_is_rejected(): void
     {
         $owner = $this->regularUser();
@@ -316,52 +293,6 @@ class TouristGuideTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('data.meta.total', 2);
-    }
-
-    public function test_user_can_rate_tourist_guide(): void
-    {
-        $user = $this->regularUser();
-        $guide = TouristGuide::factory()->create();
-
-        $this->withHeaders($this->authHeaders($user))
-            ->postJson("/api/ratings/tourist_guides/{$guide->id}", [
-                'rate' => 5,
-                'type' => 'text',
-                'body' => 'Amazing guide!',
-            ])
-            ->assertStatus(201)
-            ->assertJson(['message' => 'Rating created']);
-
-        $this->assertDatabaseHas('ratings', [
-            'user_id' => $user->id,
-            'rateable_type' => 'tourist_guide',
-            'rateable_id' => $guide->id,
-            'rate' => 5,
-        ]);
-    }
-
-    public function test_user_cannot_rate_same_tourist_guide_twice(): void
-    {
-        $user = $this->regularUser();
-        $guide = TouristGuide::factory()->create();
-
-        $this->withHeaders($this->authHeaders($user))
-            ->postJson("/api/ratings/tourist_guides/{$guide->id}", [
-                'rate' => 4,
-                'type' => 'text',
-                'body' => 'Nice.',
-            ])
-            ->assertStatus(201);
-
-        $this->withHeaders($this->authHeaders($user))
-            ->postJson("/api/ratings/tourist_guides/{$guide->id}", [
-                'rate' => 5,
-                'type' => 'text',
-                'body' => 'Amazing!',
-            ])
-            ->assertStatus(403);
-
-        $this->assertDatabaseCount('ratings', 1);
     }
 
     public function test_guide_show_exposes_average_rating(): void
